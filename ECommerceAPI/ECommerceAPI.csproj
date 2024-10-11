@@ -1,0 +1,59 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="NewFolder1\**" />
+    <Content Remove="NewFolder1\**" />
+    <EmbeddedResource Remove="NewFolder1\**" />
+    <None Remove="NewFolder1\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.8" />
+    <PackageReference Include="Microsoft.AspNetCore.Cors" Version="2.2.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.8" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="8.0.8" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.8" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.8">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.EntityFrameWorkCore.SqlServer" Version="8.0.8" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.8">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="8.0.5" />
+    <PackageReference Include="Stripe.net" Version="45.7.0" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.7.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Business\Application\Services\" />
+    <Folder Include="Business\Domain\Interfaces\" />
+    <Folder Include="Business\Infrastructure\Repositories\" />
+    <Folder Include="Katalogu\API\Controllers\" />
+    <Folder Include="Katalogu\API\ViewModels\" />
+    <Folder Include="Katalogu\Application\Services\" />
+    <Folder Include="Katalogu\Domain\Entities\" />
+    <Folder Include="Katalogu\Domain\Interfaces\" />
+    <Folder Include="Katalogu\Infrastructure\Repositories\" />
+    <Folder Include="Order\API\Controllers\" />
+    <Folder Include="Order\API\ViewModels\" />
+    <Folder Include="Order\Application\Services\" />
+    <Folder Include="Order\Domain\Entities\" />
+    <Folder Include="Order\Domain\Interfaces\" />
+    <Folder Include="Order\Infrastructure\Repositories\" />
+    <Folder Include="Produktet\Application\Services\" />
+    <Folder Include="Produktet\Domain\Interfaces\" />
+    <Folder Include="Produktet\Infrastructure\Repositories\" />
+    <Folder Include="Users\API\Controllers\" />
+    <Folder Include="Users\Domain\Entities\" />
+  </ItemGroup>
+
+</Project>
