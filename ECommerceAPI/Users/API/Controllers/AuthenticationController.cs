@@ -11,17 +11,15 @@ namespace ECommerceAPI.Users.API.Controllers
     public class AuthenticationController : ControllerBase
     {
 
-        private readonly UserManager<IdentityUser> _userManager;
         private readonly TokenService _tokenService;
         private readonly AuthenticationService _authenticationService;
 
         public AuthenticationController
-            (UserManager<IdentityUser> userManager,
+            (
              TokenService tokenService,
              AuthenticationService authenticationService
             )
         {
-            _userManager = userManager;
             _tokenService = tokenService;
             _authenticationService = authenticationService;
         }
@@ -30,14 +28,15 @@ namespace ECommerceAPI.Users.API.Controllers
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LogIn model)
         {
-            var user = await _userManager.FindByEmailAsync(model.Email);
-            if (user != null && await _userManager.CheckPasswordAsync(user, model.Password))
+            var authenticated = await _authenticationService.LogInAsync(model.Email, model.Password);
+            if (authenticated)
             {
-
-                var tokenResponse = await _tokenService.GenerateTokensAsync(user);
+                var identityUser = await _authenticationService.GetUserByEmailAsync(model.Email);
+                var tokenResponse = await _tokenService.GenerateTokensAsync(identityUser!);
                 return Ok(tokenResponse);
             }
-            return BadRequest("Invalid email or password.");
+
+            return BadRequest("Your credentials are invalid!");
         }
 
         [HttpPost]
@@ -47,18 +46,9 @@ namespace ECommerceAPI.Users.API.Controllers
 
             if (ModelState.IsValid)
             {
-                var ekzistonEmail = await _userManager.FindByEmailAsync(register.Email);
-                var ekzistonUsername = await _userManager.FindByNameAsync(register.Username);
-
-                if (ekzistonEmail == null && ekzistonUsername == null)
+                try
                 {
-                    var newUser = new IdentityUser()
-                    {
-                        Email = register.Email,
-                        UserName = register.Username,
-                    };
-
-                    var result = await _authenticationService.RegisterUser(newUser, register.Password);
+                    var result = await _authenticationService.RegisterUserAsync(register.Username, register.Email, register.Password);
                     if (result.Succeeded)
                     {
                         return Ok("Your Account was successfully created!");
@@ -68,20 +58,10 @@ namespace ECommerceAPI.Users.API.Controllers
                         return BadRequest("Something went wrong with Account Creation");
                     }
                 }
-                else if (ekzistonUsername != null)
+                catch (Exception ex)
                 {
-
-                    return BadRequest("This username is taken");
+                    return BadRequest(ex.Message);
                 }
-                else if (ekzistonEmail != null)
-                {
-                    return BadRequest("Email is taken");
-                }
-                else
-                {
-                    return BadRequest("Username and email are taken.");
-                }
-
             }
 
 
@@ -129,7 +109,7 @@ namespace ECommerceAPI.Users.API.Controllers
                 return Unauthorized("Invalid or expired refresh token.");
             }
 
-            var identityUser = _authenticationService.RetrieveIdentityUser(tokenEntry.User_Id);
+            var identityUser = await _authenticationService.RetrieveIdentityUser(tokenEntry.User_Id);
 
 
             var newTokenResponse = await _tokenService.GenerateTokensAsync(identityUser);

@@ -53,12 +53,33 @@ namespace ECommerceAPI.Users.Infrastructure.Repositories
             await _dbContext.SaveChangesAsync();
         }
 
-        public IdentityUser GetIdentityUser(int userId)
+        public async Task<IdentityUser> GetIdentityUser(int userId)
         {
-            var user = _dbContext.User?
+            var user = await _dbContext.User
                            .Include(u => u.AspNetUser)
-                           .FirstOrDefault(u => u.User_Id == userId);
+                           .FirstOrDefaultAsync(u => u.User_Id == userId);
             return user!.AspNetUser;
+        }
+
+        // e shtuar :
+        public async Task<bool> AuthenticateUserAsync(IdentityUser identityUser, string password)
+        {
+            return await _userManager.CheckPasswordAsync(identityUser, password);
+        }
+        public async Task<bool> LogInAsync(string email, string password)
+        {
+            var user = await _userManager.FindByEmailAsync(email);
+            return user != null && await AuthenticateUserAsync(user, password);
+        }
+
+        public async Task<IdentityUser?> GetUserByEmailAsync(string email)
+        {
+            return await _userManager.FindByEmailAsync(email);
+        }
+
+        public async Task<IdentityUser?> GetUserByNameAsync(string name)
+        {
+            return await _userManager.FindByNameAsync(name);
         }
     }
 }

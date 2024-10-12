@@ -11,6 +11,15 @@ namespace ECommerceAPI.Users.Domain.Interfaces
 
         Task RemoveToken(User user);
 
-        IdentityUser GetIdentityUser(int userId);
+        Task<IdentityUser> GetIdentityUser(int userId);
+
+        // E SHTUAR
+        Task<bool> AuthenticateUserAsync(IdentityUser user, string password);
+
+        Task<bool> LogInAsync(string email, string password);
+
+        Task<IdentityUser?> GetUserByEmailAsync(string email);
+
+        Task<IdentityUser?> GetUserByNameAsync(string name);
     }
 }
