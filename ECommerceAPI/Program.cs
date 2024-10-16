@@ -30,6 +30,8 @@ internal class Program
         builder.Services.AddScoped<IAuthenticationRepository, AuthenticationRepository>();
         builder.Services.AddScoped<AuthenticationService>();
 
+        builder.Services.AddScoped<IAdressRepository, AdressRepository>();
+        builder.Services.AddScoped<AdresaService>();
 
 
         builder.Services.AddControllers();

@@ -1,9 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using ECommerceAPI.Data;
-using ECommerceAPI.ViewModels;
+﻿using ECommerceAPI.Users.API.ViewModels;
+using ECommerceAPI.Users.Application.Services;
 using Microsoft.AspNetCore.Authorization;
-using ECommerceAPI.Users.Domain.Entities;
+using Microsoft.AspNetCore.Mvc;
 
 namespace ECommerceAPI.Users.API.Controllers
 {
@@ -11,134 +9,62 @@ namespace ECommerceAPI.Users.API.Controllers
     [ApiController]
     public class AdresaController : ControllerBase
     {
-        private readonly ECommerceDBContext _context;
+        private readonly AdresaService _adresaService;
 
-        public AdresaController(ECommerceDBContext context)
+        public AdresaController(AdresaService adresaService)
         {
-            _context = context;
+            _adresaService = adresaService;
         }
 
         [HttpPost("shtoAdresen")]
-        [Authorize]
+       // [Authorize]
         public async Task<IActionResult> ShtoAdresen([FromBody] AdresaVM adresaVM)
         {
-            var numriAdresave = await _context.Adresa.Where(a => a.UserId == adresaVM.UserId).CountAsync();
-            if (numriAdresave == 3)
+            try
             {
-                return BadRequest("Numri i adresave qe mund te shtoni eshte maximumi 3!");
+                await _adresaService.ShtoAdresen(adresaVM);
+                return Ok("Adresa juaj eshte shtuar me sukses!");
+            }catch (Exception ex) { 
+                return BadRequest(ex.Message);  
             }
-
-            var adresa = new Adresa()
-            {
-                Shteti = adresaVM.Shteti,
-                Qyteti = adresaVM.Qyteti,
-                AdresaUserit = adresaVM.Adresa,
-                UserId = adresaVM.UserId,
-                ZipKodi = adresaVM.ZipKodi,
-                IsDefault = adresaVM.IsDefault,
-            };
-
-            // nese eshte vendosur qe adresa e re te jete default:
-            if (adresaVM.IsDefault)
-            {
-                var adresat = await _context.Adresa.Where(a => a.UserId == adresaVM.UserId).ToListAsync();
-                foreach (var adresaObj in adresat)
-                {
-                    adresaObj.IsDefault = false;
-                }
-            }
-
-            await _context.Adresa.AddAsync(adresa);
-            await _context.SaveChangesAsync();
-
-            return Ok("Adresa juaj eshte shtuar me sukses!");
         }
 
         [HttpPut("perditesoAdresen/{adresaId}")]
-        [Authorize]
+      //  [Authorize]
         public async Task<IActionResult> Put(int adresaId, [FromBody] AdresaVM adresaVM)
         {
-            var adresa = await _context.Adresa.FindAsync(adresaId);
+            await _adresaService.PerditesoAdresen(adresaId, adresaVM);
 
-            if (adresaVM.IsDefault)
-            {
-                var adresat = await _context.Adresa.Where(a => a.UserId == adresaVM.UserId).ToListAsync();
-                foreach (var adresaObj in adresat)
-                {
-                    adresaObj.IsDefault = false;
-                }
-            }
-            if (adresa != null)
-            {
-                adresa.Shteti = adresaVM.Shteti;
-                adresa.Qyteti = adresaVM.Qyteti;
-                adresa.AdresaUserit = adresaVM.Adresa;
-                adresa.ZipKodi = adresaVM.ZipKodi;
-                adresa.IsDefault = adresaVM.IsDefault;
-
-                _context.Adresa.Update(adresa);
-                await _context.SaveChangesAsync();
-
-                return Ok("Adresa juaj eshte perditesuar me sukses!");
-            }
-
-            return BadRequest("Kjo adrese nuk u gjet ne sistem!");
+            return Ok("Adresa juaj eshte perditesuar me sukses!");
         }
 
         [HttpGet("shfaqAdresen/{adresaId}")]
-        [Authorize]
+      //  [Authorize]
         public async Task<IActionResult> Get(int adresaId)
         {
-            var adresa = await _context.Adresa
-                .Where(a => a.Adresa_Id == adresaId)
-                .Select(a => new
-                {
-                    a.Adresa_Id,
-                    a.AdresaUserit,
-                    a.Shteti,
-                    a.Qyteti,
-                    a.ZipKodi,
-                    a.IsDefault,
-                    a.UserId,
-
-                }).FirstOrDefaultAsync();
+            var adresa =await _adresaService.GetAdresenSipasId(adresaId);
+            if (adresa == null)
+            {
+                return NotFound();
+            }
 
             return Ok(adresa);
         }
 
         [HttpDelete]
         [Route("FshijAdresen/{adresaId}")]
-        [Authorize]
+     //   [Authorize]
         public async Task<IActionResult> Delete(int adresaId)
         {
-            var adresa = await _context.Adresa.FirstOrDefaultAsync(a => a.Adresa_Id == adresaId);
-            if (adresa != null)
-            {
-                _context.Adresa.Remove(adresa);
-                await _context.SaveChangesAsync();
-                return Ok("Adresa u fshi me sukses!");
-            }
-
-            return BadRequest("Kjo adrese nuk ekziston");
+            await _adresaService.FshijAdresen(adresaId);
+            return Ok("Adresa u fshi me sukses!");
         }
 
         [HttpGet("listoAdresat/{userId}")]
-        [Authorize]
+    //    [Authorize]
         public async Task<IActionResult> ListoAdresat(int userId)
         {
-            var adresat = await _context.Adresa
-                .Where(a => a.UserId == userId)
-                .OrderByDescending(a => a.CreatedAt)
-                .Select(a => new
-                {
-                    a.Adresa_Id,
-                    a.AdresaUserit,
-                    a.Shteti,
-                    a.Qyteti,
-                    a.ZipKodi,
-                    a.IsDefault,
-
-                }).ToListAsync();
+            var adresat =await _adresaService.GetAdresatSipasId(userId);
             return Ok(adresat);
         }
     }
