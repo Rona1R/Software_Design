@@ -1,8 +1,7 @@
-﻿using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Mvc;
 using ECommerceAPI.Users.Application.Services;
 using ECommerceAPI.Users.API.ViewModels;
+using ECommerceAPI.Users.Application.Interfaces;
 
 namespace ECommerceAPI.Users.API.Controllers
 {
@@ -12,12 +11,12 @@ namespace ECommerceAPI.Users.API.Controllers
     {
 
         private readonly TokenService _tokenService;
-        private readonly AuthenticationService _authenticationService;
+        private readonly IAuthenticationService _authenticationService;
 
         public AuthenticationController
             (
              TokenService tokenService,
-             AuthenticationService authenticationService
+             IAuthenticationService authenticationService
             )
         {
             _tokenService = tokenService;

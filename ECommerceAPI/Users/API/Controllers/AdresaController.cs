@@ -1,5 +1,5 @@
 ﻿using ECommerceAPI.Users.API.ViewModels;
-using ECommerceAPI.Users.Application.Services;
+using ECommerceAPI.Users.Application.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -9,15 +9,15 @@ namespace ECommerceAPI.Users.API.Controllers
     [ApiController]
     public class AdresaController : ControllerBase
     {
-        private readonly AdresaService _adresaService;
+        private readonly IAdresaService _adresaService;
 
-        public AdresaController(AdresaService adresaService)
+        public AdresaController(IAdresaService adresaService)
         {
             _adresaService = adresaService;
         }
 
         [HttpPost("shtoAdresen")]
-       // [Authorize]
+        [Authorize]
         public async Task<IActionResult> ShtoAdresen([FromBody] AdresaVM adresaVM)
         {
             try
@@ -30,7 +30,7 @@ namespace ECommerceAPI.Users.API.Controllers
         }
 
         [HttpPut("perditesoAdresen/{adresaId}")]
-      //  [Authorize]
+        [Authorize]
         public async Task<IActionResult> Put(int adresaId, [FromBody] AdresaVM adresaVM)
         {
             await _adresaService.PerditesoAdresen(adresaId, adresaVM);
@@ -39,7 +39,7 @@ namespace ECommerceAPI.Users.API.Controllers
         }
 
         [HttpGet("shfaqAdresen/{adresaId}")]
-      //  [Authorize]
+        [Authorize]
         public async Task<IActionResult> Get(int adresaId)
         {
             var adresa =await _adresaService.GetAdresenSipasId(adresaId);
@@ -53,7 +53,7 @@ namespace ECommerceAPI.Users.API.Controllers
 
         [HttpDelete]
         [Route("FshijAdresen/{adresaId}")]
-     //   [Authorize]
+        [Authorize]
         public async Task<IActionResult> Delete(int adresaId)
         {
             await _adresaService.FshijAdresen(adresaId);
@@ -61,7 +61,7 @@ namespace ECommerceAPI.Users.API.Controllers
         }
 
         [HttpGet("listoAdresat/{userId}")]
-    //    [Authorize]
+        [Authorize]
         public async Task<IActionResult> ListoAdresat(int userId)
         {
             var adresat =await _adresaService.GetAdresatSipasId(userId);

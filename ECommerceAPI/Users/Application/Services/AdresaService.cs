@@ -1,15 +1,19 @@
 ﻿using ECommerceAPI.Users.API.ViewModels;
+using ECommerceAPI.Users.Application.Interfaces;
 using ECommerceAPI.Users.Domain.Entities;
 using ECommerceAPI.Users.Domain.Interfaces;
 
 namespace ECommerceAPI.Users.Application.Services
 {
-    public class AdresaService(IAdressRepository adresaRepository)
+    public class AdresaService:IAdresaService
     {
 
-        private readonly IAdressRepository _adresaRepository = adresaRepository;
+        private readonly IAdressRepository _adresaRepository;
 
-
+        public AdresaService(IAdressRepository adresaRepository)
+        {
+            _adresaRepository = adresaRepository;   
+        }
         public async Task ShtoAdresen(AdresaVM adresaVM)
         {
             var numriAdresave = _adresaRepository.GetNrAdresave(adresaVM.UserId);

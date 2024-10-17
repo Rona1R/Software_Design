@@ -1,10 +1,11 @@
-﻿using ECommerceAPI.Users.Domain.Entities;
+﻿using ECommerceAPI.Users.Application.Interfaces;
+using ECommerceAPI.Users.Domain.Entities;
 using ECommerceAPI.Users.Domain.Interfaces;
 using Microsoft.AspNetCore.Identity;
 
 namespace ECommerceAPI.Users.Application.Services
 {
-    public class AuthenticationService
+    public class AuthenticationService:IAuthenticationService
     {
         private readonly IAuthenticationRepository _authenticationRepository;
 

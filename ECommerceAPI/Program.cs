@@ -10,6 +10,7 @@ using Microsoft.OpenApi.Models;
 using ECommerceAPI.Users.Application.Services;
 using ECommerceAPI.Users.Domain.Interfaces;
 using ECommerceAPI.Users.Infrastructure.Repositories;
+using ECommerceAPI.Users.Application.Interfaces;
 
 internal class Program
 {
@@ -26,12 +27,12 @@ internal class Program
         builder.Services.AddScoped<TokenService>();
 
 
-        // Mapping between Interfaces and Repositories 
+        // Mapping between Interfaces-Repositories , and Interfaces-Services
         builder.Services.AddScoped<IAuthenticationRepository, AuthenticationRepository>();
-        builder.Services.AddScoped<AuthenticationService>();
+        builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
 
         builder.Services.AddScoped<IAdressRepository, AdressRepository>();
-        builder.Services.AddScoped<AdresaService>();
+        builder.Services.AddScoped<IAdresaService,AdresaService>();
 
 
         builder.Services.AddControllers();
