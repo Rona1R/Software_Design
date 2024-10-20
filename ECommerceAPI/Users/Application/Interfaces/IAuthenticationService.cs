@@ -10,9 +10,9 @@ namespace ECommerceAPI.Users.Application.Interfaces
 
         User? RetrieveUserFromToken(string token);  
 
-        Task RemoveUserToken(User user);
+        Task RemoveUserTokenAsync(User user);
 
-        Task<IdentityUser> RetrieveIdentityUser(int userId);
+        Task<IdentityUser> RetrieveIdentityUserAsync(int userId);
 
         Task<bool> LogInAsync(string email, string password);
 

@@ -7,14 +7,14 @@ namespace ECommerceAPI.Users.Domain.Interfaces
     {
         int GetNrAdresave(int userId);
 
-        Task<List<Adresa>> GetAdresatSipasUserit(int userId);
+        Task<List<Adresa>> GetAdresatSipasUseritAsync(int userId);
 
 
-        Task ShtoAdresen(AdresaVM adresaVM);
+        Task ShtoAdresenAsync(AdresaVM adresaVM);
 
-        Task<Adresa?> GetAdresaSipasId(int adresaId);
+        Task<Adresa?> GetAdresaSipasIdAsync(int adresaId);
 
-        Task PerditesoAdresen(Adresa adresa, AdresaVM adresaVM);
-        Task FshijAdresen(Adresa adresa);
+        Task PerditesoAdresenAsync(Adresa adresa, AdresaVM adresaVM);
+        Task FshijAdresenAsync(Adresa adresa);
     }
 }

@@ -22,7 +22,7 @@ namespace ECommerceAPI.Users.API.Controllers
         {
             try
             {
-                await _adresaService.ShtoAdresen(adresaVM);
+                await _adresaService.ShtoAdresenAsync(adresaVM);
                 return Ok("Adresa juaj eshte shtuar me sukses!");
             }catch (Exception ex) { 
                 return BadRequest(ex.Message);  
@@ -33,7 +33,7 @@ namespace ECommerceAPI.Users.API.Controllers
         [Authorize]
         public async Task<IActionResult> Put(int adresaId, [FromBody] AdresaVM adresaVM)
         {
-            await _adresaService.PerditesoAdresen(adresaId, adresaVM);
+            await _adresaService.PerditesoAdresenAsync(adresaId, adresaVM);
 
             return Ok("Adresa juaj eshte perditesuar me sukses!");
         }
@@ -42,7 +42,7 @@ namespace ECommerceAPI.Users.API.Controllers
         [Authorize]
         public async Task<IActionResult> Get(int adresaId)
         {
-            var adresa =await _adresaService.GetAdresenSipasId(adresaId);
+            var adresa =await _adresaService.GetAdresenSipasIdAsync(adresaId);
             if (adresa == null)
             {
                 return NotFound();
@@ -56,7 +56,7 @@ namespace ECommerceAPI.Users.API.Controllers
         [Authorize]
         public async Task<IActionResult> Delete(int adresaId)
         {
-            await _adresaService.FshijAdresen(adresaId);
+            await _adresaService.FshijAdresenAsync(adresaId);
             return Ok("Adresa u fshi me sukses!");
         }
 
@@ -64,7 +64,7 @@ namespace ECommerceAPI.Users.API.Controllers
         [Authorize]
         public async Task<IActionResult> ListoAdresat(int userId)
         {
-            var adresat =await _adresaService.GetAdresatSipasId(userId);
+            var adresat =await _adresaService.GetAdresatSipasIdAsync(userId);
             return Ok(adresat);
         }
     }

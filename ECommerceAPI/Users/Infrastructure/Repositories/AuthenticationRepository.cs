@@ -20,7 +20,7 @@ namespace ECommerceAPI.Users.Infrastructure.Repositories
             _userManager = userManager;
         }
 
-        public async Task<IdentityResult> CreateAccount(IdentityUser newUser, string password)
+        public async Task<IdentityResult> CreateAccountAsync(IdentityUser newUser, string password)
         {
             var accountCreation = await _userManager.CreateAsync(newUser, password);
             if (accountCreation.Succeeded)
@@ -47,13 +47,13 @@ namespace ECommerceAPI.Users.Infrastructure.Repositories
             return _dbContext.User?.FirstOrDefault(u => u.RefreshToken == token);
         }
 
-        public async Task RemoveToken(User user)
+        public async Task RemoveTokenAsync(User user)
         {
             user.RefreshToken = null;
             await _dbContext.SaveChangesAsync();
         }
 
-        public async Task<IdentityUser> GetIdentityUser(int userId)
+        public async Task<IdentityUser> GetIdentityUserAsync(int userId)
         {
             var user = await _dbContext.User
                            .Include(u => u.AspNetUser)

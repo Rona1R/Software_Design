@@ -6,15 +6,15 @@ namespace ECommerceAPI.Users.Application.Interfaces
     public interface IAdresaService
     {
 
-        Task ShtoAdresen(AdresaVM adresaVM);
+        Task ShtoAdresenAsync(AdresaVM adresaVM);
 
-        Task PerditesoAdresen(int adresaId, AdresaVM adresaVM);
+        Task PerditesoAdresenAsync(int adresaId, AdresaVM adresaVM);
 
-        Task<Adresa?> GetAdresenSipasId(int adresaId);
+        Task<Adresa?> GetAdresenSipasIdAsync(int adresaId);
 
-        Task FshijAdresen(int adresaId);
+        Task FshijAdresenAsync(int adresaId);
 
-        Task<List<Adresa>> GetAdresatSipasId(int userId);
+        Task<List<Adresa>> GetAdresatSipasIdAsync(int userId);
 
     }
 }

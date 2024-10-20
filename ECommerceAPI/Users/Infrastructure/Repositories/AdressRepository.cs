@@ -16,12 +16,12 @@ namespace ECommerceAPI.Users.Infrastructure.Repositories
             return _context.Adresa.Where(a => a.UserId == userId).Count();
         }
 
-        public async Task<List<Adresa>> GetAdresatSipasUserit(int userId)
+        public async Task<List<Adresa>> GetAdresatSipasUseritAsync(int userId)
         {
             return await _context.Adresa.Where(a => a.UserId == userId).OrderByDescending(a => a.CreatedAt).ToListAsync();
         }
 
-        public async Task ShtoAdresen(AdresaVM adresaVM)
+        public async Task ShtoAdresenAsync(AdresaVM adresaVM)
         {
             var adresa = new Adresa()
             {
@@ -47,7 +47,7 @@ namespace ECommerceAPI.Users.Infrastructure.Repositories
         }
 
 
-        public async Task PerditesoAdresen(Adresa adresa, AdresaVM adresaVM)
+        public async Task PerditesoAdresenAsync(Adresa adresa, AdresaVM adresaVM)
         {
 
             if (adresaVM.IsDefault)
@@ -71,12 +71,12 @@ namespace ECommerceAPI.Users.Infrastructure.Repositories
             }
 
         }
-        public  async Task<Adresa?> GetAdresaSipasId(int adresaId)
+        public  async Task<Adresa?> GetAdresaSipasIdAsync(int adresaId)
         {
             return await _context.Adresa.FindAsync(adresaId);
         }
 
-        public async Task FshijAdresen(Adresa adresa)
+        public async Task FshijAdresenAsync(Adresa adresa)
         {
             _context.Adresa.Remove(adresa);
             await _context.SaveChangesAsync();

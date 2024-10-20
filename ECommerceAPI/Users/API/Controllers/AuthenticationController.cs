@@ -76,7 +76,7 @@ namespace ECommerceAPI.Users.API.Controllers
                 var tokenEntry = _authenticationService.RetrieveUserFromToken(refreshToken);
                 if (tokenEntry != null)
                 {
-                    await _authenticationService.RemoveUserToken(tokenEntry);
+                    await _authenticationService.RemoveUserTokenAsync(tokenEntry);
                 }
 
                 var cookieOptions = new CookieOptions
@@ -108,7 +108,7 @@ namespace ECommerceAPI.Users.API.Controllers
                 return Unauthorized("Invalid or expired refresh token.");
             }
 
-            var identityUser = await _authenticationService.RetrieveIdentityUser(tokenEntry.User_Id);
+            var identityUser = await _authenticationService.RetrieveIdentityUserAsync(tokenEntry.User_Id);
 
 
             var newTokenResponse = await _tokenService.GenerateTokensAsync(identityUser);

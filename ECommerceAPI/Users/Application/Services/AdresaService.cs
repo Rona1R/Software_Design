@@ -14,45 +14,45 @@ namespace ECommerceAPI.Users.Application.Services
         {
             _adresaRepository = adresaRepository;   
         }
-        public async Task ShtoAdresen(AdresaVM adresaVM)
+        public async Task ShtoAdresenAsync(AdresaVM adresaVM)
         {
             var numriAdresave = _adresaRepository.GetNrAdresave(adresaVM.UserId);
             if(numriAdresave == 3) {
                 throw new Exception("Numri i adresave qe mund te shtoni eshte maximumi 3!");
             }
 
-            await _adresaRepository.ShtoAdresen(adresaVM);
+            await _adresaRepository.ShtoAdresenAsync(adresaVM);
         }
 
-        public async Task PerditesoAdresen(int adresaId, AdresaVM adresaVM)
+        public async Task PerditesoAdresenAsync(int adresaId, AdresaVM adresaVM)
         {
-            var adresa = await _adresaRepository.GetAdresaSipasId(adresaId);
+            var adresa = await _adresaRepository.GetAdresaSipasIdAsync(adresaId);
 
             if (adresa != null)
             {
 
-                await _adresaRepository.PerditesoAdresen(adresa, adresaVM);
+                await _adresaRepository.PerditesoAdresenAsync(adresa, adresaVM);
             }
         }
 
-        public async Task<Adresa?> GetAdresenSipasId(int adresaId)
+        public async Task<Adresa?> GetAdresenSipasIdAsync(int adresaId)
         {
 
-            return await _adresaRepository.GetAdresaSipasId(adresaId);
+            return await _adresaRepository.GetAdresaSipasIdAsync(adresaId);
         }
 
-        public async Task FshijAdresen(int adresaId)
+        public async Task FshijAdresenAsync(int adresaId)
         {
-            var adresa = await _adresaRepository.GetAdresaSipasId(adresaId);
+            var adresa = await _adresaRepository.GetAdresaSipasIdAsync(adresaId);
             if (adresa != null)
             {
-                await _adresaRepository.FshijAdresen(adresa);
+                await _adresaRepository.FshijAdresenAsync(adresa);
             }
         }
 
-        public async Task<List<Adresa>> GetAdresatSipasId(int userId)
+        public async Task<List<Adresa>> GetAdresatSipasIdAsync(int userId)
         {
-            return await _adresaRepository.GetAdresatSipasUserit(userId);
+            return await _adresaRepository.GetAdresatSipasUseritAsync(userId);
         }
     }
 }

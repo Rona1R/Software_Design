@@ -36,7 +36,7 @@ namespace ECommerceAPI.Users.Application.Services
                 Email = email,
                 UserName = username,
             };
-            return await _authenticationRepository.CreateAccount(newUser, password);
+            return await _authenticationRepository.CreateAccountAsync(newUser, password);
         }
 
         public User? RetrieveUserFromToken(string token)
@@ -45,17 +45,16 @@ namespace ECommerceAPI.Users.Application.Services
             return _authenticationRepository.GetByToken(token);
         }
 
-        public async Task RemoveUserToken(User user)
+        public async Task RemoveUserTokenAsync(User user)
         {
-            await _authenticationRepository.RemoveToken(user);
+            await _authenticationRepository.RemoveTokenAsync(user);
         }
 
-        public async Task<IdentityUser> RetrieveIdentityUser(int userId)
+        public async Task<IdentityUser> RetrieveIdentityUserAsync(int userId)
         {
-            return await _authenticationRepository.GetIdentityUser(userId);
+            return await _authenticationRepository.GetIdentityUserAsync(userId);
         }
 
-        // e shtuar:
         public async Task<bool> LogInAsync(string email, string password)
         {
             var credentialsCorrect = await _authenticationRepository.LogInAsync(email, password);

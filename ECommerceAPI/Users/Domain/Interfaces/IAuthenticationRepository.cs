@@ -5,13 +5,13 @@ namespace ECommerceAPI.Users.Domain.Interfaces
 {
     public interface IAuthenticationRepository
     {
-        Task<IdentityResult> CreateAccount(IdentityUser newUser, string password);
+        Task<IdentityResult> CreateAccountAsync(IdentityUser newUser, string password);
 
         User? GetByToken(string token);
 
-        Task RemoveToken(User user);
+        Task RemoveTokenAsync(User user);
 
-        Task<IdentityUser> GetIdentityUser(int userId);
+        Task<IdentityUser> GetIdentityUserAsync(int userId);
 
         // E SHTUAR
         Task<bool> AuthenticateUserAsync(IdentityUser user, string password);

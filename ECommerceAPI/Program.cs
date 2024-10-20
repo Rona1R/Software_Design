@@ -8,9 +8,11 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Microsoft.OpenApi.Models;
 using ECommerceAPI.Users.Application.Services;
-using ECommerceAPI.Users.Domain.Interfaces;
-using ECommerceAPI.Users.Infrastructure.Repositories;
-using ECommerceAPI.Users.Application.Interfaces;
+using ECommerceAPI.Business.Infrastructure.DependencyInjection;
+using ECommerceAPI.Katalogu.Infrastructure.DependencyInjection;
+using ECommerceAPI.Order.Infrastructure.DependencyInjection;
+using ECommerceAPI.Produktet.Infrastructure.DependencyInjection;
+using ECommerceAPI.Users.Infrastructure.DependencyInjection;
 
 internal class Program
 {
@@ -27,12 +29,17 @@ internal class Program
         builder.Services.AddScoped<TokenService>();
 
 
-        // Mapping between Interfaces-Repositories , and Interfaces-Services
-        builder.Services.AddScoped<IAuthenticationRepository, AuthenticationRepository>();
-        builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
+        builder.Services.RegisterUsersServices();
+        builder.Services.RegisterProduktetServices();
+        builder.Services.RegisterOrdersServices();
+        builder.Services.RegisterKataloguServices();
+        builder.Services.RegisterBusinessServices();
 
-        builder.Services.AddScoped<IAdressRepository, AdressRepository>();
-        builder.Services.AddScoped<IAdresaService,AdresaService>();
+        //builder.Services.AddScoped<IAuthenticationRepository, AuthenticationRepository>();
+        //builder.Services.AddScoped<IAuthenticationService, AuthenticationService>();
+
+        //builder.Services.AddScoped<IAdressRepository, AdressRepository>();
+        //builder.Services.AddScoped<IAdresaService,AdresaService>();
 
 
         builder.Services.AddControllers();
