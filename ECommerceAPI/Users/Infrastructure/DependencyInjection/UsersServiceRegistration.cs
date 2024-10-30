@@ -21,9 +21,9 @@ namespace ECommerceAPI.Users.Infrastructure.DependencyInjection
                 services.AddScoped<IAdresaService, AdresaService>();
 
                 services.AddScoped<IBadgeRepository, BadgeRepository>();
+                services.AddScoped<IBadgeService, BadgeService>();
 
-
-                return services;
+            return services;
             }
         }
     
