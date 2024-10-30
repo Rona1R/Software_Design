@@ -25,10 +25,7 @@ internal class Program
            options.UseSqlServer(builder.Configuration.GetConnectionString("Conn"));
           }, ServiceLifetime.Scoped);
 
-        // Add services to the container.
-        builder.Services.AddScoped<TokenService>();
-
-
+    
         builder.Services.RegisterUsersServices();
         builder.Services.RegisterProduktetServices();
         builder.Services.RegisterOrdersServices();
