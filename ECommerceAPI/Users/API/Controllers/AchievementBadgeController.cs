@@ -1,8 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using ECommerceAPI.Data;
 using Microsoft.AspNetCore.Authorization;
-using ECommerceAPI.Users.Domain.Entities;
+using ECommerceAPI.Users.Application.Interfaces;
 
 namespace ECommerceAPI.Controllers
 {
@@ -10,34 +8,27 @@ namespace ECommerceAPI.Controllers
     [ApiController]
     public class AchievementBadgeController : ControllerBase
     {
-        private readonly ECommerceDBContext _context;
+        private readonly IBadgeService _badgeService;
 
-        public AchievementBadgeController(ECommerceDBContext context)
+        public AchievementBadgeController(IBadgeService badgeService)
         {
-            _context = context;
+            _badgeService = badgeService;
         }
-
-        // Reminder : constraint mes Userit dhe Achievement Badge : setNull , prandaj nfront duhet mu handle case nese e ka null Achievement Badge Id
-        // edhe ne Register masi te shtoj achievement badge e boj qe me u insertu me achievement badge : new User (Badge_Id : 1) // ne front me bo disable Delete butonin te New User Badge
 
         [HttpPost]
         [Route("shtoBadge/{badgeName}")]
-        [Authorize(Roles ="Admin,Menaxher")]
+        [Authorize(Roles = "Admin,Menaxher")]
         public async Task<IActionResult> Post(string badgeName)
         {
-            var ekziston = await _context.AchievementBadge.FirstOrDefaultAsync(b=>b.Badge_Name.ToLower()== badgeName.ToLower());    
-            if (ekziston == null) {
-                var newBadge = new AchievementBadge()
-                {
-                    Badge_Name = badgeName,
-                };
-
-                await _context.AchievementBadge.AddAsync(newBadge); 
-                await _context.SaveChangesAsync();
-                return Ok("Achievement Badge u shtua me sukses!");
+            try
+            {
+                var result = await _badgeService.AddBadge(badgeName);
+                return Ok(result);
             }
-
-            return BadRequest("Ekziston nje Achievement Badge me emer te tille");
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpGet]
@@ -45,51 +36,38 @@ namespace ECommerceAPI.Controllers
         [Authorize(Roles = "Admin,Menaxher")]
         public async Task<IActionResult> Get()
         {
-            var badges = await _context.AchievementBadge.OrderByDescending(b=>b.CreatedAt)
-                .Select(b=> new
-                {
-                    b.Badge_Id,
-                    b.Badge_Name
-                }).ToListAsync();   
-                ; 
-            return Ok(badges);  
+            var badges = await _badgeService.GetAllBadgesAsync();
+            return Ok(badges);
         }
 
         [HttpGet]
         [Route("shfaqBadgeSipasId/{id}")]
-        [Authorize(Roles ="Admin,Menaxher")]
+        [Authorize(Roles = "Admin,Menaxher")]
         public async Task<IActionResult> Get(int id)
         {
-            var ekziston = await _context.AchievementBadge.
-                Where(b=>b.Badge_Id == id)
-                 .Select(b => new
-                 {
-                     b.Badge_Id,
-                     b.Badge_Name
-                 }).FirstOrDefaultAsync();  
-
-            if (ekziston == null) {
-                return BadRequest("Kjo Badge nuk u gjet ne sistem.");
+            var badge = await _badgeService.GetAchievementBadge(id);
+            if (badge == null)
+            {
+                return BadRequest("Kjo Badge nuk u gjet ne sistem!");
             }
-            return Ok(ekziston);    
 
+            return Ok(badge);
         }
 
         [HttpPut]
         [Route("perditesoBadge/{id}/{newName}")]
         [Authorize(Roles = "Admin,Menaxher")]
-        public async Task<IActionResult> Post(int id ,string newName)
+        public async Task<IActionResult> Put(int id, string newName)
         {
-            var ekziston = await _context.AchievementBadge.FirstOrDefaultAsync(b => b.Badge_Id == id);
-            if (ekziston == null)
+            try
             {
-                return BadRequest("Kjo Badge nuk u gjet ne sistem.");
+                await _badgeService.UpdateBadge(id, newName);
+                return Ok("Achievement Badge eshte perditesuar me sukses !!");
             }
-
-            ekziston.Badge_Name = newName;
-            _context.AchievementBadge.Update(ekziston); 
-            await _context.SaveChangesAsync();
-            return Ok("Achievement Badge u perditesua me sukses");
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
 
         }
 
@@ -98,18 +76,15 @@ namespace ECommerceAPI.Controllers
         [Authorize(Roles = "Admin,Menaxher")]
         public async Task<IActionResult> Delete(int id)
         {
-            var ekziston = await _context.AchievementBadge.FirstOrDefaultAsync(x=>x.Badge_Id == id);
-
-            if(ekziston == null) {
-                return BadRequest("Kjo Badge nuk u gjet ne sistem.");
+            try
+            {
+                await _badgeService.DeleteBadge(id);
+                return Ok("Achievement Badge u fshi me sukses !!");
             }
-
-            _context.AchievementBadge.Remove(ekziston);
-            await _context.SaveChangesAsync();
-            return Ok("Achievement Badge u fshie me sukses");
-
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
-
-
     }
 }
