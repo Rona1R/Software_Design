@@ -8,7 +8,7 @@ using ECommerce.Domain.OrdersModule.Entities;
 using ECommerce.Domain.UsersModule.Entities;
 
 
-namespace ECommerceAPI.Data
+namespace ECommerce.Infrastructure.Data
 {
     public class ECommerceDBContext:IdentityDbContext<IdentityUser, IdentityRole, string>
     {
@@ -49,5 +49,6 @@ namespace ECommerceAPI.Data
         public DbSet<ProduktiAtributi> ProduktiAtributi { get; set; }
 
         public DbSet<AtributiOption> AtributiOption { get; set; }  
+
     }
 }

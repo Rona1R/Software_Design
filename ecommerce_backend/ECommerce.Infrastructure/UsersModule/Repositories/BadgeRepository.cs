@@ -1,6 +1,6 @@
 ﻿using ECommerce.Application.UsersModule.Interfaces;
 using ECommerce.Domain.ProduktetModule.Entities;
-using ECommerceAPI.Data;
+using ECommerce.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 
 namespace ECommerce.Infrastructure.UsersModule.Repositories

@@ -6,13 +6,13 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Microsoft.OpenApi.Models;
-using ECommerceAPI.Data;
 using ECommerce.Infrastructure.BusinessModule.DependencyInjection;
 using ECommerce.Infrastructure.KataloguModule.DependencyInjection;
 using ECommerce.Infrastructure.OrdersModule.DependencyInjection;
 using ECommerce.Infrastructure.ProduktetModule.DependencyInjection;
 using ECommerce.Infrastructure.UsersModule.DependencyInjection;
 using ECommerceAPI.UsersModule.Security;
+using ECommerce.Infrastructure.Data;
 
 internal class Program
 {

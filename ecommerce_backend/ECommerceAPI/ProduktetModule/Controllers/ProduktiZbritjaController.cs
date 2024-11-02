@@ -1,4 +1,4 @@
-﻿using ECommerceAPI.Data;
+﻿using ECommerce.Infrastructure.Data;
 using ECommerceAPI.DTOs;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;

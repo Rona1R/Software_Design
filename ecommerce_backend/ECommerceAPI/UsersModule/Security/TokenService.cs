@@ -1,4 +1,4 @@
-﻿using ECommerceAPI.Data;
+﻿using ECommerce.Infrastructure.Data;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;

@@ -4,8 +4,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using ECommerceAPI.Data;
 using ECommerce.Domain.OrdersModule.Entities;
+using ECommerce.Infrastructure.Data;
 
 namespace ECommerceAPI.OrdersModule.Controllers
 {

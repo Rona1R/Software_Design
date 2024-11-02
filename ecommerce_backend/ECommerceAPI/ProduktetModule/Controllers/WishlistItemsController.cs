@@ -1,5 +1,5 @@
 ﻿using ECommerce.Domain.ProduktetModule.Entities;
-using ECommerceAPI.Data;
+using ECommerce.Infrastructure.Data;
 using ECommerceAPI.ProduktetModule.API.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;

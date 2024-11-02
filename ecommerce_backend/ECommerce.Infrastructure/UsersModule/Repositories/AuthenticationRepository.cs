@@ -1,6 +1,6 @@
 ﻿using ECommerce.Application.UsersModule.Interfaces;
 using ECommerce.Domain.UsersModule.Entities;
-using ECommerceAPI.Data;
+using ECommerce.Infrastructure.Data;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 

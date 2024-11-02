@@ -1,5 +1,4 @@
 ﻿using ECommerce.Application.UsersModule.Interfaces;
-using ECommerce.Domain.ProduktetModule.Entities;
 using ECommerce.Domain.UsersModule.Entities;
 using Microsoft.AspNetCore.Identity;
 

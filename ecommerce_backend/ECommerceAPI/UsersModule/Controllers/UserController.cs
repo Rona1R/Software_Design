@@ -1,11 +1,11 @@
-﻿using ECommerceAPI.Data;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using System.Text.RegularExpressions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
+using ECommerce.Infrastructure.Data;
 
 namespace ECommerceAPI.UsersModule.Controllers
 {

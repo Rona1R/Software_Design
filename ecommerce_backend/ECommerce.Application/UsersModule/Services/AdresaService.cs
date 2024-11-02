@@ -1,6 +1,5 @@
 ﻿using ECommerce.Application.UsersModule.Interfaces;
 using ECommerce.Application.UsersModule.ViewModels;
-using ECommerce.Domain.ProduktetModule.Entities;
 using ECommerce.Domain.UsersModule.Entities;
 
 namespace ECommerce.Application.UsersModule.Services

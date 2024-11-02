@@ -1,5 +1,5 @@
 ﻿using ECommerce.Application.BusinessModule.ViewModels;
-using ECommerceAPI.Data;
+using ECommerce.Infrastructure.Data;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
