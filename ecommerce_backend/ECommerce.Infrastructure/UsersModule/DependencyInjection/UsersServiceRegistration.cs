@@ -22,6 +22,9 @@ namespace ECommerce.Infrastructure.UsersModule.DependencyInjection
             services.AddScoped<IUserRepository, UserRepository>();  
             services.AddScoped<IUserService, UserService>();    
 
+            services.AddScoped<IUserRoletRepository,UseriRoletRepository>();
+            services.AddScoped<IUseriRoletService, UseriRoletService>();    
+
             return services;
         }
     }
