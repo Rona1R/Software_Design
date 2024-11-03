@@ -1,11 +1,9 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using System.Text.RegularExpressions;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Identity;
-using ECommerce.Infrastructure.Data;
+using ECommerce.Application.UsersModule.Interfaces;
+using ECommerce.Application.UsersModule.ViewModels;
 
 namespace ECommerceAPI.UsersModule.Controllers
 {
@@ -14,38 +12,30 @@ namespace ECommerceAPI.UsersModule.Controllers
     public class UserController : ControllerBase
     {
 
-        private readonly ECommerceDBContext _context;
-        private readonly UserManager<IdentityUser> _userManager;
 
-        public UserController(UserManager<IdentityUser> userManager, ECommerceDBContext context)
+        private readonly IUserService _userService;
+        private readonly IBadgeService _badgeService;
+
+        public UserController(
+         IUserService userService, IBadgeService badgeService
+        )
         {
-            _userManager = userManager;
-            _context = context;
+            _userService = userService;
+            _badgeService = badgeService;
         }
 
         [HttpGet]
         [Route("User-Details/{id}")]
-        [Authorize]
+       // [Authorize]
         public async Task<IActionResult> GetUserDetails(int id)
         {
+
             if (id <= 0)
             {
                 return BadRequest("Invalid User ID.");
             }
 
-            var user = await _context.User
-                .Where(u => u.User_Id == id)
-                .Include(u => u.AchievementBadge)
-                .Select(u => new
-                {
-                    u.AspNetUser.UserName,
-                    u.AspNetUser.Email,
-                    u.AspNetUser.PhoneNumber,
-                    ProfilePicture = u.ProfilePic,
-                    BadgeName = u.AchievementBadge != null ? u.AchievementBadge.Badge_Name : "Unavailable",
-                    BadgeId = u.AchievementBadge != null ? u.Badge_Id : null,
-                })
-                .FirstOrDefaultAsync();
+            var user = await _userService.GetUserProfileByIdAsync(id);
 
             if (user == null)
             {
@@ -57,29 +47,10 @@ namespace ECommerceAPI.UsersModule.Controllers
 
         [HttpGet]
         [Route("User-Checkout-Details/{id}")]
-        [Authorize]
+       // [Authorize]
         public async Task<IActionResult> Get(int id)
         {
-            var user = await _context.User
-                .Where(u => u.User_Id == id)
-                // .Include(u => u.Adresa)
-                .Select(u => new
-                {
-                    u.AspNetUser.UserName,
-                    u.AspNetUser.Email,
-                    u.AspNetUser.PhoneNumber,
-                    Adresat = u.Adresa.Select(u => new
-                    {
-                        u.AdresaUserit,
-                        u.Shteti,
-                        u.Qyteti,
-                        u.ZipKodi,
-                        u.IsDefault
-                    }
-                    ).ToList()
-
-                })
-                .FirstOrDefaultAsync();
+            var user = await _userService.GetUserCheckoutDetailsAsync(id);
 
             if (user == null)
             {
@@ -92,7 +63,7 @@ namespace ECommerceAPI.UsersModule.Controllers
 
         [HttpPut]
         [Route("Update-Username/{id}")]
-        [Authorize]
+       // [Authorize]
         public async Task<IActionResult> UpdateUsername(int id, [FromBody] string newUsername)
         {
             if (id <= 0)
@@ -100,43 +71,34 @@ namespace ECommerceAPI.UsersModule.Controllers
                 return BadRequest("Invalid User ID.");
             }
 
-            var user = await _context.User
-                .Include(u => u.AspNetUser)
-                .FirstOrDefaultAsync(u => u.User_Id == id);
+            var user = await _userService.GetByIdAsync(id);
 
             if (user == null)
             {
                 return NotFound("User not found.");
             }
 
-            if (newUsername.IsNullOrEmpty())
+            if (string.IsNullOrWhiteSpace(newUsername))
             {
                 return BadRequest("Username can not be empty!");
             }
 
 
-            var existingUserByName = await _userManager.FindByNameAsync(newUsername);
-            if (existingUserByName != null)
+            try
             {
-                return BadRequest("This username is taken.");
+                await _userService.UpdateUserNameAsync(user.AspNetUser, newUsername);
+                return Ok("Username u perditesua me sukses!");
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
             }
 
-            user.AspNetUser.UserName = newUsername;
-
-            var result = await _userManager.UpdateAsync(user.AspNetUser);
-            if (!result.Succeeded)
-            {
-                return BadRequest(result.Errors);
-            }
-
-            await _context.SaveChangesAsync();
-
-            return Ok("Username updated successfully.");
         }
 
         [HttpPut]
         [Route("Update-Email/{id}")]
-        [Authorize]
+     //   [Authorize]
         public async Task<IActionResult> UpdateEmail(int id, [FromBody] string newEmail)
         {
             if (id <= 0)
@@ -144,16 +106,14 @@ namespace ECommerceAPI.UsersModule.Controllers
                 return BadRequest("Invalid User ID.");
             }
 
-            var user = await _context.User
-                .Include(u => u.AspNetUser)
-                .FirstOrDefaultAsync(u => u.User_Id == id);
+            var user = await _userService.GetByIdAsync(id);
 
             if (user == null)
             {
                 return NotFound("User not found.");
             }
 
-            if (newEmail.IsNullOrEmpty())
+            if (string.IsNullOrWhiteSpace(newEmail))
             {
                 return BadRequest("Email can not be empty!");
             }
@@ -164,28 +124,20 @@ namespace ECommerceAPI.UsersModule.Controllers
                 return BadRequest("Invalid email format.");
             }
 
-            var existingUserByEmail = await _userManager.FindByEmailAsync(newEmail);
-            if (existingUserByEmail != null)
+            try
             {
-                return BadRequest("This email is taken.");
+                await _userService.UpdateEmailAsync(user.AspNetUser, newEmail);
+                return Ok("Email u perditesua me sukses!");
             }
-
-            user.AspNetUser.Email = newEmail;
-
-            var result = await _userManager.UpdateAsync(user.AspNetUser);
-            if (!result.Succeeded)
+            catch (Exception ex)
             {
-                return BadRequest(result.Errors);
+                return BadRequest(ex.Message);
             }
-
-            await _context.SaveChangesAsync();
-
-            return Ok("Email updated successfully.");
         }
 
         [HttpPost]
         [Route("Verify-Old-Password/{userId}")]
-        [Authorize]
+      //  [Authorize]
         public async Task<IActionResult> VerifyOldPassword(int userId, [FromBody] string oldPassword)
         {
             if (userId <= 0)
@@ -193,19 +145,14 @@ namespace ECommerceAPI.UsersModule.Controllers
                 return BadRequest("Invalid User ID.");
             }
 
-            var user = await _context.User
-                .Include(u => u.AspNetUser)
-                .FirstOrDefaultAsync(u => u.User_Id == userId);
+            var user = await _userService.GetByIdAsync(userId);
 
             if (user == null)
             {
                 return NotFound("User not found.");
             }
 
-            var aspNetUser = await _userManager.FindByIdAsync(user.AspNetUserId);
-            var verificationResult = await _userManager.CheckPasswordAsync(aspNetUser, oldPassword);
-            // var passwordHasher = new PasswordHasher<IdentityUser>();
-            // var verificationResult = passwordHasher.VerifyHashedPassword(user.AspNetUser, user.AspNetUser.PasswordHash, oldPassword);
+            var verificationResult = await _userService.VerifyOldPasswordAsync(userId, oldPassword);
             if (verificationResult)
             {
                 return Ok(new { isValid = true });
@@ -218,7 +165,7 @@ namespace ECommerceAPI.UsersModule.Controllers
 
         [HttpPut]
         [Route("Update-Password/{id}")]
-        [Authorize]
+    //    [Authorize]
         public async Task<IActionResult> UpdatePassword(int id, [FromBody] string newPassword)
         {
             if (id <= 0)
@@ -226,9 +173,7 @@ namespace ECommerceAPI.UsersModule.Controllers
                 return BadRequest("Invalid User ID.");
             }
 
-            var user = await _context.User
-                .Include(u => u.AspNetUser)
-                .FirstOrDefaultAsync(u => u.User_Id == id);
+            var user = await _userService.GetByIdAsync(id);
 
             if (user == null)
             {
@@ -246,32 +191,14 @@ namespace ECommerceAPI.UsersModule.Controllers
                 return BadRequest("Password must be at least 6 characters long,contain at least one digit,one unique,one uppercase,one lowercase and one alphanumeric character.");
             }
 
-            var resetToken = await _userManager.GeneratePasswordResetTokenAsync(user.AspNetUser);
-
-            var result = await _userManager.ResetPasswordAsync(user.AspNetUser, resetToken, newPassword);
-
-            if (!result.Succeeded)
-            {
-                return BadRequest(result.Errors);
-            }
-
-            //var passwordHasher = new PasswordHasher<IdentityUser>();
-            //user.AspNetUser.PasswordHash = passwordHasher.HashPassword(user.AspNetUser, newPassword);
-
-            //var result = await _userManager.UpdateAsync(user.AspNetUser);
-            //if (!result.Succeeded)
-            //{
-            //    return BadRequest(result.Errors);
-            //}
-
-            await _context.SaveChangesAsync();
+            await _userService.UpdatePasswordAsync(user.AspNetUser, newPassword);
 
             return Ok("Password updated successfully.");
         }
 
         [HttpPut]
         [Route("Update-PhoneNumber/{id}")]
-        [Authorize]
+      //  [Authorize]
         public async Task<IActionResult> UpdatePhoneNumber(int id, [FromBody] PhoneNumberVM phoneNumberVM)
         {
             if (id <= 0)
@@ -279,29 +206,14 @@ namespace ECommerceAPI.UsersModule.Controllers
                 return BadRequest("Invalid User ID.");
             }
 
-            var user = await _context.User
-                .Include(u => u.AspNetUser)
-                .FirstOrDefaultAsync(u => u.User_Id == id);
+            var user = await _userService.GetByIdAsync(id);
 
             if (user == null)
             {
                 return NotFound("User not found.");
             }
 
-            //if (newPhoneNumber.IsNullOrEmpty())
-            //{
-            //    return BadRequest("Numri i telefonit nuk duhet te jete i zbrazet!");
-            //}
-
-            user.AspNetUser.PhoneNumber = phoneNumberVM.NewPhoneNumber;
-
-            var result = await _userManager.UpdateAsync(user.AspNetUser);
-            if (!result.Succeeded)
-            {
-                return BadRequest(result.Errors);
-            }
-
-            await _context.SaveChangesAsync();
+            await _userService.UpdatePhoneNumberAsync(user.AspNetUser, phoneNumberVM.NewPhoneNumber);
 
             return Ok("Phone number updated successfully.");
         }
@@ -309,7 +221,7 @@ namespace ECommerceAPI.UsersModule.Controllers
 
         [HttpPut]
         [Route("Update-ProfilePicture/{id}")]
-        [Authorize]
+     //   [Authorize]
         public async Task<IActionResult> UpdateProfilePicture(int id, IFormFile foto)
         {
             if (foto == null || foto.Length == 0)
@@ -319,27 +231,21 @@ namespace ECommerceAPI.UsersModule.Controllers
 
             try
             {
-                var user = await _context.User.FirstOrDefaultAsync(u => u.User_Id == id);
+                var user = await _userService.GetByIdAsync(id);
                 if (user == null)
                 {
                     return NotFound("User not found.");
                 }
 
-                if (foto == null || foto.Length == 0)
-                {
-                    return BadRequest("Nuk keni vendosur foton!");
-                }
-
-                var folder = Path.Combine("..", "ecommerce-frontend", "public", "images", foto.FileName);
+                var folder = Path.Combine("..", "..","ecommerce-frontend", "public", "images", foto.FileName);
 
                 using (var stream = new FileStream(folder, FileMode.Create))
                 {
                     await foto.CopyToAsync(stream);
                 }
 
-                user.ProfilePic = foto.FileName;
-                _context.User.Update(user);
-                await _context.SaveChangesAsync();
+                await _userService.UpdateProfilePictureAsync(user, foto.FileName);
+
                 return Ok("Fotoja eshte perditesuar me sukses");
             }
             catch (Exception ex)
@@ -350,45 +256,35 @@ namespace ECommerceAPI.UsersModule.Controllers
 
         [HttpPut]
         [Route("Reset-Profile-Pic/{id}")]
-        [Authorize]
+    //    [Authorize]
         public async Task<IActionResult> ResetProfilePic(int id)
         {
-            var useri = await _context.User.FindAsync(id);
+            var useri = await _userService.GetByIdAsync(id);
             if (useri == null)
             {
                 return NotFound();
             }
 
-            useri.ProfilePic = "defaultProfilePic.png";
-            _context.User.Update(useri);
-            await _context.SaveChangesAsync();
+            await _userService.ResetProfilePictureAsync(useri);
             return Ok("Fotoja eshte resetuar me sukses!");
-
-
         }
 
 
         [HttpPut]
         [Route("changeAchievementBadge/{userId}/{badgeId}")]
-        [Authorize(Roles = "Admin,Menaxher")]
+    //    [Authorize(Roles = "Admin,Menaxher")]
         public async Task<IActionResult> ChangeAchievementBadge(int userId, int badgeId)
         {
-            var user = await _context.User.FindAsync(userId);
-            var badge = await _context.AchievementBadge.FindAsync(badgeId);
+
+            var user = await _userService.GetByIdAsync(userId);
+            var badge = await _badgeService.GetAchievementBadge(badgeId);
             if (user == null || badge == null)
             {
                 return BadRequest("Perditesimi deshtoi.Sigurohu qe ky perdorues dhe kjo badge ekziston ne sistem!");
             }
 
-            user.Badge_Id = badgeId;
-            _context.User.Update(user);
-            await _context.SaveChangesAsync();
+            await _userService.UpdateAchievementBadgeAsync(user, badgeId);
             return Ok("Perdoruesit i eshte perditesuar Badge me sukses!");
-
         }
-    }
-    public class PhoneNumberVM
-    {
-        public string? NewPhoneNumber { get; set; }
     }
 }

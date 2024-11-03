@@ -56,7 +56,7 @@ namespace ECommerceAPI.ProduktetModule.Controllers
                 return BadRequest("Nuk keni vendosur foton!");
             }
 
-            var folder = Path.Combine("..", "ecommerce-frontend", "public", "images", foto.FileName);
+            var folder = Path.Combine("..","..","ecommerce-frontend", "public", "images", foto.FileName);
 
             using (var stream = new FileStream(folder, FileMode.Create))
             {

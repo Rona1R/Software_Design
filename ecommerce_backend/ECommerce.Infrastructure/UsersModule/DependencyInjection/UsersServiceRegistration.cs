@@ -19,6 +19,9 @@ namespace ECommerce.Infrastructure.UsersModule.DependencyInjection
             services.AddScoped<IAuthenticationRepository, AuthenticationRepository>();
             services.AddScoped<IAuthenticationService, AuthenticationService>();
 
+            services.AddScoped<IUserRepository, UserRepository>();  
+            services.AddScoped<IUserService, UserService>();    
+
             return services;
         }
     }

@@ -28,7 +28,7 @@ namespace ECommerceAPI.BusinessModule.Controllers
                 return BadRequest("Nuk keni vendosur videon!");
             }
 
-            var folder = Path.Combine("..", "ecommerce-frontend", "public", "videos", video.FileName);
+            var folder = Path.Combine("..","..","ecommerce-frontend", "public", "videos", video.FileName);
 
             using (var stream = new FileStream(folder, FileMode.Create))
             {
@@ -64,7 +64,7 @@ namespace ECommerceAPI.BusinessModule.Controllers
                 return BadRequest("Kjo video nuk u gjet ne sistem!");
             }
 
-            var folder = Path.Combine("..", "ecommerce-frontend", "public", "videos", video.VideoUrl);
+            var folder = Path.Combine("..","..","ecommerce-frontend", "public", "videos", video.VideoUrl);
 
             if (!System.IO.File.Exists(folder))
             {
