@@ -26,7 +26,7 @@ namespace ECommerceAPI.UsersModule.Controllers
 
         [HttpGet]
         [Route("User-Details/{id}")]
-       // [Authorize]
+        [Authorize]
         public async Task<IActionResult> GetUserDetails(int id)
         {
 
@@ -47,7 +47,7 @@ namespace ECommerceAPI.UsersModule.Controllers
 
         [HttpGet]
         [Route("User-Checkout-Details/{id}")]
-       // [Authorize]
+        [Authorize]
         public async Task<IActionResult> Get(int id)
         {
             var user = await _userService.GetUserCheckoutDetailsAsync(id);
@@ -63,7 +63,7 @@ namespace ECommerceAPI.UsersModule.Controllers
 
         [HttpPut]
         [Route("Update-Username/{id}")]
-       // [Authorize]
+        [Authorize]
         public async Task<IActionResult> UpdateUsername(int id, [FromBody] string newUsername)
         {
             if (id <= 0)
@@ -98,7 +98,7 @@ namespace ECommerceAPI.UsersModule.Controllers
 
         [HttpPut]
         [Route("Update-Email/{id}")]
-     //   [Authorize]
+        [Authorize]
         public async Task<IActionResult> UpdateEmail(int id, [FromBody] string newEmail)
         {
             if (id <= 0)
@@ -137,7 +137,7 @@ namespace ECommerceAPI.UsersModule.Controllers
 
         [HttpPost]
         [Route("Verify-Old-Password/{userId}")]
-      //  [Authorize]
+        [Authorize]
         public async Task<IActionResult> VerifyOldPassword(int userId, [FromBody] string oldPassword)
         {
             if (userId <= 0)
@@ -165,7 +165,7 @@ namespace ECommerceAPI.UsersModule.Controllers
 
         [HttpPut]
         [Route("Update-Password/{id}")]
-    //    [Authorize]
+        [Authorize]
         public async Task<IActionResult> UpdatePassword(int id, [FromBody] string newPassword)
         {
             if (id <= 0)
@@ -198,7 +198,7 @@ namespace ECommerceAPI.UsersModule.Controllers
 
         [HttpPut]
         [Route("Update-PhoneNumber/{id}")]
-      //  [Authorize]
+        [Authorize]
         public async Task<IActionResult> UpdatePhoneNumber(int id, [FromBody] PhoneNumberVM phoneNumberVM)
         {
             if (id <= 0)
@@ -221,7 +221,7 @@ namespace ECommerceAPI.UsersModule.Controllers
 
         [HttpPut]
         [Route("Update-ProfilePicture/{id}")]
-     //   [Authorize]
+        [Authorize]
         public async Task<IActionResult> UpdateProfilePicture(int id, IFormFile foto)
         {
             if (foto == null || foto.Length == 0)
@@ -256,7 +256,7 @@ namespace ECommerceAPI.UsersModule.Controllers
 
         [HttpPut]
         [Route("Reset-Profile-Pic/{id}")]
-    //    [Authorize]
+        [Authorize]
         public async Task<IActionResult> ResetProfilePic(int id)
         {
             var useri = await _userService.GetByIdAsync(id);
@@ -272,7 +272,7 @@ namespace ECommerceAPI.UsersModule.Controllers
 
         [HttpPut]
         [Route("changeAchievementBadge/{userId}/{badgeId}")]
-    //    [Authorize(Roles = "Admin,Menaxher")]
+        [Authorize(Roles = "Admin,Menaxher")]
         public async Task<IActionResult> ChangeAchievementBadge(int userId, int badgeId)
         {
 

@@ -86,12 +86,7 @@ namespace ECommerce.Infrastructure.ProduktetModule.Repositories
                     }
                 ).FirstOrDefaultAsync();
 
-            if (produkti != null)
-            {
-                return produkti;
-            }
-
-            throw new Exception("Ky produkt nuk ekziston ne sistem");
+            return produkti;
         }
 
         public async Task<SidebarDataNeZbritje> GetSidebarDataNeZbritjeAsync()
@@ -215,11 +210,6 @@ namespace ECommerce.Infrastructure.ProduktetModule.Repositories
 
         public async Task<DetajetProduktitVM> GetProductDetailsByIdAsync(int id)
         {
-            //var ekziston = await _context.Produkti.FindAsync(id);
-            //if (ekziston == null)
-            //{
-            //    throw new NotFoundException("Produkti nuk u gjet ne sistem!");
-            //}
 
             var produkti = await _context.Produkti
                 .Where(p => p.Produkti_ID == id && p.NeShitje == true)
@@ -242,6 +232,24 @@ namespace ECommerce.Infrastructure.ProduktetModule.Repositories
                 }
                 ).FirstOrDefaultAsync();
             return produkti!;
+        }
+
+        public async Task<List<CartProductDTO>> GetProduktetSipasId(List<int> productIds)
+        {
+            var products = await _context.Produkti
+                                        .Where(p => productIds.Contains(p.Produkti_ID) && p.NeShitje == true)
+                                        .Select(p => new CartProductDTO
+                                        {
+                                            Id = p.Produkti_ID,
+                                            Name = p.EmriProdukti,
+                                            CmimiBaze = (decimal)(p.Zbritja != null && p.Zbritja.DataSkadimit >= DateTime.Now
+                                             ? p.CmimiPerCope - (decimal)p.Zbritja.PerqindjaZbritjes / 100 * p.CmimiPerCope
+                                             : p.CmimiPerCope),
+                                            Image = p.FotoProduktit,
+                                        })
+                                        .ToListAsync();
+
+            return products;
         }
 
         public async Task<Produkti?> GetProduktiFromDbAsync(int id)
