@@ -1,7 +1,7 @@
-﻿using ECommerce.Application.ProduktetModule.ViewModels;
+﻿using ECommerce.Application.ProduktetModule.DTOs;
+using ECommerce.Application.ProduktetModule.ViewModels;
 using ECommerce.Domain.ProduktetModule.Entities;
 using ECommerce.Infrastructure.Data;
-using ECommerceAPI.DTOs;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -88,31 +88,6 @@ namespace ECommerceAPI.ProduktetModule.Controllers
                 }).ToListAsync();
             return Ok(reviews);
         }
-
-        //[HttpGet]
-        //[Route("shfaqReviewsSipasProduktit/{produktiId}")] // shfaqja e reviews ne User Interface ( te Product Details)
-        //public async Task<IActionResult> GetAllReviews(int produktiId)
-        //{
-        //    var reviews = await _context.Review
-        //        .OrderByDescending(r => r.CreatedAt)
-        //        .Where(r=>r.Produkti_ID == produktiId)
-        //        .Select(
-        //            r => new ReviewsDTO
-        //            {
-        //                Id = r.Review_ID,
-        //                UserId = r.User_Id,
-        //                Username = r.User.AspNetUser.UserName,
-        //                Text = r.ReviewContent,
-        //                Rating = r.Rating,
-        //                DatedAdded = r.CreatedAt,
-        //                AchievementBadge = r.User.AchievementBadge.Badge_Name,
-        //                IsEdited = r.IsEdited,  
-        //            }
-        //        ).ToListAsync();    
-
-        //    return Ok(reviews);
-
-        //}
 
         [HttpGet]
         [Route("shfaqReviewsSipasProduktit/{produktiId}/{sortOrder}/{pageSize}/{pageNumber}")]
