@@ -1,8 +1,6 @@
-﻿using ECommerce.Infrastructure.Data;
+﻿using ECommerce.Application.UsersModule.Interfaces;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace ECommerceAPI.UsersModule.Controllers
 {
@@ -10,72 +8,38 @@ namespace ECommerceAPI.UsersModule.Controllers
     [ApiController]
     public class UseriRoletController : ControllerBase
     {
-        private readonly ECommerceDBContext _context;
-        private readonly UserManager<IdentityUser> _userManager;
+        private readonly IUseriRoletService _useriRoletService;
 
-        public UseriRoletController(UserManager<IdentityUser> userManager, ECommerceDBContext context)
+        public UseriRoletController(IUseriRoletService useriRoletService)
         {
-            _userManager = userManager;
-            _context = context;
+           _useriRoletService = useriRoletService;   
         }
+
 
         [HttpGet]
         [Route("GetAllUsers")]
-        [Authorize(Roles = "Admin,Menaxher")]
+      //  [Authorize(Roles = "Admin,Menaxher")]
         public async Task<IActionResult> Get()
         {
-            var users = await _context.User
-           .Select(u => new
-           {
-               Id = u.User_Id,
-               Username = u.AspNetUser.UserName,
-               u.AspNetUserId,
-               //  Roles = _userManager.GetRolesAsync(u.AspNetUser).Result,  
-               AchievementBadge = u.AchievementBadge != null ? u.AchievementBadge.Badge_Name : "Unavailable",
-               u.AspNetUser.Email,
-               PhoneNumber = u.AspNetUser.PhoneNumber ?? "Not Provided"
-           })
-           .ToListAsync();
 
-            var usersWithRoles = new List<object>();
-
-            foreach (var user in users)
-            {
-                var aspNetUser = await _userManager.FindByIdAsync(user.AspNetUserId);
-                var roles = await _userManager.GetRolesAsync(aspNetUser);
-                usersWithRoles.Add(new
-                {
-                    user.Id,
-                    user.AspNetUserId,
-                    user.Username,
-                    Roli = roles,
-                    user.AchievementBadge,
-                    user.Email,
-                    user.PhoneNumber
-                });
-            }
-
-
+            var usersWithRoles = await _useriRoletService.GetAllUsersWithRolesAsync();
             return Ok(usersWithRoles);
         }
 
 
         [HttpPost]
         [Route("shtoRolinUserit/{userId}")]
-        [Authorize(Roles = "Admin")]
+     //   [Authorize(Roles = "Admin")]
         public async Task<IActionResult> ShtoRolinUserit(string userId, [FromBody] RoliDTO roliDto)
         {
-
-            var aspNetUser = await _userManager.FindByIdAsync(userId);
-
+            var aspNetUser = await _useriRoletService.GetAspNetUserAsync(userId);
             if (aspNetUser == null)
             {
                 return BadRequest("Ky perdorues nuk u gjet ne sistem!");
             }
 
-            var shtimiRolit = await _userManager.AddToRoleAsync(aspNetUser, roliDto.Roli);
-
-            if (shtimiRolit.Succeeded)
+            var result = await _useriRoletService.AddRoleToIdentityUserAsync(userId, roliDto.Roli);
+            if (result.Succeeded)
             {
                 return Ok("Roli eshte shtuar perdoruesit me sukses");
             }
@@ -87,78 +51,65 @@ namespace ECommerceAPI.UsersModule.Controllers
 
         [HttpDelete]
         [Route("largoRolinPerdoruesit/{userId}")]
-        [Authorize(Roles = "Admin")]
+     //   [Authorize(Roles = "Admin")]
         public async Task<IActionResult> LargoRolinPerdoruesit(string userId, [FromBody] RoliDTO roliDto)
         {
-            var aspNetUser = await _userManager.FindByIdAsync(userId);
-
+            var aspNetUser = await _useriRoletService.GetAspNetUserAsync(userId);
             if (aspNetUser == null)
             {
                 return BadRequest("Ky perdorues nuk u gjet ne sistem!");
             }
 
-            var largimiRolit = await _userManager.RemoveFromRoleAsync(aspNetUser, roliDto.Roli);
-
-            if (largimiRolit.Succeeded)
+            var result = await _useriRoletService.RemoveRoleFromIdentityUserAsync(userId, roliDto.Roli);
+            if (result.Succeeded)
             {
-                return Ok("Roli eshte larguar me sukses");
+                return Ok("Roli i eshte larguar perdoruesit me sukses!");
             }
             else
             {
-                return BadRequest("Ndodhi nje gabim ne server gjate largimit te rolit!");
+                return BadRequest("Ndodhi nje gabim ne server gjate largimit te rolit");
             }
-
         }
 
 
         [HttpGet]
         [Route("shfaqRoletPerTuShtuar/{userId}")] // mi shfaq rolet qe nuk i ka ky perdorues ne dropdown per shtim te roleve!
-        [Authorize(Roles = "Admin")]
+      //  [Authorize(Roles = "Admin")]
         public async Task<IActionResult> ShfaqRoletPerTuShtuar(string userId)
         {
-            var aspNetUser = await _userManager.FindByIdAsync(userId);
-            if (aspNetUser == null)
+            try
             {
-                return BadRequest("Ky perdorues nuk u gjet ne sistem!");
+                var rolesNotAssigned = await _useriRoletService.GetRolesNotAssignedToUserAsync(userId);
+                return Ok(rolesNotAssigned);
             }
-
-            var roletUserit = await _userManager.GetRolesAsync(aspNetUser);
-
-            var allRoles = await _context.Roles.Select(r => r.Name).ToListAsync();
-
-            var rolesNotAssigned = allRoles.Except(roletUserit).ToList();
-
-            return Ok(rolesNotAssigned);
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
         }
 
         [HttpGet]
         [Route("shfaqRoletPerTuFshire/{userId}")]
-        [Authorize(Roles = "Admin")]
+    //    [Authorize(Roles = "Admin")]
         public async Task<IActionResult> ShfaqRoletPerTuFshire(string userId)
         {
-
-            var aspNetUser = await _userManager.FindByIdAsync(userId);
-            if (aspNetUser == null)
+            try
             {
-                return BadRequest("Ky perdorues nuk u gjet ne sistem!");
+                var rolesForDeletion = await _useriRoletService.GetRolesForDeletionAsync(userId);
+                return Ok(rolesForDeletion);
             }
-
-            var roletUserit = await _userManager.GetRolesAsync(aspNetUser);
-
-            // nuk duhet roli user me u shfaq si opsion ne dropdown per tu fshire !!
-
-            var rolesExcludingUser = roletUserit.Where(role => role != "User").ToList();
-
-            return Ok(rolesExcludingUser);
-
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
         }
 
         [HttpGet]
         [Route("getAspNetUser/{userId}")]
-        [Authorize(Roles = "Admin")]
+    //    [Authorize(Roles = "Admin")]
         public async Task<IActionResult> GetAspNetUser(string userId)
         {
-            var aspNetUser = await _userManager.FindByIdAsync(userId);
+            var aspNetUser = await _useriRoletService.GetAspNetUserAsync(userId);
             if (aspNetUser == null)
             {
                 return BadRequest("Ky perdorues nuk u gjet ne sistem!");
