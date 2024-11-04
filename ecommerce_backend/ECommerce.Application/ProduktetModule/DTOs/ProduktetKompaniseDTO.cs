@@ -1,6 +1,12 @@
-﻿namespace ECommerceAPI.ProduktetModule.API.ViewModels
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace ECommerce.Application.ProduktetModule.DTOs
 {
-    public class DetajetProduktitVM
+    public class ProduktetKompaniseDTO
     {
         public int Id { get; set; }
 
@@ -16,9 +22,9 @@
 
         public string? Category { get; set; }
 
-        public string? Subcategory { get; set; }
-
         public int? CategoryId { get; set; }
+
+        public string? Subcategory { get; set; }
 
         public int? SubcategoryId { get; set; }
 

@@ -1,4 +1,4 @@
-﻿namespace ECommerceAPI.ProduktetModule.API.ViewModels
+﻿namespace ECommerce.Application.ProduktetModule.ViewModels
 {
     public class WishlistItemVM
     {

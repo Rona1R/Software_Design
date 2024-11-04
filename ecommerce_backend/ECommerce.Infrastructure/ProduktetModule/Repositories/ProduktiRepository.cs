@@ -1,29 +1,25 @@
-﻿using ECommerce.Application.ProduktetModule.ViewModels;
+﻿using ECommerce.Application.ProduktetModule.DTOs;
+using ECommerce.Application.ProduktetModule.Interfaces;
+using ECommerce.Application.ProduktetModule.ViewModels;
 using ECommerce.Domain.ProduktetModule.Entities;
 using ECommerce.Infrastructure.Data;
-using ECommerceAPI.DTOs;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
-namespace ECommerceAPI.ProduktetModule.Controllers
+
+namespace ECommerce.Infrastructure.ProduktetModule.Repositories
 {
-    [Route("api/[controller]")]
-    [ApiController]
-    public class ProduktiController : ControllerBase
+    public class ProduktiRepository:IProduktiRepository
     {
         private readonly ECommerceDBContext _context;
-
-        public ProduktiController(ECommerceDBContext context)
+   
+        public ProduktiRepository(
+            ECommerceDBContext dbContext
+        )
         {
-            _context = context;
+            _context = dbContext;
         }
 
-        [HttpPost]
-        [Route("shtoProduktin")]
-        [Authorize(Roles = "Admin,Menaxher")]
-        public async Task<IActionResult> Post([FromBody] ProduktiVM produkti)
+        public async Task AddProductAsync(ProduktiVM produkti)
         {
             var p = new Produkti() // objekti Produkti
             {
@@ -38,104 +34,68 @@ namespace ECommerceAPI.ProduktetModule.Controllers
                 NeShitje = produkti.NeShitje
             };
 
-
             await _context.Produkti.AddAsync(p);
             await _context.SaveChangesAsync();
-
-            //  return Ok("Kategoria u shtua me sukses");
-            return CreatedAtAction(nameof(Post), new { id = p.Produkti_ID }, p);
         }
 
-        [HttpPost]
-        [Route("shtoFoton")]
-        [Authorize(Roles = "Admin,Menaxher")]
-        public async Task<IActionResult> ShtoFoton(IFormFile foto)
-        {
-            if (foto == null || foto.Length == 0)
-            {
-                return BadRequest("Nuk keni vendosur foton!");
-            }
-
-            var folder = Path.Combine("..","..","ecommerce-frontend", "public", "images", foto.FileName);
-
-            using (var stream = new FileStream(folder, FileMode.Create))
-            {
-                await foto.CopyToAsync(stream);
-            }
-
-            return Ok(foto.FileName);
-        }
-
-
-        [HttpGet]   // endpoint per mi shfaq produktet ne dashboard
-        [Route("shfaqProduktet")]
-        [Authorize(Roles = "Admin,Menaxher")]
-        public async Task<IActionResult> Get()
+        public async Task<List<ProduktiDTO>> GetAllProductsAsync()
         {
             var produktet = await _context.Produkti
-                .OrderByDescending(p => p.CreatedAt)
+               .OrderByDescending(p => p.CreatedAt)
+               .Select(
+                   p => new ProduktiDTO
+                   {
+                       Id = p.Produkti_ID,
+                       Emri = p.EmriProdukti,
+                       Kompania = p.Kompania.Kompania_Emri,
+                       Kategoria = p.Kategoria.EmriKategorise,
+                       Nenkategoria = p.NenKategoria.EmriNenkategorise,
+                       Pershkrimi = p.PershkrimiProduktit,
+                       Kompania_ID =  p.Kompania_ID,
+                       Kategoria_ID = p.Kategoria_ID,
+                       NenKategoria_ID = p.NenKategoria_ID,
+                       Foto = p.FotoProduktit,
+                       Cmimi = p.CmimiPerCope,
+                       Stoku = p.SasiaNeStok,
+                      NeShitje = p.NeShitje
+                   }
+               ).ToListAsync();
+            return produktet;
+        }
+
+        public async Task<ProduktiDTO> GetProductByIdAsync(int id)
+        {
+            var produkti = await _context.Produkti
+                .Where(p => p.Produkti_ID == id)
                 .Select(
                     p => new ProduktiDTO
                     {
                         Id = p.Produkti_ID,
                         Emri = p.EmriProdukti,
-                        Kompania = p.Kompania.Kompania_Emri,
-                        Kategoria = p.Kategoria.EmriKategorise,
-                        Nenkategoria = p.NenKategoria.EmriNenkategorise,
-                        Pershkrimi = p.PershkrimiProduktit,
-                        Kompania_ID = p.Kompania_ID,
-                        Kategoria_ID = p.Kategoria_ID,
-                        NenKategoria_ID = p.NenKategoria_ID,
                         Foto = p.FotoProduktit,
-                        Cmimi = p.CmimiPerCope,
+                        Pershkrimi = p.PershkrimiProduktit,
                         Stoku = p.SasiaNeStok,
+                        Cmimi = p.CmimiPerCope,
+                        Kompania_ID = p.Kompania_ID,
+                        Kompania = p.Kompania.Kompania_Emri,
+                        Kategoria_ID = p.Kategoria_ID,
+                        Kategoria = p.Kategoria.EmriKategorise,
+                        NenKategoria_ID = p.NenKategoria_ID,
+                        Nenkategoria = p.NenKategoria.EmriNenkategorise,
                         NeShitje = p.NeShitje
                     }
-                ).ToListAsync();
-            return Ok(produktet);
-        }
-
-
-
-        [HttpGet] // produkti per mu editu
-        [Route("shfaqProduktin/{id}")]
-        public async Task<IActionResult> Get(int id)
-        {
-
-            var produkti = await _context.Produkti
-                    .Where(p => p.Produkti_ID == id)
-                    .Select(
-                        p => new ProduktiDTO
-                        {
-                            Id = p.Produkti_ID,
-                            Emri = p.EmriProdukti,
-                            Foto = p.FotoProduktit,
-                            Pershkrimi = p.PershkrimiProduktit,
-                            Stoku = p.SasiaNeStok,
-                            Cmimi = p.CmimiPerCope,
-                            Kompania_ID = p.Kompania_ID,
-                            Kompania = p.Kompania.Kompania_Emri,
-                            Kategoria_ID = p.Kategoria_ID,
-                            Kategoria = p.Kategoria.EmriKategorise,
-                            NenKategoria_ID = p.NenKategoria_ID,
-                            Nenkategoria = p.NenKategoria.EmriNenkategorise,
-                            NeShitje = p.NeShitje
-                        }
-                    ).FirstOrDefaultAsync();
+                ).FirstOrDefaultAsync();
 
             if (produkti != null)
             {
-                return Ok(produkti);
+                return produkti;
             }
 
-            return BadRequest("Ky produkt nuk ekziston");
+            throw new Exception("Ky produkt nuk ekziston ne sistem");
         }
 
-        [HttpGet]
-        [Route("shfaqSidebarDataPerProduktetNeZbritje")]
-        public async Task<IActionResult> GetSideBarData()
+        public async Task<SidebarDataNeZbritje> GetSidebarDataNeZbritjeAsync()
         {
-
             var products = await _context.Produkti
                 .Include(p => p.Kategoria)
                 .Include(p => p.NenKategoria)
@@ -144,14 +104,14 @@ namespace ECommerceAPI.ProduktetModule.Controllers
 
             var transformedCategories = products
                 .GroupBy(p => new { p.Kategoria.Kategoria_ID, p.Kategoria.EmriKategorise })
-                .Select(g => new
+                .Select(g => new CategoryDTO
                 {
-                    categoryId = g.Key.Kategoria_ID,
-                    categoryName = g.Key.EmriKategorise,
-                    subCategory = g.Select(p => new
+                    CategoryId = g.Key.Kategoria_ID,
+                    CategoryName = g.Key.EmriKategorise,
+                    SubCategory = g.Select(p => new SubCategoryDTO
                     {
-                        subcategoryId = p.NenKategoria.NenKategoria_ID,
-                        subCategoryName = p.NenKategoria.EmriNenkategorise
+                        SubcategoryId = p.NenKategoria.NenKategoria_ID,
+                        SubCategoryName = p.NenKategoria.EmriNenkategorise
                     })
                     .Distinct()
                     .ToList()
@@ -160,21 +120,18 @@ namespace ECommerceAPI.ProduktetModule.Controllers
 
             var maxPrice = products.Max(p => p.CmimiPerCope);
 
-            var result = new
+
+            var result = new SidebarDataNeZbritje
             {
                 Categories = transformedCategories,
                 MaxPrice = maxPrice
             };
 
-            return Ok(result);
+            return result;
         }
 
-
-        [HttpPost]
-        [Route("shfaqProduktetNeZbritje/{sortBy}/{pageNumber}/{pageSize}")]
-        public async Task<IActionResult> ShfaqProduktetSipasNenKategorise(string sortBy, int pageNumber, int pageSize
-         , [FromBody] FilterNeZbritjeVM filters
-         )
+        public async Task<ProductsResponseDTO> GetFilteredProducts(string sortBy, int pageNumber, int pageSize
+         ,FilterNeZbritjeVM filters)
         {
             var selectedSubCategories = filters.SelectedSubCategories;
             decimal? minPrice = null;
@@ -249,22 +206,20 @@ namespace ECommerceAPI.ProduktetModule.Controllers
                 .ToListAsync();
 
 
-            return Ok(new
+            return new ProductsResponseDTO
             {
-                pagedProducts,
+                PagedProducts = pagedProducts,
                 TotalCount = totalProductsCount
-            });
+            };
         }
 
-        [HttpGet]
-        [Route("shfaqDetajetProduktit/{id}")]
-        public async Task<IActionResult> ShfaqDetajetProduktit(int id)
+        public async Task<DetajetProduktitVM> GetProductDetailsByIdAsync(int id)
         {
-            var ekziston = await _context.Produkti.FindAsync(id);
-            if (ekziston == null)
-            {
-                return NotFound();
-            }
+            //var ekziston = await _context.Produkti.FindAsync(id);
+            //if (ekziston == null)
+            //{
+            //    throw new NotFoundException("Produkti nuk u gjet ne sistem!");
+            //}
 
             var produkti = await _context.Produkti
                 .Where(p => p.Produkti_ID == id && p.NeShitje == true)
@@ -275,7 +230,6 @@ namespace ECommerceAPI.ProduktetModule.Controllers
                     Description = p.PershkrimiProduktit,
                     Img = p.FotoProduktit,
                     Cost = p.CmimiPerCope,
-                    // CmimiMeZbritje 
                     Category = p.Kategoria.EmriKategorise,
                     Subcategory = p.NenKategoria.EmriNenkategorise,
                     CategoryId = p.Kategoria_ID,
@@ -285,73 +239,38 @@ namespace ECommerceAPI.ProduktetModule.Controllers
                            ? p.CmimiPerCope - (decimal)p.Zbritja.PerqindjaZbritjes / 100 * p.CmimiPerCope
                            : null,
                     Rating = p.Review.Any() ? (int)Math.Round(p.Review.Average(r => (double)r.Rating)) : null,
-                    // Rating 
-
                 }
                 ).FirstOrDefaultAsync();
-
-          
-              return Ok(produkti);
-            
-
-         //   return BadRequest("Ky produkt nuk u gjet ne sistem!");
-
+            return produkti!;
         }
 
-        [HttpGet("productsByIds")]
-        public async Task<IActionResult> GetProduktetSipasId([FromQuery] List<int> productIds)
+        public async Task<Produkti?> GetProduktiFromDbAsync(int id)
         {
-
-            var products = await _context.Produkti
-                                          .Where(p => productIds.Contains(p.Produkti_ID) && p.NeShitje == true)
-                                          .Select(p => new
-                                          {
-                                              id = p.Produkti_ID,
-                                              name = p.EmriProdukti,
-                                              cmimiBaze = p.Zbritja != null && p.Zbritja.DataSkadimit >= DateTime.Now
-                                               ? p.CmimiPerCope - (decimal)p.Zbritja.PerqindjaZbritjes / 100 * p.CmimiPerCope
-                                               : p.CmimiPerCope,
-                                              image = p.FotoProduktit,
-                                          })
-                                          .ToListAsync();
-            //      var neShitje =  products.Where(p => p.neShitje == true).ToList();
-            return Ok(products);
+            return await _context.Produkti.FirstOrDefaultAsync(p => p.Produkti_ID == id);
         }
 
-
-        [HttpPut]
-        [Route("perditesoProduktin/{id}")]
-        [Authorize(Roles = "Admin,Menaxher")]
-        public async Task<IActionResult> Put(int id, [FromBody] ProduktiVM produkti)
+        public async Task UpdateProductAsync(Produkti produktiPerTuEdituar,ProduktiVM produkti)
         {
-            var produktiPerTuEdituar = await _context.Produkti.FirstOrDefaultAsync(p => p.Produkti_ID == id);
 
-            if (produktiPerTuEdituar != null)
-            {
                 // nuk kom kontrollu emri , pershkrimi e kto a jane null pasi ky validim bohet ne front!
-                produktiPerTuEdituar.EmriProdukti = produkti.Emri;
-                produktiPerTuEdituar.PershkrimiProduktit = produkti.Pershkrimi;
-                produktiPerTuEdituar.FotoProduktit = produkti.Foto;
-                produktiPerTuEdituar.SasiaNeStok = produkti.Stoku;
-                produktiPerTuEdituar.CmimiPerCope = produkti.Cmimi;
-                produktiPerTuEdituar.Kompania_ID = produkti.Kompania_ID;
-                produktiPerTuEdituar.Kategoria_ID = produkti.Kategoria_ID;
-                produktiPerTuEdituar.NenKategoria_ID = produkti.NenKategoria_ID;
-                produktiPerTuEdituar.NeShitje = produkti.NeShitje;
+            produktiPerTuEdituar.EmriProdukti = produkti.Emri;
+            produktiPerTuEdituar.PershkrimiProduktit = produkti.Pershkrimi;
+            produktiPerTuEdituar.FotoProduktit = produkti.Foto;
+            produktiPerTuEdituar.SasiaNeStok = produkti.Stoku;
+            produktiPerTuEdituar.CmimiPerCope = produkti.Cmimi;
+            produktiPerTuEdituar.Kompania_ID = produkti.Kompania_ID;
+            produktiPerTuEdituar.Kategoria_ID = produkti.Kategoria_ID;
+            produktiPerTuEdituar.NenKategoria_ID = produkti.NenKategoria_ID;
+            produktiPerTuEdituar.NeShitje = produkti.NeShitje;
 
-                _context.Produkti.Update(produktiPerTuEdituar);
-                await _context.SaveChangesAsync();
-                return Ok(produktiPerTuEdituar);
-            }
-
-            return BadRequest("Ky produkt nuk eshte gjetur.");
+            _context.Produkti.Update(produktiPerTuEdituar);
+            await _context.SaveChangesAsync();
         }
 
-        [HttpGet]
-        [Route("shfaq4MeTeShiturat")]
-        public async Task<IActionResult> ShfaqMeTeShiturat()
+        public async Task<List<MeTeShituratDTO>> ShfaqMeTeShiturat()
         {
-            var mostBoughtProductsIds = await _context.PorosiaItem
+
+           var mostBoughtProductsIds = await _context.PorosiaItem
           .GroupBy(pi => pi.Produkti_ID)
           .Select(group => new
           {
@@ -366,44 +285,30 @@ namespace ECommerceAPI.ProduktetModule.Controllers
             var productIds = mostBoughtProductsIds.Select(x => x.Produkti_ID).ToList();
             var products = await _context.Produkti
                 .Where(p => productIds.Contains(p.Produkti_ID))
-                .Select(p => new
+                .Select(p => new MeIShituriDTO
                 {
-                    p.Produkti_ID,
-                    p.EmriProdukti,
-                    p.FotoProduktit,
-                    cmimiPerCope = p.Zbritja != null && p.Zbritja.DataSkadimit >= DateTime.Now
+                    Produkti_ID = p.Produkti_ID,
+                    EmriProdukti = p.EmriProdukti,
+                    FotoProduktit = p.FotoProduktit,
+                    CmimiPerCope = (decimal)(p.Zbritja != null && p.Zbritja.DataSkadimit >= DateTime.Now
                            ? p.CmimiPerCope - (decimal)p.Zbritja.PerqindjaZbritjes / 100 * p.CmimiPerCope
-                           : p.CmimiPerCope,
-
-                    //CmimiMeZbritje = p.Zbritja != null && p.Zbritja.DataSkadimit >= DateTime.Now
-                    //       ? (p.CmimiPerCope - ((decimal)p.Zbritja.PerqindjaZbritjes / 100 * p.CmimiPerCope))
-                    //       : null,
+                           : p.CmimiPerCope),
                 })
                 .ToListAsync();
 
-            var results = products.Select(p => new
+            var results = products.Select(p => new MeTeShituratDTO
             {
                 Product = p,
-                mostBoughtProductsIds.FirstOrDefault(m => m.Produkti_ID == p.Produkti_ID)?.TotalQuantity
+                TotalQuantity = mostBoughtProductsIds.FirstOrDefault(m => m.Produkti_ID == p.Produkti_ID)?.TotalQuantity
             }).ToList();
 
-            return Ok(results);
+            return results;
         }
 
-        [HttpDelete]
-        [Route("FshijProduktin/{id}")]
-        [Authorize(Roles = "Admin,Menaxher")]
-        public async Task<IActionResult> Delete(int id)
+        public async Task DeleteProductAsync(Produkti produkti)
         {
-            var produkti = await _context.Produkti.FirstOrDefaultAsync(p => p.Produkti_ID == id);
-            if (produkti != null)
-            {
-                _context.Produkti.Remove(produkti);
-                await _context.SaveChangesAsync();
-                return Ok("Produkti u fshi me sukses!");
-            }
-
-            return BadRequest("Ky produkt nuk ekziston");
+            _context.Produkti.Remove(produkti);
+            await _context.SaveChangesAsync();
         }
 
     }
