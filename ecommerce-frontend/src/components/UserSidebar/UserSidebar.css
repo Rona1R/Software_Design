@@ -1,0 +1,12 @@
+.profilePicture{
+   display: flex;
+   justify-content: center;
+}
+
+.sidebarlink{
+    text-decoration: none;
+    color: black !important;
+}
+.sidebarlink:hover{
+    color: rgb(75, 75, 75) !important;
+}

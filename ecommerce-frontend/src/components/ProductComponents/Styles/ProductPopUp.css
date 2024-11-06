@@ -1,0 +1,34 @@
+.popUpTitle{
+    font-family: "Garet Book";
+    margin: auto;
+    border-bottom: none !important;
+    color:#ccc !important
+}
+.popUpLink a{
+    color:#9b95f3;
+    text-decoration: none;
+}
+
+.popUpLink a:hover {
+    color: #ccc;
+  }
+  
+  .popUpLink a:hover #chevronRightIcon {
+    color:  #ccc !important;
+  }
+.popUp{
+    text-align: center;
+    background-color: #333;
+}
+
+.popUpHeader {
+    border-bottom: none !important;
+}
+
+.btn-close{
+    color: #ccc !important;
+}
+
+#chevronRightIcon{
+    margin-right:5px
+}

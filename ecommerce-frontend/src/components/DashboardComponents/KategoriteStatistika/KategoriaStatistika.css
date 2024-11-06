@@ -1,0 +1,4 @@
+.kategoriStatistikat{
+    display: flex;
+    flex-direction: column;
+}

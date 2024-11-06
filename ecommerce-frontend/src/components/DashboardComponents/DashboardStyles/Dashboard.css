@@ -1,0 +1,290 @@
+/* .statisticBlock{
+    background-color: rgba(151, 151, 151, 0.434);
+} */
+
+.categoryChart {
+  display: flex;
+  /* align-items: center;*/
+}
+
+.statisticBlock.categoryStatistics p {
+  padding-top: 80px;
+}
+
+.StatisticsRow {
+  /* background-color: rgba(151, 151, 151, 0.434); */
+  display: flex;
+  align-items: center;
+}
+
+.monthlyRevenueBlock {
+  display: flex;
+  margin-top: 20px;
+  justify-content: center;
+}
+
+.homeLink {
+  text-decoration: none;
+  letter-spacing: 0.5px;
+  color: #96969e !important;
+}
+
+.tableTitle{
+    font-weight: bold;
+    color: rgb(42, 10, 71);
+}
+
+/* .NenKategorite{
+    display: flex;
+    justify-content: center;
+} */
+
+.produktetDashboard {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.shtoButoni {
+  /* width: 100%; */
+  display: flex;
+  justify-content: flex-end;
+}
+.shtoButoni button {
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.352);
+  background-color: #322b9c;
+  color: white;
+  padding: 10px;
+  border-radius: 0;
+  margin-bottom: 8px;
+}
+
+.shtoButoni button:hover {
+  box-shadow: 0px 6px 6px rgba(0, 0, 0, 0.15);
+  background-color: #242154;
+}
+.tabelat {
+  margin-top: 20px;
+}
+.crudFormAnuloButoni {
+  background-color: #c9281c; /* Red background color */
+  color: #ffffff; /* White text color */
+  border: none; /* Remove default border */
+  padding: 10px 20px; /* Padding for the button */
+  font-size: 16px; /* Font size */
+  border-radius: 4px; /* Rounded corners */
+  cursor: pointer; /* Pointer cursor on hover */
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.1); /* Light shadow */
+  transition: background-color 0.3s, box-shadow 0.3s; /* Smooth transition */
+}
+.crudFormAnuloButoni:hover {
+  background-color: #d32f2f; /* Darker red on hover */
+  color: white;
+}
+
+.crudFormAnuloButoni:active {
+  box-shadow: 0px 6px 6px rgba(0, 0, 0, 0.2); /* Slightly darker shadow on click */
+  background-color: #831b1b !important; /* Darker red on hover */
+  color: white;
+}
+
+.crudFormLabel {
+  font-weight: bolder;
+  letter-spacing: 0.5px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  color: #1e1b46;
+}
+
+.crudFormeSubmitButoni {
+  background-color: #1e1b46;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 4px;
+}
+.crudFormeSubmitButoni:hover {
+  background-color: #242154;
+  color: white;
+  /* color:#8f89e4 */
+}
+.crudFormeSubmitButoni:active {
+  background-color: #322b9c !important;
+  color: white !important;
+}
+
+.crudFormWarning {
+  background-color: #ffefef;
+  width: fit-content;
+  padding: 10px 15px;
+  margin-top: 10px;
+  font-size: 14px;
+  letter-spacing: 0.5px;
+  color: #d8000c;
+  border: 1px solid #d8000c;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: opacity 0.5s ease-in-out; /* Adjust duration and easing as needed */
+}
+
+.crudFormWarning.show {
+  opacity: 1;
+}
+
+.fade-in {
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  /* height: 100vh; */
+}
+
+.crudFshijLabel {
+  font-weight: bolder;
+  letter-spacing: 0.5px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  color: #000004;
+}
+
+.crudFshijTekst {
+  color: #000004;
+  font-size: 20px;
+  letter-spacing: 0.5px;
+}
+
+.crudFshijButoni {
+  color: #831b1b;
+  border-color: #831b1b;
+}
+
+.crudFshijButoni:hover {
+  background-color: #d32f2f;
+  color: white;
+  border-color: #d32f2f;
+}
+
+.crudFshijButoni:active {
+  background-color: #d32f2f !important;
+  color: white !important;
+  border-color: #d32f2f !important;
+}
+.crudFshijButoni:disabled {
+  background-color: lightgray;
+  color: #302929; 
+  border: 1px solid #d3d3d3; 
+  cursor: not-allowed; 
+  opacity: 0.7; 
+  box-shadow: none; 
+  text-transform: uppercase; 
+}
+
+.crudDropdownButton {
+  color: #322b9c;
+  font-weight: bold;
+  border-color: #322b9c;
+}
+
+.crudDropdownButton:hover {
+  color: #322b9c;
+  font-weight: bold;
+  border-color: #322b9c;
+}
+
+.crudDropdownButton:active {
+  color: #322b9c;
+  font-weight: bold;
+  border-color: #322b9c;
+  background-color: white !important;
+}
+
+.crudDropdownList {
+  color: #000004;
+  font-weight: bold;
+}
+.crudDropdownListItem {
+  color: #1e1b46 !important;
+  font-weight: bold !important;
+}
+.produktetDropdownBtn {
+  width: 250px;
+}
+.gridBox{
+  height: 500px;
+}
+
+.business-data-container {
+  padding: 20px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background-color: #f9f9f9;
+  max-width: 600px;
+  margin: 0px  auto;
+  margin-bottom: 20px; 
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); 
+}
+
+.business-data-title {
+  font-size: 2em;
+  font-weight: bold;
+  color: #4a4591;
+  margin-bottom: 15px;
+}
+
+.business-data-item {
+  font-size: 16px;
+  color: #555;
+  margin-bottom: 8px;
+}
+
+
+.business-edit-button{
+  display: flex;
+  justify-content: flex-end;
+}
+
+.filter-title{
+  color: #000004;
+  font-weight: bold;
+}
+
+.reseto-date-filters{
+  color: #1a1a4e !important;
+  font-weight: bold !important;
+  background-color: #e6e6e9 !important;
+  padding: 10px !important;
+}
+
+.reseto-date-filters:hover{
+  background-color: #1a1a4e !important;
+  color: #e6e6e9 !important;
+}
+
+.custom-modal-content {
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.5);/* Example shadow */
+  border-radius: 10px; /* Optional: add rounded corners */
+}
+
+@media screen and (max-width: 1285px) {
+  .statisticBlock {
+    width: 100%;
+  }
+}

@@ -1,0 +1,122 @@
+.ReviewUpper{
+    display: flex;
+    justify-content: space-between;
+}
+
+.UserReviewContainer{
+    padding: 0px 15px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    background-color: #e7e5fc; 
+    height: 270px; 
+    width:500px;  
+    /* min-width: 500px; */
+    letter-spacing: 0.5px;
+}
+
+.toggleText{
+    border: none;
+    background-color: inherit;
+    color: #656565;
+    font-size: 15px;
+}
+
+.ReviewPershkrimi{
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: #665DDB #f1f1f1;
+    display: flex;
+    flex-direction: column; 
+    justify-content: flex-start;
+    height: 100%;
+}
+
+.ReviewPershkrimi p{
+    text-align: start;
+    color: #000004;
+    font-weight: bold;
+    font-size: large;
+
+    overflow-wrap: break-word;
+    word-break: break-word; 
+}
+
+#SortRating{
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    margin-left: 10px;
+}
+
+#SortRating .dropdown-item{
+    color: #000004;
+    font-weight: bold;
+}
+#SortRating .dropdown-toggle{
+    background-color: #000004;
+    border: none;
+    padding: 15px;
+    letter-spacing: 0.5px;
+    color: white;
+    width: 200px;
+}
+#SortRating .dropdown-toggle:hover{
+    background-color: #000004;
+    border: none;
+    padding: 15px;
+}
+
+#SortRating .dropdown-toggle:active{
+    background-color: #000004 !important;
+    border: none;
+    padding: 15px;
+}
+
+
+#SortRating .dropdown-toggle .btn::after{
+    background-color: white;
+}
+
+#SortRating span {
+     color: white;
+}
+.UserData {
+    display: flex;
+    flex-direction: row;
+    justify-content:space-between;
+    align-items: center;
+    padding-bottom:10px;
+}
+
+.UserData p{
+    text-align: start;
+}
+
+.UserData span{
+    padding-right: 10px;
+    font-weight: 600;
+    font-size: 17px;
+    color: #665DDB;
+}
+
+.ReviewUpper-Right{
+    display: flex;
+    justify-content: flex-end;
+    height: 20px;
+}
+
+.crudFormTextarea{
+    height: 150px !important;
+}
+
+.actionButonat-wrapper .MuiButton-root {
+    min-width: 0; 
+    padding: 0; 
+  }
+
+@media screen and (max-width:941px) {
+    .UserReviewContainer{
+        width: 100% ;
+    }
+}

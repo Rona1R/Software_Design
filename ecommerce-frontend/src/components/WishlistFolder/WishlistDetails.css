@@ -1,0 +1,80 @@
+.wishlist-details-container {
+    text-align: center; 
+}
+
+.wishlist-card {
+    border: 1px solid #e5e5e5;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    transition: box-shadow 0.3s ease;
+    width: 230px;
+    margin: 10px; 
+    display: inline-block; 
+    vertical-align: top; 
+    text-align: left; /* Reset text alignment */
+    padding: 10px;
+}
+
+/* On hover effect */
+.wishlist-card:hover {
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+}
+
+
+.wishlist-img {
+    width: 100%;
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+}
+
+.wishlist-details {
+    display: flex;
+    flex-direction: column;
+    /* justify-content: space-between; */
+    height: 90%;
+}
+
+.wishlist-title {
+    font-size: 1rem;
+    color: #333;
+    margin-bottom: 10px;
+    font-weight: bold;
+}
+
+.wishlist-description {
+    color: #666;
+    margin-bottom: 10px;
+}
+
+.wishlist-price {
+    color: #666;
+    margin-bottom: 10px;
+}
+
+.removeButton {
+    background-color: #665DDB;
+    border-color: #665DDB;
+    color: #fff;
+    padding: 9px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    align-self: center; 
+    margin-top: 10px;
+    margin-bottom: 10px;
+    transition: background-color 0.3s, border-color 0.3s, color 0.3s;
+}
+
+.removeButton:hover {
+    background-color: #3128a2;
+}
+
+/* Adjusting layout for two cards side by side */
+/* @media only screen and (min-width: 768px) {
+    .wishlist-details-container {
+        justify-content: flex-start;
+    }
+
+    .wishlist-card {
+        margin: 10px;
+    }
+} */

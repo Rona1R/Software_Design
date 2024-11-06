@@ -1,0 +1,22 @@
+.attributes-table{
+    background-color: #eae8ff;
+}
+
+
+.atributes-table-th .MuiTableCell-root {
+    color: #000004;
+    font-weight: bold;
+    font-size: large;
+}
+
+.atributes-table-tb td:first-child{
+ background-color: #000004;
+ color: #eae8ff;   
+ border-bottom: none;
+ font-size: large;
+}
+
+.atributes-table-tb td:nth-child(2){
+    font-weight: bold;
+    font-size: large;
+}

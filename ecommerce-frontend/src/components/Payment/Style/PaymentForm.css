@@ -1,0 +1,145 @@
+.payment-component {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 8px;
+  }
+  
+  .StripeElement {
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0;
+    border-radius: 4px;
+    background-color:#c7c7c702;
+  }
+  
+  .payment-form-wrapper {
+    max-width: 700px;
+    margin: 0 auto;
+    padding: 60px 20px;
+    background-color:  #c7c7c78f;
+    border-radius: 10px;
+    box-shadow: 0px 8px 30px  rgb(176, 176, 176);
+    /* box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); */
+    /* background-color: gray; */
+  }
+  
+  .payment-elements{
+    width: 600px;
+    height: 250px;
+  }
+
+  .pay-buton-wrapper{
+    display: flex;
+    justify-content: center;
+  }
+  .pay-butoni{
+    background-color:#1e1b46;
+    font-weight: 600;
+    width: 97%;
+    font-size: 16px;
+    /* margin-top: 20px; */
+    margin-left: 4px;
+    /* margin: 20px 5px 5px 0px; */
+    padding: 10px;
+    color:  #ffffff;;
+    border-radius: 4px;
+    border: none;
+    font-family: Arial, sans-serif;
+    position: relative;
+    display: flex;
+    justify-content: center;
+}
+
+.spinner {
+  border: 4px solid rgba(255, 255, 255, 0.3); /* Light grey border */
+  border-top: 4px solid #e4b9ff; /* Blue border for the top, indicating loading progress */
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  animation: spin 2s linear infinite;
+  
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+#payment-message {
+  color: #D32F2F;
+  background-color: #ffe8e8;
+  border: 1px solid #D32F2F;
+  border-radius: 4px;
+  padding: 8px;
+  margin-top: 10px;
+  font-weight: bold;
+  font-size: 14px;
+  text-align: center;
+  width: 90%;
+  max-width: 400px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+  .userDropdownList{
+    width: 100%;
+    padding: 8px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    height: 40px;
+    color: #1e1b46;
+    font-weight: bold;
+  }
+
+  #phoneNumberField{
+    margin-bottom: 10px;
+  }
+
+  .userDropdownList option{
+    color: #1e1b46 ;
+    font-weight: bold;
+  }
+
+  .userDropdownList:disabled {
+    background-color: #eee;
+    cursor: not-allowed;
+  }
+  .userDropdownList option:hover{
+    background-color: rgb(236, 236, 236) !important;
+  }
+
+  .payment-label{
+    color:#1e1b46;
+    font-weight: bold;
+    font-family: Arial, sans-serif;
+  }
+
+  .payment-label-wrappper{
+    text-align: center;
+  }
+
+  .payment-label span{
+    color: #433c9f; /* Stripe's brand color */
+    font-weight: bold;
+    font-size: 20px;
+  }
+
+  @media screen and (max-width:880px){
+    .payment-form-wrapper{
+      width: 90%;
+    }
+
+    .payment-elements{
+      width: 100%;
+    }
+    
+    .payment-component{
+      width: 100%;
+    }
+    .pay-butoni{
+      margin-top: 30px;
+    }
+}

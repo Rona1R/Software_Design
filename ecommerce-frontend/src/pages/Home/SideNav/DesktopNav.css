@@ -1,0 +1,125 @@
+.desktop-nav {
+  display: flex;
+  gap: 15px;
+  align-items: center;
+  margin-left: 15px;
+}
+
+.desktop-dropdown {
+  position: relative;
+}
+
+.desktop-dropdown-btn {
+  background: inherit;
+  color: rgba(255, 255, 255, 0.868);
+  padding: 10px;
+  border: none;
+  cursor: pointer;
+  font-size: 20px;
+  font-weight: bold;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.desktop-link:hover {
+  color: #a7a1fd;
+}
+
+.desktop-link:focus{
+  color: #a7a1fd;
+}
+.desktop-dropdown-content {
+  display: none;
+  position: absolute;
+  background-color: #f8f9fa;
+  min-width: 350px;
+  box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2);
+  z-index: 1;
+  padding: 10px;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.desktop-dropdown:hover .desktop-dropdown-content {
+  display: flex;
+}
+
+.desktop-dropdown-item {
+  padding: 8px 12px;
+  /* background-color: #f1f1f1; */
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.desktop-dropdown-item button {
+  font-size: 23px;
+  font-weight: bold;
+  background: none;
+  border: none;
+  color: #7a71fd;
+  text-align: left;
+  cursor: pointer;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.desktop-dropdown-item:hover {
+  background-color: #e1e1e1e9;
+  color: #a7a1fd;
+}
+.desktop-subcategory-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.desktop-back-btn {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background-color: transparent;
+  border: none;
+  font-weight: bold;
+  /* color: #7a71fd; */
+  color: #000004;
+  cursor: pointer;
+  font-size: 18px;
+}
+
+.desktop-subcategory-items {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.desktop-subcategory-items h3{
+  color: #7a71fd;
+  font-weight: bold;
+  font-size: 1.5em;
+  text-align: left;
+  padding: 8px 20px;
+}
+
+.desktop-subcategory-btn {
+  padding: 8px 12px;
+  border: none;
+  display: block;
+  width: 100%;
+  border-radius: 4px;
+  text-decoration: none;
+  color: #000004;
+  font-weight: bold;
+  font-size: 18px;
+}
+
+.desktop-subcategory-btn:hover {
+  color: black;
+}
+
+.desktop-subcategory-btn:focus{
+  color: black;
+}

@@ -1,0 +1,32 @@
+.super-app-theme--header {
+    /* background-color: rgba(180, 180, 180, 0.55); */
+    color: #160e0e;
+    font-weight: 500;
+    font-size: 16px;
+  }
+  
+  .MuiDataGrid-columnHeaderTitleContainer{
+    justify-content: center;
+    color: #160e0e;
+  }
+
+  .MuiDataGrid-columnHeaderTitle{
+    font-weight:bold !important;
+  }
+
+  /* Cell styles */
+  .super-app-theme--cell {
+    color: #1a3e72;
+    font-weight:800;
+    font-size: 14px;
+    text-align: center !important;
+  }
+  
+  /* Row styles */
+  .super-app-theme--row:nth-of-type(odd) {
+    background-color: #f5f5f5;
+  }
+  
+  .super-app-theme--row:nth-of-type(even) {
+    background-color: #e0e0e0;
+  }

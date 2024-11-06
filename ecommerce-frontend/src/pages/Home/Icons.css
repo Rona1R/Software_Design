@@ -1,0 +1,49 @@
+.all {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 100px;
+    margin-bottom: 100px;
+    align-items: center;
+  }
+  
+  .icon {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 200px;
+    margin-right: 10px; 
+  }
+  
+  .icon:last-child {
+    margin-right: 0; 
+  }
+  
+  .icon img {
+    width: 70px;
+    height: 70px;
+  }
+  
+  .icon span {
+    font-size: 15px;
+    cursor: pointer;
+    margin-top: 10px;
+  }
+  
+  .icon span:hover {
+    transform: scale(1.2);
+    transition: transform 0.6s ease;
+    font-weight: bold;
+  }
+  
+  @media only screen and (max-width: 800px) {
+    .all {
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+  
+    .icon {
+      margin-right: 0;
+      margin-bottom: 20px; 
+    }
+  }
+  

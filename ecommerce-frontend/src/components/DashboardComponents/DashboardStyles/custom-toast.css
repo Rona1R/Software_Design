@@ -1,0 +1,27 @@
+.custom-toast {
+    background-color: #333 !important;
+    color: #fff;
+    font-size: 16px;
+    border-radius: 8px;
+  }
+  
+  .custom-toast-body {
+    padding: 10px;
+  }
+  
+  .custom-toast-progress {
+    background-color: #322b9c !important;
+  }
+  
+  .custom-toast-icon svg{
+    fill: #f0ad4e !important; /* Icon color */
+    width: 24px !important; /* Adjust the size as needed */
+    height: 24px !important; /* Adjust the size as needed */
+  }
+
+  .Toastify__toast-icon svg{
+    fill:#322b9c;
+  }
+  .Toastify__progress-bar--success{
+    background-color: #322b9c;
+  }

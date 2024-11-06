@@ -1,0 +1,55 @@
+.orderPage-body{
+    display: flex;
+    flex-direction: column;
+    /* min-height: 100vh; */
+}
+
+.orderPage{
+    flex: 1;
+    min-height: 100vh;
+    margin-top: 90px;
+
+}
+
+.orders-tabela{
+    width: 1200px;
+    /* margin: 0 auto; */
+}
+
+.myOrders {
+    margin-bottom: 30px;
+    width: 100%;
+}
+.orders-tabela-wrapper{
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+    /* height: 100vh; */
+}
+
+.title-divider{
+    border: none;
+    height: 4px;
+    background: rgb(75, 33, 173);
+    margin-top: 20px;
+  }
+
+.no-orders-yet{
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.no-orders-yet p{
+    font-size: 35px;
+    font-weight: bold;
+    color: rgb(113, 113, 113);
+}
+
+@media screen and (max-width:1255px) {
+    .orders-tabela{
+        width: 800px;
+    }
+}

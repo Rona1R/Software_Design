@@ -1,0 +1,163 @@
+.logInContainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+
+.welcome-back-section,
+.sign-up-section{
+    background: linear-gradient(90deg, #3a32a9, #655dde); 
+    color: white;
+    padding: 60px;
+    width: 500px; 
+    text-align: center;
+    height: auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.welcome-back-section{
+    border-top-left-radius: 75px; 
+    border-bottom-left-radius: 75px;
+}
+
+.sign-up-section{
+    border-top-right-radius: 75px; 
+    border-bottom-right-radius: 75px;
+}
+
+.welcome-back-section p,.sign-up-section p{
+    font-size: 20px;
+    font-family: 'Poppins', sans-serif;
+    color: #d1d1d1;
+    font-weight: 600;
+}
+
+.welcome-back-section h1,.sign-up-section h1{
+    font-weight:bold;
+    color: #f5f3f3;
+    letter-spacing: 2px;
+    text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+}
+
+
+.logInForm {
+    width: fit-content;
+    height: fit-content;
+    margin: 50px auto;
+    background: #fff;
+    box-shadow: 0 4px 8px rgba(90, 66, 177, 0.252);
+    border-radius: 10px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    display: flex;
+    gap: 20px;
+}
+
+.logInForm form{
+    padding: 30px;  
+    width: 500px;
+    height: auto;
+}
+
+.form-header div{
+    font-weight: bold;
+    font-size: 35px;
+    color:#453cce;
+}
+.logInForm .form-header {
+    text-align: center;
+    margin-bottom: 30px; 
+    color: #1e1b46;
+    font-size: 24px;
+    font-weight: bold;
+}
+
+.logIn-input{
+    margin-bottom: 30px !important;
+}
+
+
+.logInForm .form-control {
+    width: 100%;
+    height: 60px;
+    padding: 15px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: larger;
+}
+
+.logInForm .form-group{
+    margin-bottom: 20px;
+}
+
+.logInForm .form-label {
+    display: block;
+    margin-bottom: 5px;
+    color: #1e1b46;;
+    font-size: larger;
+}
+
+.logInForm button {
+    width: 100%;
+    height: 53px;
+    padding: 10px;
+    color: #fff;
+    background-color: #453cce  !important;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 18px !important;
+    position: "relative" !important;
+    display: "flex" !important;
+    justify-content: "center" !important;
+    align-items: "center" !important;
+}
+
+.logInForm button:hover {
+    background-color: #372fac !important;
+}
+
+.logInForm .error {
+    color: red;
+    margin-top: 10px;
+    text-align: center;
+}
+
+.log-in-text{
+    padding-top: 15px;
+    font-size: 20px;
+    color: #1e1b46;
+    font-weight: 600;
+}
+
+.log-in-text a{
+    margin-left: 10px;
+    color: #372fac;
+    font-weight: bold;
+}
+
+.signup-custom-center {
+    text-align: center;
+    display: block;
+    color: red;
+}
+
+@media  screen and (max-width:1015px) {
+    .welcome-back-section, .sign-up-section{
+     display: none;
+    }
+    
+}
+
+@media  screen and (max-width:560px) {
+    .logInForm {
+        width: 100%;
+        box-shadow: none;
+        background-color: inherit;
+    }
+    
+}

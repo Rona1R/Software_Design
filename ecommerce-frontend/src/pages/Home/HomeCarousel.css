@@ -1,0 +1,92 @@
+.shtoVideo{
+  color:#000004 !important;
+  font-weight: bold !important;
+  font-size: larger !important;
+}
+
+
+.removeVideo{
+  color:#64191d !important;
+  font-weight: bold !important;
+  font-size: larger !important;
+  margin-left: 20px !important;
+}
+
+.home-video-buttons{
+  margin-top: 20px;
+}
+
+#home-carousel {
+    width: 100%;
+    max-width: 100%;
+    height: auto;
+    top:22px;
+  
+  }
+  
+  #home-carousel .carousel-inner {
+    position: relative;
+    width: 100%;
+  }
+  
+  #home-carousel .carousel-item video {
+    width: 100%;
+    height: auto;
+  }
+  
+  #home-carousel .carousel-control-prev,
+  #home-carousel .carousel-control-next {
+    width: 5%;
+    height: auto;
+    
+    
+  }
+  #home-carousel .carousel-control-prev:hover,
+  #home-carousel .carousel-control-next:hover{
+    background-color: transparent;
+    /* background-color: #908484e6; */
+  }
+  
+  #home-carousel .carousel-control-prev-icon,
+  #home-carousel .carousel-control-next-icon {
+    filter: invert(1);
+  }
+  
+  #home-carousel .carousel-control-prev-icon,
+  #home-carousel .carousel-control-next-icon {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='%23fff' viewBox='0 0 8 8'%3e%3cpath d='M5.25 0l-.5.5 2.75 2.75H0v1h7.5L4.75 7.5l.5.5 3-3 .5-.5z'/%3e%3c/svg%3e");
+   
+  }
+  
+  
+  #home-carousel .carousel-control-prev-icon {
+    margin-right: 10px;
+  }
+  
+  #home-carousel .carousel-control-next-icon {
+    margin-left: 10px;
+  }
+  
+  @media (max-width: 768px) {
+    #home-carousel .carousel-control-prev,
+    #home-carousel .carousel-control-next {
+      width: 10%;
+    }
+  }
+  
+  @media (max-width: 576px) {
+    #home-carousel .carousel-control-prev,
+    #home-carousel .carousel-control-next {
+      width: 15%;
+    }
+  }
+
+  @media (max-width:780px){
+    #home-carousel {
+      top:60px;
+    }
+
+    .home-video-buttons{
+      margin-top: 50px;
+    }
+  }

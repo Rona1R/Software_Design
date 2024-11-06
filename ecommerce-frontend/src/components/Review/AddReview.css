@@ -1,0 +1,40 @@
+.addReviewHeader{
+    background-color: #ccc;
+}
+.reviewTitle{
+    text-align: center;
+    color:#665DDB;
+    font-weight: bold;
+}
+
+.reviewForm input{
+    border-color:#665DDB ;
+    /* width: 70%; */
+}
+
+/* .reviewForm textarea{
+    width: 70%;
+} */
+
+.reviewForm button{
+    background-color: #665DDB !important;
+    border-color: #665DDB !important;
+    width: 100% !important;
+    padding: 10px !important;
+    font-size: larger !important;
+    color: white !important;
+}
+
+.reviewForm button:hover{
+    background-color: #423d88 !important;
+}
+
+.rating-error-message{
+    border: 1px solid rgb(187, 32, 32);
+    background-color: rgba(255, 152, 152, 0.7); 
+    border-radius: 5px;
+    width: fit-content;
+    border-radius: 5px;
+    color:black;
+    padding: 5px;
+}

@@ -1,0 +1,30 @@
+#search{
+    display: flex;
+    align-items: center;
+    margin-right: 4px;
+}
+#searchProduct{
+    border-color: #656565 !important;
+    border-width: 2px !important;
+    box-shadow: none;
+    border: 1px solid !important;
+}
+  
+#search button{
+    border: none;
+    background-color: inherit;
+}
+
+#magnifying-glass{
+    height: 23px;
+    margin-left: 5px;
+}
+
+#searchProduct:focus{
+    border-color: #3128a2 !important;
+    border-width: 2px !important;
+    box-shadow: none;
+}
+#searchForm:focus{
+    border-color: #3128a2;
+}

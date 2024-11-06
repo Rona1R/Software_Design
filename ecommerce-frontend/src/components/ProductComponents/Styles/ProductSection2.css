@@ -1,0 +1,198 @@
+
+.defaultStyle{
+    height:30px;
+    color:darkgrey
+}
+
+.addedToWishlist{
+    color: #665DDB;
+    height: 30px;
+}
+.productItem{
+    margin: 10px;
+}
+
+.ProductLink{
+    text-decoration: none;
+    color: #c7c7ff;
+    font-size: larger;
+    font-weight: bold;
+}
+
+#companyLink,
+#categoryLink{
+    font-size: 15px;
+}
+
+
+.ProductLink:hover{
+    font-size: larger;
+    color: #ffffffcc;
+}
+#produktLink{
+    font-size: 20px;
+    margin-bottom: 5px;
+    padding-bottom: 3px;
+}
+
+#cmimi{
+    color: #c7c7ff;
+    padding-left: 10px;
+    font-weight: 600;
+    font-size: 15px;
+}
+
+
+#meZbritje{
+    color: #c7c7ff;
+    padding-left: 10px;
+    font-weight: 600;
+    font-size: 20px;
+}
+
+.zbritjaBadge {
+    position: absolute;
+    top: 0;
+    right: 0;
+    padding: 6px;
+    border-radius: 0 0px 0 25px ;
+    background-color: #ec3d08;
+    color: #fff;
+    font-size: 12px;
+    font-weight: bold;
+    line-height: 1;
+}
+.zbritjaBadge p{
+    margin: 10px;
+    margin-left: 0;
+    margin-right: 0;
+  }
+
+#paZbritje{
+    color: #c7c7ff;
+    padding-left: 10px;
+    font-weight: 600;
+    font-size: 15px;
+    text-decoration: line-through;
+    text-decoration-color: red;
+    text-decoration-style: solid;
+}
+
+
+.imagelistitem{
+    padding: 4px;
+}
+
+.tooltip-inner {
+    background-color: #000000; 
+    color: #c7c7ff; 
+    border-radius: 8px; 
+    padding: 8px 12px; 
+}
+
+.productCardContainer{
+    background-color: #f7f7f7;
+    box-shadow: 0 0 8px 0 rgba(0, 0, 0, 0.1);
+}
+
+.generalInfo{
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    padding-left: 20px;
+    height: 110px;
+}
+
+.infoUpper{
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.saveButoni{
+    border: none !important;
+}
+
+.saveButoni{
+    background-color: inherit !important;
+}
+
+.cartButoni{
+    width:100% !important;
+    background-color: #665DDB !important;
+    border: #665DDB !important;
+    padding: 10px !important;
+    color: #f7f7f7 !important;
+}
+.cartButoni:hover{
+    background-color: #45407f !important;
+}
+
+.cartButoni:disabled{
+    background-color: #665DDB !important;
+}
+.saveButoni:active{
+    background-color: inherit !important;
+}
+
+.infoLower{
+    display: flex;
+    width: 50%;
+    margin: auto;
+}
+
+@media screen and (max-width:925px){
+    
+    .infoLower{
+        width: 100%;
+    }
+}
+
+
+@media screen and (max-width:780px){
+    .card2{
+        width: 100% !important;
+        height: 500px !important;
+    }
+}
+
+
+@media screen and (max-width:560px){
+    .card2{
+        width: 100% !important;
+        height: 350px !important;
+    }
+}
+
+.outOfStockOverlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(122, 121, 121, 0.5); 
+    z-index: 1; 
+  }
+
+.productHoveredOverlay{
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 60, 0.3);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.productHoveredOverlayText{
+    color:white;
+    font-size: 18px;
+    text-align: center;
+    background-color: #665DDB;
+    padding: 10px;
+    border-radius: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+}

@@ -1,0 +1,78 @@
+.add-review{
+    font-size: larger !important ;
+    background-color: #665DDB !important;
+    color: white !important ;
+    border: none !important;
+    padding: 8px 20px !important;
+    cursor: pointer;
+}
+
+
+.center-content{
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.add-review:hover{
+    background-color: #ccc;
+    color: #665DDB;
+}
+@media screen and (max-width:700px){
+    .Write-Review{
+       width: 100%;
+       padding:10px
+    }
+    .add-review{
+        width: 100%;
+        border-radius: 0%;
+    }
+    .product-info{
+        width:400px;
+    }
+}
+
+.Rating{
+    padding-bottom: 5px;
+}
+
+.Rating p{
+    font-size: larger;
+    font-weight: 500;
+}
+
+.ReviewSection{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.ReviewSection h5{
+    color: #665DDB;
+    font-weight: 550;
+}
+
+.displayReviews {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center; 
+    margin: 30px 0px;
+    gap: 10px; 
+}
+
+@media (max-width: 940px) {
+    .displayReviews {
+        flex-direction: column; 
+        margin: 0;
+        padding: 10px;
+        width: 100%;
+    }
+}
+
+.Rating h3{
+    color: #100782;
+    font-weight: 600;
+    letter-spacing: 0.6px;
+}
