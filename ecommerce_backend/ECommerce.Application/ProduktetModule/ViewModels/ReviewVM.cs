@@ -6,7 +6,7 @@
 
         public string? ReviewContent { get; set; }
 
-        public int? Produkti_ID { get; set; }
-        public int? User_Id { get; set; }
+        public int Produkti_ID { get; set; }
+        public int User_Id { get; set; }
     }
 }

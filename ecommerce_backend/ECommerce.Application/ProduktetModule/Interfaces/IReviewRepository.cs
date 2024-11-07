@@ -22,5 +22,11 @@ namespace ECommerce.Application.ProduktetModule.Interfaces
         Task UpdateReviewAsync(Review review, ReviewEditVM editedReview);
 
         Task<Review?> GetReviewFromDbAsync(int id);
+
+        Task DeleteReviewAsnyc(Review review);
+
+        Task<bool> HasPurchasedItem(int useriId, int produktiId);
+
+        Task<bool> UserHasLeftReview(int userId, int productId);
     }
 }

@@ -108,8 +108,8 @@ namespace ECommerce.Infrastructure.ProduktetModule.Repositories
                         SubcategoryId = p.NenKategoria.NenKategoria_ID,
                         SubCategoryName = p.NenKategoria.EmriNenkategorise
                     })
-                    .Distinct()
                     .ToList()
+                    .DistinctBy(p=> new { p.SubcategoryId}).ToList()
                 })
                 .ToList();
 

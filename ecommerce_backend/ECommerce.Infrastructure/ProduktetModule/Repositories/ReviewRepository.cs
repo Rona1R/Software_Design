@@ -1,4 +1,6 @@
-﻿using ECommerce.Application.ProduktetModule.DTOs;
+﻿using System.ComponentModel;
+using System.Diagnostics;
+using ECommerce.Application.ProduktetModule.DTOs;
 using ECommerce.Application.ProduktetModule.Interfaces;
 using ECommerce.Application.ProduktetModule.ViewModels;
 using ECommerce.Domain.ProduktetModule.Entities;
@@ -137,5 +139,19 @@ namespace ECommerce.Infrastructure.ProduktetModule.Repositories
             _context.Review.Remove(review);
             await _context.SaveChangesAsync();
         }
+
+        public async Task<bool> HasPurchasedItem(int useriId,int produktiId)
+        {
+            return await _context.Porosia
+                .Where(p => p.UserId == useriId) // filtro porosite e perdoruesit qe po don me lan Review 
+                .AnyAsync(p => p.PorosiaItem.Any(pi => pi.Produkti_ID == produktiId));
+        }
+
+        // metoda per me kontrollu nese ka lene kete review me heret !!
+        public async Task<bool> UserHasLeftReview(int userId,int productId)
+        {
+            return await  _context.Review.FirstOrDefaultAsync(x => x.User_Id == userId & x.Produkti_ID == productId) != null;
+        }
+
     }
 }
