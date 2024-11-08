@@ -4,14 +4,18 @@ import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
 import Modal from "react-bootstrap/Modal";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faXmark, faCaretDown } from "@fortawesome/free-solid-svg-icons";
+import { faXmark, faCaretDown, faL } from "@fortawesome/free-solid-svg-icons";
 import countryList from "react-select-country-list";
-import {faCreditCard,faMoneyBillWave} from "@fortawesome/free-solid-svg-icons";
+import {
+  faCreditCard,
+  faMoneyBillWave,
+} from "@fortawesome/free-solid-svg-icons";
 import { useNavigate } from "react-router-dom";
 import { Menu, MenuItem } from "@mui/material";
 import PhoneInput from "react-phone-input-2";
-import 'react-phone-input-2/lib/style.css';
+import "react-phone-input-2/lib/style.css";
 import { useCart } from "context/CartProvider";
+import ProductPopUp from "components/ProductComponents/ProductPopUp";
 import ConfirmationModal from "./ConfirmationModal";
 
 const kosovoCities = [
@@ -51,14 +55,14 @@ const kosovoCities = [
   { id: 34, name: "Zveçan" },
 ];
 export default function TeDhenatKlientit(props) {
-  const [showCheckoutModal, setShowCheckoutModal] = useState(true); 
-  const [showConfirmationModal, setShowConfirmationModal] = useState(false); 
-
-
+  const [showCheckoutModal, setShowCheckoutModal] = useState(true);
+  const [showConfirmationModal, setShowConfirmationModal] = useState(false);
+  const [showErrorPopUp, setShowErrorPopUp] = useState(false);
+  const [errorMessage,setErrorMessage] = useState("");
 
   const navigate = useNavigate();
-  const { state ,dispatch} = useCart();
-  const [klientiID,setKlientiID] = useState(null);
+  const { state, dispatch } = useCart();
+  const [klientiID, setKlientiID] = useState(null);
   const [emri, setEmri] = useState("");
   const [email, setEmail] = useState("");
   const [nrTel, setNrTel] = useState("");
@@ -68,10 +72,10 @@ export default function TeDhenatKlientit(props) {
   const [selectedCity, setSelectedCity] = useState("");
   const [adresa, setAdresa] = useState("");
   const [zipCode, setZipCode] = useState("");
- // const [nrTelTest, setNrTelTest] = useState("");
+  // const [nrTelTest, setNrTelTest] = useState("");
 
   const [zipCodeValid, setZipCodeValid] = useState(true);
- // const [nrTelValid, setNrTelValid] = useState(true);
+  // const [nrTelValid, setNrTelValid] = useState(true);
 
   const [nrTelWarning, setNrTelWarning] = useState("");
   const [countryWarning, setCountryWarning] = useState("");
@@ -81,14 +85,12 @@ export default function TeDhenatKlientit(props) {
   const [adresatDropdown, setAdresatDropdown] = useState([]);
   const [anchorEl, setAnchorEl] = useState(null);
 
-  const loggedUser = JSON.parse(localStorage.getItem('userDetails'));
-  useEffect(()=>{
-    if(loggedUser)
-    {
+  const loggedUser = JSON.parse(localStorage.getItem("userDetails"));
+  useEffect(() => {
+    if (loggedUser) {
       setKlientiID(parseInt(loggedUser.userId));
     }
-  },[loggedUser])
-  
+  }, [loggedUser]);
 
   useEffect(() => {
     if (klientiID) {
@@ -128,13 +130,12 @@ export default function TeDhenatKlientit(props) {
   const countriesOptions = countryList().getData();
   const countries = [...additionalCountry, ...countriesOptions];
 
-
-  const handleNrTelChange = (numri) =>{
-    console.log("Numri i telefonit eshte: "+numri);
+  const handleNrTelChange = (numri) => {
+    console.log("Numri i telefonit eshte: " + numri);
 
     setNrTelWarning("");
     setNrTel(numri);
-  }
+  };
   // const handleNrTel = (numri) => {
   //   setNrTelWarning("");
   //   const pattern = /^[0-9]{3}-[0-9]{3}-[0-9]{3}$/;
@@ -183,7 +184,7 @@ export default function TeDhenatKlientit(props) {
     setCountryWarning("");
     setZipCodeWarning("");
     setCityWarning("");
-    
+
     setAdresa(adresaUserit);
     handleCountryChange(shteti);
     setSelectedCity(qyteti);
@@ -257,56 +258,70 @@ export default function TeDhenatKlientit(props) {
     setCities(data.map((city) => ({ id: city.id, name: city.name })));
   };
 
-
-  const handleKonfirmimin=()=>{
+  const handleKonfirmimin = () => {
     const isValid = validoFormen();
-    if(isValid){
+    if (isValid) {
       setShowCheckoutModal(false);
       setShowConfirmationModal(true);
     }
-  }
+  };
 
-  async function paguajPasPranimit(){
+  async function paguajPasPranimit() {
     // const isValid = validoFormen();
 
     // if (isValid) {
-      try{
-        const response =  await axios.post("https://localhost:7061/api/Porosia/shtoPorosine",{
-           nrProdukteve: state.cartItems.length,
-           cmimiTotal: parseFloat(props.cmimiTotalMeTvsh),
-           adresa: adresa,
-           shteti: selectedCountry,
-           metodaPageses : "Pas Pranimit",
-           qyteti: selectedCity,
-           nrKontaktues : nrTel,
-           zipKodi:String(zipCode),
-           userId:klientiID,
-           items : state.cartItems.map(item=>({
-               sasia: item.sasia,
-               produktiId: item.id,
-               cmimi: item.cmimiBaze
-           }))
-         })
-           const porosiaVendosurId = response.data;
-           dispatch({ type: "EMPTY_CART" });
-           navigate('/checkout-success',{state:{porosiaVendosurId}},{ replace: true })
-       }catch(error){
-         if(error.response && error.response.status === 400){
-           console.log(error.response.data);
-         }
-         else{
-           console.log("Unexpected error occured.");
-         }
-       }
+    try {
+      const response = await axios.post(
+        "https://localhost:7061/api/Porosia/shtoPorosine",
+        {
+          nrProdukteve: state.cartItems.length,
+          cmimiTotal: parseFloat(props.cmimiTotalMeTvsh),
+          adresa: adresa,
+          shteti: selectedCountry,
+          metodaPageses: "Pas Pranimit",
+          qyteti: selectedCity,
+          nrKontaktues: nrTel,
+          zipKodi: String(zipCode),
+          userId: klientiID,
+          items: state.cartItems.map((item) => ({
+            sasia: item.sasia,
+            produktiId: item.id,
+            cmimi: item.cmimiBaze,
+          })),
+        }
+      );
+      const porosiaVendosurId = response.data;
+      dispatch({ type: "EMPTY_CART" });
+      navigate(
+        "/checkout-success",
+        { state: { porosiaVendosurId } },
+        { replace: true }
+      );
+    } catch (error) {
+      if (error.response && error.response.status === 400) {
+        setShowCheckoutModal(false);
+        setShowConfirmationModal(false);
+        setErrorMessage(error.response.data);
+        setShowErrorPopUp(true);
+        console.log(error.response.data);
+      } else {
+        console.log("Unexpected error occured.");
+      }
+    }
     // }
   }
   return (
     <>
+      <ProductPopUp
+        show={showErrorPopUp}
+        onHide={() => setShowErrorPopUp(false)}
+        notificationType={errorMessage}
+        error="true"
+      />
+
       <Modal show={showCheckoutModal} onHide={props.mbyllTeDhenat} centered>
         <Modal.Header>
-          <Modal.Title className="crudFormLabel">
-            Checkout Form
-          </Modal.Title>
+          <Modal.Title className="crudFormLabel">Checkout Form</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <Form>
@@ -480,25 +495,23 @@ export default function TeDhenatKlientit(props) {
             )}
           </Form>
           <Form.Group controlId="metodaPageses">
-              <Form.Label>
-                Perzgjedh metoden e pageses
-              </Form.Label>
-              <div className="pagesa-butonat">
-                <Button
-                  className="crudFormeSubmitButoni"
-                  onClick={handleKonfirmimin}
-                  variant="contained"
-                >
-                  Paguaj Pas Pranimit <FontAwesomeIcon icon={faMoneyBillWave} />
-                </Button>
-                <Button
-                  className="crudFormeSubmitButoni"
-                  onClick={vazhdoPagesen}
-                  variant="contained"
-                >
-                  Paguaj Me Stripe <FontAwesomeIcon icon={faCreditCard}/>
-                </Button>
-              </div>
+            <Form.Label>Perzgjedh metoden e pageses</Form.Label>
+            <div className="pagesa-butonat">
+              <Button
+                className="crudFormeSubmitButoni"
+                onClick={handleKonfirmimin}
+                variant="contained"
+              >
+                Paguaj Pas Pranimit <FontAwesomeIcon icon={faMoneyBillWave} />
+              </Button>
+              <Button
+                className="crudFormeSubmitButoni"
+                onClick={vazhdoPagesen}
+                variant="contained"
+              >
+                Paguaj Me Stripe <FontAwesomeIcon icon={faCreditCard} />
+              </Button>
+            </div>
           </Form.Group>
         </Modal.Body>
         <Modal.Footer>
@@ -512,11 +525,11 @@ export default function TeDhenatKlientit(props) {
         </Modal.Footer>
       </Modal>
 
-      <ConfirmationModal 
-      showConfirmationModal= {showConfirmationModal}
-      closeConfirmationModal={()=>setShowConfirmationModal(false)}
-      openCheckout={()=>setShowCheckoutModal(true)}
-      vendosPorosine={paguajPasPranimit}
+      <ConfirmationModal
+        showConfirmationModal={showConfirmationModal}
+        closeConfirmationModal={() => setShowConfirmationModal(false)}
+        openCheckout={() => setShowCheckoutModal(true)}
+        vendosPorosine={paguajPasPranimit}
       />
     </>
   );
