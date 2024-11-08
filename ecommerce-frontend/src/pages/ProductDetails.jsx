@@ -6,7 +6,6 @@ import { faHeart } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import "../components/ProductComponents/Styles/ProductsDetails.css";
 import { faShoppingBag } from "@fortawesome/free-solid-svg-icons";
-import ProductImageModal from "../components/ProductComponents/ProductImageModal";
 import ProductPopUp from "../components/ProductComponents/ProductPopUp";
 import { useEffect } from "react";
 import Footer from "./Home/Footer";
@@ -22,6 +21,7 @@ import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 import AttributesTab from "components/ProductComponents/AttributesTab";
 import Reviews from "components/Review/ReviewsByProduct/Reviews";
+import { Carousel } from "react-bootstrap";
 
 const ProductDetails = () => {
   const { productID } = useParams();
@@ -31,7 +31,6 @@ const ProductDetails = () => {
   const [loading, setLoading] = useState(true);
   const [showMore, setShowMore] = useState(false);
   const [sasia, setSasia] = useState(1);
-  const [modalShow, setModalShow] = useState(false); // model me qene initially hidden
   const [addedToWishlist, setAddedToWishlist] = useState(false); // kur tbohet funksionale kjo pjese ka me kqyr nese useri osht logged in , edhe a e ka produktin me ket id ne wishliste , direkt prej ktu ma mujt edhe me hek ose me shtu
   const [showPopUp, setShowPopUp] = useState(false);
   const [addedToCart, setAddedToCart] = useState(false);
@@ -42,8 +41,12 @@ const ProductDetails = () => {
   const [userId, setUserId] = useState(null);
   const [wishlistItemId, setWishlistItemId] = useState(null);
   const loggedUser = JSON.parse(localStorage.getItem("userDetails"));
+  const [index, setIndex] = useState(0);
   const { state, dispatch } = useCart();
-
+  
+  const handleSelect = (selectedIndex, e) => {
+    setIndex(selectedIndex);
+  };
   useEffect(() => {
     if (loggedUser) {
       setUserId(parseInt(loggedUser.userId));
@@ -107,7 +110,6 @@ const ProductDetails = () => {
     }
   }, [showPopUp]);
 
-
   useEffect(() => {
     if (stockWarning) {
       const timer = setTimeout(() => {
@@ -146,10 +148,6 @@ const ProductDetails = () => {
     setAddedToCart(true);
 
     setShowPopUp(true);
-  };
-
-  const handleImageClick = () => {
-    setModalShow(true);
   };
 
   const toggleDescription = () => {
@@ -263,28 +261,36 @@ const ProductDetails = () => {
           ) : (
             <div className="product-details-container">
               <div className="products-details-box">
-                <div className="product-image">
-                  <img
-                    src={"/images/" + foundProduct.img}
-                    alt={foundProduct.name}
-                    // className="img-fluid"
-                    // style={{width:"500px",height:"500px"}}
-                    onClick={handleImageClick} // kur te klikohet fotoja,shfaqet Modal
-                  />
-                  <ProductImageModal
-                    show={modalShow}
-                    name={foundProduct.name}
-                    description={foundProduct.description}
-                    img={"/images/" + foundProduct.img}
-                    alt={foundProduct.name}
-                    onHide={() => setModalShow(false)}
-                  />
-                  {/* <img
-                  src={placeholderimg}
-                  alt={foundProduct.name}
-                  className="img-fluid"
-                /> */}
-                </div>
+                <Carousel
+                activeIndex={index} onSelect={handleSelect}
+                interval={null}
+                >
+                  <Carousel.Item className="carousel-item">
+                    <div className="product-image">
+                      <img
+                        src={"/images/" + foundProduct.img}
+                        alt={foundProduct.name}
+                      />
+                    </div>
+                  </Carousel.Item>
+                  <Carousel.Item className="carousel-item">
+                    <div className="product-image">
+                      <img
+                        src={"/images/" + foundProduct.img}
+                        alt={foundProduct.name}
+                      />
+                    </div>
+                  </Carousel.Item>
+                  <Carousel.Item className="carousel-item">
+                    <div className="product-image">
+                      <img
+                        src={"/images/" + foundProduct.img}
+                        alt={foundProduct.name}
+                      />
+                    </div>
+                  </Carousel.Item>
+                </Carousel>
+
                 <div className="product-info">
                   <div className="d-flex flex-column h-100 justify-content-between align-items-center">
                     <div>
@@ -368,7 +374,8 @@ const ProductDetails = () => {
                           handleAddToCart();
                         }}
                       >
-                        {foundProduct.stock? "Add to Cart" : "Out of Stock"} <FontAwesomeIcon icon={faShoppingBag} />
+                        {foundProduct.stock ? "Add to Cart" : "Out of Stock"}{" "}
+                        <FontAwesomeIcon icon={faShoppingBag} />
                       </button>
                       <button
                         type="button"
@@ -393,7 +400,7 @@ const ProductDetails = () => {
               </div>
             </div>
           )}
-          <div style={{borderTop:"2px solid #322b9c",marginTop:"20px"}}>
+          <div style={{ borderTop: "2px solid #322b9c", marginTop: "20px" }}>
             <Tabs
               value={selectedTab}
               onChange={handleChange}
@@ -416,7 +423,7 @@ const ProductDetails = () => {
                   display: "flex",
                   justifyContent: "center",
                   flexWrap: "wrap",
-                  paddingTop:"10px"
+                  paddingTop: "10px",
                 },
               }}
             >
@@ -427,10 +434,10 @@ const ProductDetails = () => {
               <Tab value="reviews" label="Reviews" />
             </Tabs>
             {selectedTab === "reviews" && (
-              <Reviews 
-                productID = {foundProduct.id}
-                productRating = {productRating}
-                refreshProductRating = {()=>setRefreshKey(Date.now())}
+              <Reviews
+                productID={foundProduct.id}
+                productRating={productRating}
+                refreshProductRating={() => setRefreshKey(Date.now())}
               />
             )}
             {selectedTab === "additionalInformation" && (
@@ -440,9 +447,9 @@ const ProductDetails = () => {
                   // style={{
                   //   width: "300px",
                   //   padding:"60px 0px",
-               
+
                   // }}
-                  className="atributes-table-container" 
+                  className="atributes-table-container"
                 >
                   <AttributesTab id={foundProduct.id} />
                 </div>
@@ -459,4 +466,3 @@ const ProductDetails = () => {
 };
 
 export default ProductDetails;
-
