@@ -18,7 +18,7 @@ namespace ECommerceAPI.UsersModule.Controllers
 
         [HttpGet]
         [Route("GetAllUsers")]
-      //  [Authorize(Roles = "Admin,Menaxher")]
+        [Authorize(Roles = "Admin,Menaxher")]
         public async Task<IActionResult> Get()
         {
 
@@ -29,7 +29,7 @@ namespace ECommerceAPI.UsersModule.Controllers
 
         [HttpPost]
         [Route("shtoRolinUserit/{userId}")]
-     //   [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> ShtoRolinUserit(string userId, [FromBody] RoliDTO roliDto)
         {
             var aspNetUser = await _useriRoletService.GetAspNetUserAsync(userId);
@@ -51,7 +51,7 @@ namespace ECommerceAPI.UsersModule.Controllers
 
         [HttpDelete]
         [Route("largoRolinPerdoruesit/{userId}")]
-     //   [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> LargoRolinPerdoruesit(string userId, [FromBody] RoliDTO roliDto)
         {
             var aspNetUser = await _useriRoletService.GetAspNetUserAsync(userId);
@@ -74,7 +74,7 @@ namespace ECommerceAPI.UsersModule.Controllers
 
         [HttpGet]
         [Route("shfaqRoletPerTuShtuar/{userId}")] // mi shfaq rolet qe nuk i ka ky perdorues ne dropdown per shtim te roleve!
-      //  [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> ShfaqRoletPerTuShtuar(string userId)
         {
             try
@@ -90,7 +90,7 @@ namespace ECommerceAPI.UsersModule.Controllers
 
         [HttpGet]
         [Route("shfaqRoletPerTuFshire/{userId}")]
-    //    [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> ShfaqRoletPerTuFshire(string userId)
         {
             try
@@ -106,7 +106,7 @@ namespace ECommerceAPI.UsersModule.Controllers
 
         [HttpGet]
         [Route("getAspNetUser/{userId}")]
-    //    [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> GetAspNetUser(string userId)
         {
             var aspNetUser = await _useriRoletService.GetAspNetUserAsync(userId);

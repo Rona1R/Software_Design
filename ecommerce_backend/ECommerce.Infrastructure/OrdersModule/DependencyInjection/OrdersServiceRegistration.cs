@@ -1,4 +1,7 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using ECommerce.Application.OrdersModule.Interfaces;
+using ECommerce.Application.OrdersModule.Services;
+using ECommerce.Infrastructure.OrdersModule.Repositories;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace ECommerce.Infrastructure.OrdersModule.DependencyInjection
 {
@@ -8,6 +11,9 @@ namespace ECommerce.Infrastructure.OrdersModule.DependencyInjection
         {
 
             // mapping with interfaces for Orders Module will be added here
+
+            services.AddScoped<IOrdersRepository, OrdersRepository>();
+            services.AddScoped<IOrdersService, OrdersService>();
 
             return services;
         }
