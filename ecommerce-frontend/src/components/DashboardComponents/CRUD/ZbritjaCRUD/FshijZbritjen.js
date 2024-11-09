@@ -11,7 +11,7 @@ export default function FshijZbritjen(props) {
     async function fshijZbritjen(){
         if(props.id){
             try {
-               const response = axios
+               const response =await axios
                 .delete(`https://localhost:7061/api/Zbritja/fshijZbritjen/${props.id}`
                  )
                 // .then((response) => {

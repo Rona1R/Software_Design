@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace ECommerce.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class entitiesAdded : Migration
+    public partial class allEntitiesAdded : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -280,7 +280,9 @@ namespace ECommerce.Infrastructure.Migrations
                         name: "FK_User_AchievementBadge_Badge_Id",
                         column: x => x.Badge_Id,
                         principalTable: "AchievementBadge",
-                        principalColumn: "Badge_Id");
+                        principalColumn: "Badge_Id",
+                        onDelete: ReferentialAction.SetNull
+                        );
                     table.ForeignKey(
                         name: "FK_User_AspNetUsers_AspNetUserId",
                         column: x => x.AspNetUserId,
@@ -399,7 +401,9 @@ namespace ECommerce.Infrastructure.Migrations
                         name: "FK_Wishlist_User_IdKlienti",
                         column: x => x.IdKlienti,
                         principalTable: "User",
-                        principalColumn: "User_Id");
+                        principalColumn: "User_Id",
+                        onDelete: ReferentialAction.Cascade
+                        );
                 });
 
             migrationBuilder.CreateTable(
@@ -428,12 +432,16 @@ namespace ECommerce.Infrastructure.Migrations
                         name: "FK_Produkti_Kategoria_Kategoria_ID",
                         column: x => x.Kategoria_ID,
                         principalTable: "Kategoria",
-                        principalColumn: "Kategoria_ID");
+                        principalColumn: "Kategoria_ID",
+                        onDelete: ReferentialAction.Cascade
+                        );
                     table.ForeignKey(
                         name: "FK_Produkti_Kompania_Kompania_ID",
                         column: x => x.Kompania_ID,
                         principalTable: "Kompania",
-                        principalColumn: "Kompania_ID");
+                        principalColumn: "Kompania_ID",
+                        onDelete: ReferentialAction.Cascade
+                        );
                     table.ForeignKey(
                         name: "FK_Produkti_NenKategoria_NenKategoria_ID",
                         column: x => x.NenKategoria_ID,
@@ -443,7 +451,9 @@ namespace ECommerce.Infrastructure.Migrations
                         name: "FK_Produkti_Zbritja_Zbritja_ID",
                         column: x => x.Zbritja_ID,
                         principalTable: "Zbritja",
-                        principalColumn: "Zbritja_ID");
+                        principalColumn: "Zbritja_ID",
+                        onDelete: ReferentialAction.SetNull
+                        );
                 });
 
             migrationBuilder.CreateTable(
@@ -521,12 +531,16 @@ namespace ECommerce.Infrastructure.Migrations
                         name: "FK_Review_Produkti_Produkti_ID",
                         column: x => x.Produkti_ID,
                         principalTable: "Produkti",
-                        principalColumn: "Produkti_ID");
+                        principalColumn: "Produkti_ID",
+                        onDelete: ReferentialAction.Cascade
+                        );
                     table.ForeignKey(
                         name: "FK_Review_User_User_Id",
                         column: x => x.User_Id,
                         principalTable: "User",
-                        principalColumn: "User_Id");
+                        principalColumn: "User_Id",
+                         onDelete: ReferentialAction.Cascade
+                        );
                 });
 
             migrationBuilder.CreateTable(
@@ -551,7 +565,9 @@ namespace ECommerce.Infrastructure.Migrations
                         name: "FK_WishlistItem_Wishlist_WishlistId",
                         column: x => x.WishlistId,
                         principalTable: "Wishlist",
-                        principalColumn: "WishlistId");
+                        principalColumn: "WishlistId",
+                        onDelete: ReferentialAction.Cascade
+                        );
                 });
 
             migrationBuilder.CreateIndex(

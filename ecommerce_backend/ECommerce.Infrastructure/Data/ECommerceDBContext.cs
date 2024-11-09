@@ -48,7 +48,7 @@ namespace ECommerce.Infrastructure.Data
 
         public DbSet<ProduktiAtributi> ProduktiAtributi { get; set; }
 
-        public DbSet<AtributiOption> AtributiOption { get; set; }  
+        public DbSet<AtributiOption> AtributiOption { get; set; }
 
     }
 }
