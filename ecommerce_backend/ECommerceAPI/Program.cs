@@ -1,7 +1,6 @@
 using System.Text.Json.Serialization;
 using System.Text.Json;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
@@ -13,6 +12,7 @@ using ECommerce.Infrastructure.ProduktetModule.DependencyInjection;
 using ECommerce.Infrastructure.UsersModule.DependencyInjection;
 using ECommerceAPI.UsersModule.Security;
 using ECommerce.Infrastructure.Data;
+using ECommerce.Infrastructure.Configurations;
 
 internal class Program
 {
@@ -20,10 +20,12 @@ internal class Program
     {
         var builder = WebApplication.CreateBuilder(args);
 
-         builder.Services.AddDbContext<ECommerceDBContext>(options =>
-         {
-           options.UseSqlServer(builder.Configuration.GetConnectionString("Conn"));
-          }, ServiceLifetime.Scoped);
+        //builder.Services.AddDbContext<ECommerceDBContext>(options =>
+        //{
+        //    options.UseSqlServer(builder.Configuration.GetConnectionString("Conn"));
+        //}, ServiceLifetime.Scoped);
+
+        builder.Services.AddDbContext(builder.Configuration);
 
 
         builder.Services.AddScoped<TokenService>();

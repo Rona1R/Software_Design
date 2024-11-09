@@ -4,6 +4,7 @@ using ECommerce.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ECommerce.Infrastructure.Migrations
 {
     [DbContext(typeof(ECommerceDBContext))]
-    partial class ECommerceDBContextModelSnapshot : ModelSnapshot
+    [Migration("20241109181400_addedTestEntity")]
+    partial class addedTestEntity
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -36,7 +39,7 @@ namespace ECommerce.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("HomeVideos", (string)null);
+                    b.ToTable("HomeVideos");
                 });
 
             modelBuilder.Entity("ECommerce.Domain.BusinessModule.Entities.TeDhenatBiznesit", b =>
@@ -77,7 +80,7 @@ namespace ECommerce.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("TeDhenatBiznesit", (string)null);
+                    b.ToTable("TeDhenatBiznesit");
                 });
 
             modelBuilder.Entity("ECommerce.Domain.KataloguModule.Entities.Kategoria", b =>
@@ -99,7 +102,7 @@ namespace ECommerce.Infrastructure.Migrations
 
                     b.HasKey("Kategoria_ID");
 
-                    b.ToTable("Kategoria", (string)null);
+                    b.ToTable("Kategoria");
                 });
 
             modelBuilder.Entity("ECommerce.Domain.KataloguModule.Entities.Kompania", b =>
@@ -118,7 +121,7 @@ namespace ECommerce.Infrastructure.Migrations
 
                     b.HasKey("Kompania_ID");
 
-                    b.ToTable("Kompania", (string)null);
+                    b.ToTable("Kompania");
                 });
 
             modelBuilder.Entity("ECommerce.Domain.KataloguModule.Entities.NenKategoria", b =>
@@ -142,7 +145,7 @@ namespace ECommerce.Infrastructure.Migrations
 
                     b.HasIndex("Kategoria_ID");
 
-                    b.ToTable("NenKategoria", (string)null);
+                    b.ToTable("NenKategoria");
                 });
 
             modelBuilder.Entity("ECommerce.Domain.OrdersModule.Entities.Porosia", b =>
@@ -197,7 +200,7 @@ namespace ECommerce.Infrastructure.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Porosia", (string)null);
+                    b.ToTable("Porosia");
                 });
 
             modelBuilder.Entity("ECommerce.Domain.OrdersModule.Entities.PorosiaItem", b =>
@@ -226,7 +229,7 @@ namespace ECommerce.Infrastructure.Migrations
 
                     b.HasIndex("Produkti_ID");
 
-                    b.ToTable("PorosiaItem", (string)null);
+                    b.ToTable("PorosiaItem");
                 });
 
             modelBuilder.Entity("ECommerce.Domain.ProduktetModule.Entities.AchievementBadge", b =>
@@ -245,7 +248,7 @@ namespace ECommerce.Infrastructure.Migrations
 
                     b.HasKey("Badge_Id");
 
-                    b.ToTable("AchievementBadge", (string)null);
+                    b.ToTable("AchievementBadge");
                 });
 
             modelBuilder.Entity("ECommerce.Domain.ProduktetModule.Entities.Atributi", b =>
@@ -266,7 +269,7 @@ namespace ECommerce.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Atributi", (string)null);
+                    b.ToTable("Atributi");
                 });
 
             modelBuilder.Entity("ECommerce.Domain.ProduktetModule.Entities.AtributiOption", b =>
@@ -288,7 +291,7 @@ namespace ECommerce.Infrastructure.Migrations
 
                     b.HasIndex("AtributiId");
 
-                    b.ToTable("AtributiOption", (string)null);
+                    b.ToTable("AtributiOption");
                 });
 
             modelBuilder.Entity("ECommerce.Domain.ProduktetModule.Entities.Produkti", b =>
@@ -345,7 +348,7 @@ namespace ECommerce.Infrastructure.Migrations
 
                     b.HasIndex("Zbritja_ID");
 
-                    b.ToTable("Produkti", (string)null);
+                    b.ToTable("Produkti");
                 });
 
             modelBuilder.Entity("ECommerce.Domain.ProduktetModule.Entities.ProduktiAtributi", b =>
@@ -372,7 +375,7 @@ namespace ECommerce.Infrastructure.Migrations
 
                     b.HasIndex("ProduktiId");
 
-                    b.ToTable("ProduktiAtributi", (string)null);
+                    b.ToTable("ProduktiAtributi");
                 });
 
             modelBuilder.Entity("ECommerce.Domain.ProduktetModule.Entities.Review", b =>
@@ -407,7 +410,24 @@ namespace ECommerce.Infrastructure.Migrations
 
                     b.HasIndex("User_Id");
 
-                    b.ToTable("Review", (string)null);
+                    b.ToTable("Review");
+                });
+
+            modelBuilder.Entity("ECommerce.Domain.ProduktetModule.Entities.TestEntity", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("TestEntity");
                 });
 
             modelBuilder.Entity("ECommerce.Domain.ProduktetModule.Entities.Wishlist", b =>
@@ -425,7 +445,7 @@ namespace ECommerce.Infrastructure.Migrations
 
                     b.HasIndex("IdKlienti");
 
-                    b.ToTable("Wishlist", (string)null);
+                    b.ToTable("Wishlist");
                 });
 
             modelBuilder.Entity("ECommerce.Domain.ProduktetModule.Entities.WishlistItem", b =>
@@ -448,7 +468,7 @@ namespace ECommerce.Infrastructure.Migrations
 
                     b.HasIndex("WishlistId");
 
-                    b.ToTable("WishlistItem", (string)null);
+                    b.ToTable("WishlistItem");
                 });
 
             modelBuilder.Entity("ECommerce.Domain.ProduktetModule.Entities.Zbritja", b =>
@@ -473,7 +493,7 @@ namespace ECommerce.Infrastructure.Migrations
 
                     b.HasKey("Zbritja_ID");
 
-                    b.ToTable("Zbritja", (string)null);
+                    b.ToTable("Zbritja");
                 });
 
             modelBuilder.Entity("ECommerce.Domain.UsersModule.Entities.Adresa", b =>
@@ -513,7 +533,7 @@ namespace ECommerce.Infrastructure.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Adresa", (string)null);
+                    b.ToTable("Adresa");
                 });
 
             modelBuilder.Entity("ECommerce.Domain.UsersModule.Entities.User", b =>
@@ -547,7 +567,7 @@ namespace ECommerce.Infrastructure.Migrations
 
                     b.HasIndex("Badge_Id");
 
-                    b.ToTable("User", (string)null);
+                    b.ToTable("User");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
