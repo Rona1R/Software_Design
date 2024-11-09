@@ -1,5 +1,6 @@
-﻿using ECommerce.Application.ProduktetModule.ViewModels;
-using ECommerce.Domain.ProduktetModule.Entities;
+﻿using ECommerce.Application.Exceptions;
+using ECommerce.Application.ProduktetModule.Interfaces;
+using ECommerce.Application.ProduktetModule.ViewModels;
 using ECommerce.Infrastructure.Data;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -13,10 +14,12 @@ namespace ECommerceAPI.ProduktetModule.Controllers
     public class WishlistItemsController : ControllerBase
     {
         private readonly ECommerceDBContext _context;
+        private readonly IWishlistService _wishlistService;
 
-        public WishlistItemsController(ECommerceDBContext context)
+        public WishlistItemsController(ECommerceDBContext context,IWishlistService wishlistService)
         {
             _context = context;
+            _wishlistService = wishlistService;
         }
 
         [HttpPost]
@@ -24,53 +27,67 @@ namespace ECommerceAPI.ProduktetModule.Controllers
         [Authorize]
         public async Task<IActionResult> Post([FromBody] WishlistItemVM wishlistItemVM)
         {
-
             if (wishlistItemVM == null || wishlistItemVM.IdKlienti == null || wishlistItemVM.Produkti_ID == null)
             {
                 return BadRequest("Invalid input.");
             }
 
-            var produkti = await _context.Produkti.FindAsync(wishlistItemVM.Produkti_ID);
-
-            if (produkti == null)
-            {
-                return NotFound("Product not found.");
-            }
-
-            // me kqyr a ka te krijume wishlist perdoruesi
-            var ekzistonWishlist = await _context.Wishlist.FirstOrDefaultAsync(w => w.IdKlienti == wishlistItemVM.IdKlienti);
-            if (ekzistonWishlist == null) // nuk ka Wishlist, krijon
-            {
-                var wishlista = new Wishlist()
-                {
-                    IdKlienti = wishlistItemVM.IdKlienti,
-                };
-
-                await _context.Wishlist.AddAsync(wishlista);
-                await _context.SaveChangesAsync();
-            }
-
-
-            var userWishlist = await _context.Wishlist.FirstOrDefaultAsync(w => w.IdKlienti == wishlistItemVM.IdKlienti);
-            var wishlistItem = new WishlistItem
-            {
-                WishlistId = userWishlist.WishlistId,
-                Produkti_ID = produkti.Produkti_ID,
-
-            };
-
-            await _context.WishlistItem.AddAsync(wishlistItem);
-
             try
             {
-                await _context.SaveChangesAsync();
+                await _wishlistService.AddToWishlistAsync(wishlistItemVM);
+                return Ok("Product was added to Wishlist!");
             }
-            catch (DbUpdateConcurrencyException)
+            catch (NotFoundException)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError, "Error saving changes to the database.");
+                return NotFound();
             }
 
-            return CreatedAtAction(nameof(Post), new { id = wishlistItem.WishlistItemId }, wishlistItem);
+            //if (wishlistItemVM == null || wishlistItemVM.IdKlienti == null || wishlistItemVM.Produkti_ID == null)
+            //{
+            //    return BadRequest("Invalid input.");
+            //}
+
+            //var produkti = await _context.Produkti.FindAsync(wishlistItemVM.Produkti_ID);
+
+            //if (produkti == null)
+            //{
+            //    return NotFound("Product not found.");
+            //}
+
+            //// me kqyr a ka te krijume wishlist perdoruesi
+            //var ekzistonWishlist = await _context.Wishlist.FirstOrDefaultAsync(w => w.IdKlienti == wishlistItemVM.IdKlienti);
+            //if (ekzistonWishlist == null) // nuk ka Wishlist, krijon
+            //{
+            //    var wishlista = new Wishlist()
+            //    {
+            //        IdKlienti = wishlistItemVM.IdKlienti,
+            //    };
+
+            //    await _context.Wishlist.AddAsync(wishlista);
+            //    await _context.SaveChangesAsync();
+            //}
+
+
+            //var userWishlist = await _context.Wishlist.FirstOrDefaultAsync(w => w.IdKlienti == wishlistItemVM.IdKlienti);
+            //var wishlistItem = new WishlistItem
+            //{
+            //    WishlistId = userWishlist.WishlistId,
+            //    Produkti_ID = produkti.Produkti_ID,
+
+            //};
+
+            //await _context.WishlistItem.AddAsync(wishlistItem);
+
+            //try
+            //{
+            //    await _context.SaveChangesAsync();
+            //}
+            //catch (DbUpdateConcurrencyException)
+            //{
+            //    return StatusCode(StatusCodes.Status500InternalServerError, "Error saving changes to the database.");
+            //}
+
+            //return CreatedAtAction(nameof(Post), new { id = wishlistItem.WishlistItemId }, wishlistItem);
         }
         /*
 

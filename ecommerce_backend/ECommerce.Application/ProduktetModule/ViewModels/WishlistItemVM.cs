@@ -2,7 +2,7 @@
 {
     public class WishlistItemVM
     {
-        public int? IdKlienti { get; set; }
-        public int? Produkti_ID { get; set; }
+        public int IdKlienti { get; set; }
+        public int Produkti_ID { get; set; }
     }
 }
