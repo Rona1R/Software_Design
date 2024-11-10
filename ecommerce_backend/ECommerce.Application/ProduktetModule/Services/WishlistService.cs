@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ECommerce.Application.Exceptions;
+using ECommerce.Application.ProduktetModule.DTOs;
 using ECommerce.Application.ProduktetModule.Interfaces;
 using ECommerce.Application.ProduktetModule.ViewModels;
 
@@ -42,5 +43,21 @@ namespace ECommerce.Application.ProduktetModule.Services
 
         }
 
+        public async Task RemoveWishlistItemAsync(int wishlistItemId)
+        {
+            var wishlistItem = await _wishlistRepository.GetWishlistItemByIdAsync(wishlistItemId);  
+
+            if(wishlistItem == null)
+            {
+                throw new NotFoundException();
+            }
+
+            await _wishlistRepository.RemoveWishlistItemAsync(wishlistItem);
+        }
+
+        public async Task<WishlistItemResponse> IsInWishlistAsync(int productId,int userId)
+        {
+            return await _wishlistRepository.IsInWishlistAsync(productId, userId);
+        }
     }
 }
