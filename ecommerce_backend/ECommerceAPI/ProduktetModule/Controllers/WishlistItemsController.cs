@@ -1,11 +1,9 @@
 ﻿using ECommerce.Application.Exceptions;
 using ECommerce.Application.ProduktetModule.Interfaces;
 using ECommerce.Application.ProduktetModule.ViewModels;
-using ECommerce.Infrastructure.Data;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+
 
 namespace ECommerceAPI.ProduktetModule.Controllers
 {
@@ -13,12 +11,10 @@ namespace ECommerceAPI.ProduktetModule.Controllers
     [ApiController]
     public class WishlistItemsController : ControllerBase
     {
-        private readonly ECommerceDBContext _context;
         private readonly IWishlistService _wishlistService;
 
-        public WishlistItemsController(ECommerceDBContext context,IWishlistService wishlistService)
+        public WishlistItemsController(IWishlistService wishlistService)
         {
-            _context = context;
             _wishlistService = wishlistService;
         }
 
@@ -72,36 +68,15 @@ namespace ECommerceAPI.ProduktetModule.Controllers
         [Authorize]
         public async Task<IActionResult> GetWishlistByUserId(int userId)
         {
-            var wishlist = await _context.Wishlist
-                .Include(w => w.WishlistItem)
-                .ThenInclude(wi => wi.Produkti)
-                   .ThenInclude(p => p.Zbritja)
-                .FirstOrDefaultAsync(w => w.IdKlienti == userId);
-
-            if (wishlist == null)
+            try
+            {
+                return Ok(await _wishlistService.GetWishlistItemsByUserIdAsnyc(userId));    
+            }
+            catch (NotFoundException)
             {
                 return NotFound("Wishlist not found for the given user.");
             }
 
-            var wishlistVM = new WishlistVM
-            {
-                IdKlienti = wishlist.IdKlienti
-            };
-
-            var productVMs = wishlist.WishlistItem.Select(wi => new ProductWishlistVM
-            {
-                WishlistItemId = wi.WishlistItemId,
-                Produkti_ID = wi.Produkti_ID,
-                EmriProdukti = wi.Produkti.EmriProdukti,
-                PershkrimiProduktit = wi.Produkti.PershkrimiProduktit,
-                CmimiPerCope = wi.Produkti.Zbritja != null && wi.Produkti.Zbritja.DataSkadimit >= DateTime.Now
-                           ? wi.Produkti.CmimiPerCope - (decimal)wi.Produkti.Zbritja.PerqindjaZbritjes / 100 * wi.Produkti.CmimiPerCope
-                           : wi.Produkti.CmimiPerCope,
-                FotoProduktit = wi.Produkti.FotoProduktit
-
-            }).ToList();
-
-            return Ok(new { Wishlist = wishlistVM, Produkti = productVMs });
         }
     }
 }

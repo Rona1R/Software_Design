@@ -25,7 +25,11 @@ namespace ECommerce.Infrastructure.ProduktetModule.Repositories
 
         public async Task<Wishlist?> GetWishlistByUserIdAsync(int userId)
         {
-            return await _context.Wishlist.FirstOrDefaultAsync(w => w.IdKlienti == userId);
+            return await _context.Wishlist
+                .Include(w => w.WishlistItem)
+                .ThenInclude(wi => wi.Produkti)
+                   .ThenInclude(p => p.Zbritja)
+                .FirstOrDefaultAsync(w => w.IdKlienti == userId);
         }
 
         public async Task CreateWishlistAsync(int userId)
@@ -80,6 +84,25 @@ namespace ECommerce.Infrastructure.ProduktetModule.Repositories
             {
                 return new WishlistItemResponse { Exists = true, NdodhetNeWishliste = ndodhetNeWishliste };
             }
+        }
+
+        public WishlistByUserDTO GetWishlistItems(Wishlist wishlist)
+        {
+            var productVMs = wishlist.WishlistItem.Select(wi => new ProductWishlistVM
+            {
+                WishlistItemId = wi.WishlistItemId,
+                Produkti_ID = wi.Produkti_ID,
+                EmriProdukti = wi.Produkti.EmriProdukti,
+                PershkrimiProduktit = wi.Produkti.PershkrimiProduktit,
+                NeShitje = wi.Produkti.NeShitje,
+                CmimiPerCope = wi.Produkti.Zbritja != null && wi.Produkti.Zbritja.DataSkadimit >= DateTime.Now
+                       ? wi.Produkti.CmimiPerCope - (decimal)wi.Produkti.Zbritja.PerqindjaZbritjes / 100 * wi.Produkti.CmimiPerCope
+                       : wi.Produkti.CmimiPerCope,
+                FotoProduktit = wi.Produkti.FotoProduktit
+
+            }).ToList();
+
+           return new WishlistByUserDTO { Produkti = productVMs };
         }
     }
 }

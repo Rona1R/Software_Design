@@ -22,5 +22,7 @@ namespace ECommerce.Application.ProduktetModule.Interfaces
         Task RemoveWishlistItemAsync(WishlistItem wishlistItem);
 
         Task<WishlistItemResponse> IsInWishlistAsync(int productId, int userId);
+
+        WishlistByUserDTO GetWishlistItems(Wishlist wishlist);
     }
 }

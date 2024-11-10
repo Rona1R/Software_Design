@@ -75,7 +75,7 @@ const WishlistDetails = ({ userId, onRemove }) => {
             :(
                 wishlistProducts.length > 0 ? (
                     wishlistProducts.map(product => (
-                        product && product.produkti_ID ? (
+                        product && product.produkti_ID && product.neShitje? (
                             <div className="wishlist-card" key={product.produkti_ID} style={{ width: "350px", padding: "0px" }}>
                                 <Link to={`/ProductDetails/${product.produkti_ID}`}>
                                     <img src={"/images/"+product.fotoProduktit} alt={product.EmriProdukti || "Product Image"} className="wishlist-img" style={{ height: "320px" }} />

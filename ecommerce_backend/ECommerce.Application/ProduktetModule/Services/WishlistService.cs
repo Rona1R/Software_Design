@@ -59,5 +59,16 @@ namespace ECommerce.Application.ProduktetModule.Services
         {
             return await _wishlistRepository.IsInWishlistAsync(productId, userId);
         }
+
+        public async Task<WishlistByUserDTO> GetWishlistItemsByUserIdAsnyc(int  userId)
+        {
+            var wishlistExists = await _wishlistRepository.GetWishlistByUserIdAsync(userId);
+            if(wishlistExists == null)
+            {
+                throw new NotFoundException();  
+            }
+
+            return _wishlistRepository.GetWishlistItems(wishlistExists);
+        }
     }
 }

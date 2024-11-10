@@ -11,8 +11,10 @@
 
         public String? PershkrimiProduktit { get; set; }
 
-        public int? SasiaNeStok { get; set; }
+
+        public bool? NeShitje {  get; set; }
 
         public decimal? CmimiPerCope { get; set; }
     }
+
 }
