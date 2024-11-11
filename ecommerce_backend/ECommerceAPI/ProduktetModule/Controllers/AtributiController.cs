@@ -1,6 +1,7 @@
-﻿using ECommerce.Domain.ProduktetModule.Entities;
+﻿using ECommerce.Application.Exceptions;
+using ECommerce.Application.ProduktetModule.Interfaces;
+using ECommerce.Application.ProduktetModule.ViewModels;
 using ECommerce.Infrastructure.Data;
-using ECommerceAPI.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -13,10 +14,12 @@ namespace ECommerceAPI.ProduktetModule.Controllers
     public class AtributiController : ControllerBase
     {
         private readonly ECommerceDBContext _context;
+        private readonly IAtributiService _atributiService;
 
-        public AtributiController(ECommerceDBContext context)
+        public AtributiController(ECommerceDBContext context,IAtributiService atributiService)
         {
             _context = context;
+            _atributiService = atributiService; 
         }
 
         [HttpPost]
@@ -24,22 +27,15 @@ namespace ECommerceAPI.ProduktetModule.Controllers
         [Authorize(Roles = "Admin,Menaxher")]
         public async Task<IActionResult> Post([FromBody] AtributiVM atributiVM)
         {
-            var ekziston = await _context.Atributi.FirstOrDefaultAsync(a => a.Name.ToLower() == atributiVM.Name.ToLower());
 
-            if (ekziston != null)
+            try
             {
-                return BadRequest("Ky atribut ekzsiton! Zgjedh nje emer tjeter!");
+                await _atributiService.AddAttributeAsync(atributiVM);
+                return Ok("Atributi u krijua me sukses!");
+            }catch(AttributeExistsException ex)
+            {
+                return BadRequest(ex.Message);
             }
-
-            var atr = new Atributi()
-            {
-                Name = atributiVM.Name,
-                DataType = atributiVM.DataType,
-            };
-
-            await _context.Atributi.AddAsync(atr);
-            await _context.SaveChangesAsync();
-            return Ok("Atributi u krijua me sukses!");
         }
 
         [HttpGet]
@@ -47,8 +43,7 @@ namespace ECommerceAPI.ProduktetModule.Controllers
         [Authorize(Roles = "Admin,Menaxher")]
         public async Task<IActionResult> Get()
         {
-            var a = await _context.Atributi.OrderByDescending(a => a.Id).ToListAsync();
-            return Ok(a);
+            return Ok(await _atributiService.GetAllAsync());
         }
 
         [HttpGet]
@@ -56,8 +51,12 @@ namespace ECommerceAPI.ProduktetModule.Controllers
         [Authorize(Roles = "Admin,Menaxher")]
         public async Task<IActionResult> Get(int id)
         {
-            var atr = await _context.Atributi.FindAsync(id);
-            return Ok(atr);
+            try
+            {
+                return Ok(await _atributiService.GetAttributeByIdAsync(id));    
+            }catch(NotFoundException) { 
+                return NotFound();
+            }
         }
 
         [HttpPut]
