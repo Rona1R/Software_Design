@@ -24,7 +24,10 @@ namespace ECommerce.Infrastructure.ProduktetModule.DependencyInjection
             services.AddScoped<IReviewService, ReviewService>();    
 
             services.AddScoped<IWishlistRepository, WishlistRepository>();
-            services.AddScoped<IWishlistService, WishlistService>();    
+            services.AddScoped<IWishlistService, WishlistService>();
+
+            services.AddScoped<IAtributiRepository, AtributiRepository>();
+            services.AddScoped<IAtributiService, AtributiService>();
 
             return services;
         }
