@@ -15,5 +15,9 @@ namespace ECommerce.Application.ProduktetModule.Interfaces
         Task<List<Atributi>> GetAllAsync();
 
         Task<Atributi> GetAttributeByIdAsync(int id);
+
+        Task UpdateAttributeAsync(int id, string name);
+
+        Task RemoveAttributeAsync(int id);
     }
 }

@@ -31,6 +31,13 @@ namespace ECommerce.Infrastructure.ProduktetModule.Repositories
         {
             return await _context.Atributi.FirstOrDefaultAsync(a => a.Name.ToLower() == name.ToLower()) != null;
         }
+
+        public async Task<bool> AttributeExists(int id,string name)
+        {
+            return await _context.Atributi.FirstOrDefaultAsync(a => a.Name.ToLower() == name.ToLower()
+            && a.Id != id
+            ) !=null;
+        }
         public async Task AddAtributeAsync(AtributiVM atributiVM)
         {
             var atr = new Atributi()
@@ -49,6 +56,17 @@ namespace ECommerce.Infrastructure.ProduktetModule.Repositories
 
         }
 
+        public async Task UpdateAttributeAsync(Atributi atributi,string name)
+        {
+            atributi.Name = name;  
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task DeleteAttributeAsync(Atributi atributi)
+        {
+            _context.Atributi.Remove(atributi);
+            await _context.SaveChangesAsync();
+        }
         
     }
 }

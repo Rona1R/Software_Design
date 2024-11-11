@@ -1,11 +1,9 @@
 ﻿using ECommerce.Application.Exceptions;
 using ECommerce.Application.ProduktetModule.Interfaces;
 using ECommerce.Application.ProduktetModule.ViewModels;
-using ECommerce.Infrastructure.Data;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace ECommerceAPI.ProduktetModule.Controllers
 {
@@ -13,12 +11,10 @@ namespace ECommerceAPI.ProduktetModule.Controllers
     [ApiController]
     public class AtributiController : ControllerBase
     {
-        private readonly ECommerceDBContext _context;
         private readonly IAtributiService _atributiService;
 
-        public AtributiController(ECommerceDBContext context,IAtributiService atributiService)
+        public AtributiController(IAtributiService atributiService)
         {
-            _context = context;
             _atributiService = atributiService; 
         }
 
@@ -64,24 +60,17 @@ namespace ECommerceAPI.ProduktetModule.Controllers
         [Authorize(Roles = "Admin,Menaxher")]
         public async Task<IActionResult> Put(int id, [FromBody] AtributiVM atributiVM)
         {
-            var ekziston = await _context.Atributi.FirstOrDefaultAsync(a => a.Name.ToLower() == atributiVM.Name.ToLower()
-            && a.Id != id
-            );
-
-            if (ekziston != null)
+            try
             {
+                await _atributiService.UpdateAttributeAsync(id, atributiVM.Name);
+                return Ok("Emri i atributit u perditsua me sukses!");
+            }
+            catch(NotFoundException) {
+                return NotFound();
+            }catch(AttributeExistsException) {
                 return BadRequest("Ky atribut ekzsiton! Zgjedh nje emer tjeter!");
             }
 
-            var atr = await _context.Atributi.FindAsync(id);
-            if (atr == null)
-            {
-                return BadRequest("Atributi nuk u gjet.");
-            }
-
-            atr.Name = atributiVM.Name;
-            await _context.SaveChangesAsync();
-            return Ok("Emri i atributit u perditsua me sukses!");
         }
 
         [HttpDelete]
@@ -89,15 +78,14 @@ namespace ECommerceAPI.ProduktetModule.Controllers
         [Authorize(Roles = "Admin,Menaxher")]
         public async Task<IActionResult> Delete(int id)
         {
-            var atr = await _context.Atributi.FindAsync(id);
-            if (atr == null)
+            try
             {
-                return BadRequest("Atributi nuk u gjet");
-            }
 
-            _context.Atributi.Remove(atr);
-            await _context.SaveChangesAsync();
-            return Ok("Atributi u fshi me sukses");
+                await _atributiService.RemoveAttributeAsync(id);
+                return Ok("Atributi u fshi me sukses!");
+            }catch(NotFoundException) {
+                return NotFound();
+            }
         }
     }
 }

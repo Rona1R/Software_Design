@@ -13,8 +13,14 @@ namespace ECommerce.Application.ProduktetModule.Interfaces
         Task<Atributi?> GetAtributeFromDbAsync(int id);
 
         Task<bool> AttributeExists(string name);
+
+        Task<bool> AttributeExists(int id, string name);
         Task AddAtributeAsync(AtributiVM atributiVM);
 
         Task<List<Atributi>> GetAllAsync();
+
+        Task UpdateAttributeAsync(Atributi atributi, string name);
+
+        Task DeleteAttributeAsync(Atributi atributi);
     }
 }

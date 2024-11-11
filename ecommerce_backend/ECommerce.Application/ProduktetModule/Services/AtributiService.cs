@@ -47,5 +47,36 @@ namespace ECommerce.Application.ProduktetModule.Services
 
             return atributi;    
         }
+
+        public async Task UpdateAttributeAsync(int id, string name)
+        {
+            var ekiston = await _atributiRepository.AttributeExists(id,name);
+
+
+            if (ekiston)
+            {
+                throw new AttributeExistsException("Ky atribut ekziston ! Zgjedh nje emer tjeter!");
+            }
+
+            var atributi = await _atributiRepository.GetAtributeFromDbAsync(id);
+            if (atributi == null)
+            {
+                throw new NotFoundException();
+            }
+
+            await _atributiRepository.UpdateAttributeAsync(atributi, name); 
+        }
+
+        public async Task RemoveAttributeAsync(int id)
+        {
+            var atributi = await _atributiRepository.GetAtributeFromDbAsync(id);
+            if (atributi == null)
+            {
+                throw new NotFoundException();
+            }
+
+            await _atributiRepository.DeleteAttributeAsync(atributi);   
+
+        }
     }
 }
