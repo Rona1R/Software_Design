@@ -1,7 +1,9 @@
-﻿using ECommerce.Domain.KataloguModule.Entities;
+﻿using ECommerce.Application.KataloguModule.DTOs;
+using ECommerce.Application.KataloguModule.Interfaces;
+using ECommerce.Application.KataloguModule.ViewModels;
+using ECommerce.Domain.KataloguModule.Entities;
 using ECommerce.Infrastructure.Data;
 using ECommerceAPI.DTOs;
-using ECommerceAPI.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -14,10 +16,12 @@ namespace ECommerceAPI.KataloguModule.Controllers
     public class KategoriaController : ControllerBase
     {
         private readonly ECommerceDBContext _context;
+        private readonly IKategoriaService _kategoriaService;
 
-        public KategoriaController(ECommerceDBContext context)
+        public KategoriaController(ECommerceDBContext context,IKategoriaService kategoriaService)
         {
             _context = context;
+            _kategoriaService = kategoriaService;
         }
 
         [HttpPost]
@@ -25,17 +29,8 @@ namespace ECommerceAPI.KataloguModule.Controllers
         [Authorize(Roles = "Admin,Menaxher")]
         public async Task<IActionResult> Post([FromBody] KategoriaVM kategoria)
         {
-            var k = new Kategoria()
-            {
-                EmriKategorise = kategoria.Emri,
-                Pershkrimi = kategoria.Pershkrimi
-            };
-
-            await _context.Kategoria.AddAsync(k);
-            await _context.SaveChangesAsync();
-
-            //  return Ok("Kategoria u shtua me sukses");
-            return CreatedAtAction(nameof(Post), new { id = k.Kategoria_ID }, k);
+            await _kategoriaService.CreateCategoryAsync(kategoria);
+            return Ok("Kategoria u shtua me sukses!");
         }
 
 
@@ -44,17 +39,7 @@ namespace ECommerceAPI.KataloguModule.Controllers
         [Authorize(Roles = "Admin,Menaxher")]
         public async Task<IActionResult> Get()
         {
-            var kategorite = await _context.Kategoria
-                .OrderByDescending(k => k.CreatedAt)
-                .Select(k => new KategoriaDTO
-                {
-                    Id = k.Kategoria_ID,
-                    Emri = k.EmriKategorise,
-                    Pershkrimi = k.Pershkrimi
-                })
-                 .ToListAsync();
-
-            return Ok(kategorite);
+            return Ok(await _kategoriaService.GetAllAsync());
         }
 
         [HttpGet]
@@ -62,22 +47,7 @@ namespace ECommerceAPI.KataloguModule.Controllers
         public async Task<IActionResult> ShfaqaKategoriteNenkategorite()
         {
             var teDhenat =
-                await _context.Kategoria
-                .Include(k => k.NenKategoria)
-                .OrderByDescending(k => k.CreatedAt)
-                .Select(k => new CategoryDTO
-                {
-                    CategoryId = k.Kategoria_ID,
-                    CategoryName = k.EmriKategorise,
-                    SubCategory = k.NenKategoria.Select(
-                        nk => new SubCategoryDTO
-                        {
-                            SubcategoryId = nk.NenKategoria_ID,
-                            SubCategoryName = nk.EmriNenkategorise
-                        }
-                        ).ToList()
-                }
-                ).ToListAsync();
+                await _kategoriaService.GetKategoriteNenkategoriteAsync();
 
             return Ok(teDhenat);
         }
