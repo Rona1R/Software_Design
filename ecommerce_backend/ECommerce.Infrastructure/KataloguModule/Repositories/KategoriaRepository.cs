@@ -191,5 +191,10 @@ namespace ECommerce.Infrastructure.KataloguModule.Repositories
                 TotalCount = totalProductsCount
             };
         }
+
+        public async Task<bool> KategoriaEkziston(string emri)
+        {
+            return await _context.Kategoria.AnyAsync(k=>k.EmriKategorise!.ToLower().Equals(emri.ToLower()));
+        }
     }
 }

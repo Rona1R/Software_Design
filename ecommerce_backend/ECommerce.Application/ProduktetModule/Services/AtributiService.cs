@@ -25,7 +25,7 @@ namespace ECommerce.Application.ProduktetModule.Services
 
             if (ekiston)
             {
-                throw new AttributeExistsException("Ky atribut ekziston ! Zgjedh nje emer tjeter!");
+                throw new ExistsException("Ky atribut ekziston ! Zgjedh nje emer tjeter!");
             }
 
             await _atributiRepository.AddAtributeAsync(atributiVM);
@@ -55,7 +55,7 @@ namespace ECommerce.Application.ProduktetModule.Services
 
             if (ekiston)
             {
-                throw new AttributeExistsException("Ky atribut ekziston ! Zgjedh nje emer tjeter!");
+                throw new ExistsException("Ky atribut ekziston ! Zgjedh nje emer tjeter!");
             }
 
             var atributi = await _atributiRepository.GetAtributeFromDbAsync(id);

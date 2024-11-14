@@ -8,23 +8,10 @@ import { faPlus, faXmark } from '@fortawesome/free-solid-svg-icons';
 import { toast } from "react-toastify";
 
 export default function ShtoKategorine(props) {
-    const [kategorite,setKategorite] = useState([]);
     const [emriKategorise,setEmriKategorise] = useState("");
     const [pershkrimiKategorise,setPershkrimiKategorise] = useState("");
-    //const [refreshKey,setRefreshKey] = useState("");
     const [warning,setWarning] = useState("");
 
-    useEffect(()=>{
-        try {
-            axios
-            .get('https://localhost:7061/api/Kategoria/shfaqKategorite')
-            .then((response) => {
-              setKategorite(response.data);
-            });
-          } catch (err) {
-            console.log(err);
-          }
-    },[/*props.refreshKey*/])
 
     const anulo=()=>{
       setEmriKategorise("");
@@ -46,11 +33,6 @@ export default function ShtoKategorine(props) {
         let validated=true;
         if (!emriKategorise || emriKategorise.trim() === "") {
             setWarning("Emri i kategorise nuk duhet te jete i zbrazet!");
-            validated = false;
-        }
-
-        if(kategorite.filter((k)=>k.emri.toLowerCase() === emriKategorise.toLowerCase()).length>0){
-            setWarning("Ekziszon nje kategori me emrin e njejte.Zgjedh nje emer tjeter!")
             validated = false;
         }
         return validated
@@ -76,8 +58,12 @@ export default function ShtoKategorine(props) {
                   setPershkrimiKategorise("");
                 // });
               } catch (err) {
-                toast.error("Ndodhi nje problem ne server");
                 console.log(err);
+                if (err.response && err.response.status === 400) {
+                  setWarning(err.response.data);
+                }else{
+                  toast.error("Ndodhi nje problem ne server");
+                }
               }
         }
 

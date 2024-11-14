@@ -25,11 +25,17 @@ namespace ECommerceAPI.KataloguModule.Controllers
 
         [HttpPost]
         [Route("shtoKategorine")]
-        [Authorize(Roles = "Admin,Menaxher")]
+     //   [Authorize(Roles = "Admin,Menaxher")]
         public async Task<IActionResult> Post([FromBody] KategoriaVM kategoria)
         {
-            await _kategoriaService.CreateCategoryAsync(kategoria);
-            return Ok("Kategoria u shtua me sukses!");
+            try
+            {
+                await _kategoriaService.CreateCategoryAsync(kategoria);
+                return Ok("Kategoria u shtua me sukses!");
+            }catch(ExistsException ex)
+            {
+                return BadRequest(ex.Message);  
+            }
         }
 
 

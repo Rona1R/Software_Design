@@ -24,5 +24,7 @@ namespace ECommerce.Application.KataloguModule.Interfaces
         Task<KategoriaSidebarData> GetSidebarDataAsync(int id);
 
         Task<ProduktetSipasKategoriseResponse> GetProductsByCategoryAsync(int id, string sortBy, int pageNumber, int pageSize, FiltersDTO filters);
+
+        Task<bool> KategoriaEkziston(string emri);
     }
 }

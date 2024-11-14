@@ -23,6 +23,10 @@ namespace ECommerce.Application.KataloguModule.Services
 
         public async Task CreateCategoryAsync(KategoriaVM kategoria)
         {
+            if (await _kategoriaRepository.KategoriaEkziston(kategoria.Emri))
+            {
+                throw new ExistsException("Ekziston nje kategori me emrin e njejte.Zgjedh nje emer tjeter!");
+            }
             await _kategoriaRepository.CreateCategoryAsync(kategoria);
         }
 
