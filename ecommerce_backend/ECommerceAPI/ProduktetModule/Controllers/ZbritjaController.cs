@@ -25,30 +25,7 @@ namespace ECommerceAPI.ProduktetModule.Controllers
             _context = context;
         }
 
-        /*private readonly IReviewService _reviewService;
-
-        public ReviewController(IReviewService reviewService)
-        {
-           _reviewService = reviewService;  
-        }*/
-        /*
-        [HttpPost]
-        [Route("krijoZbritjen")]
-        [Authorize(Roles = "Admin,Menaxher")]
-        public async Task<IActionResult> Post([FromBody] ZbritjaVM zbritja)
-        {
-            var z = new Zbritja()
-            {
-                ZbritjaEmri = zbritja.ZbritjaEmri,
-                PerqindjaZbritjes = zbritja.PerqindjaZbritjes,
-                DataSkadimit = zbritja.DataSkadimit,
-            };
-
-            await _context.Zbritja.AddAsync(z);
-            await _context.SaveChangesAsync();
-
-            return CreatedAtAction(nameof(Post), new { id = z.Zbritja_ID }, z);
-        }*/
+        
         
         [HttpPost]
         [Route("krijoZbritjen")]
@@ -71,34 +48,8 @@ namespace ECommerceAPI.ProduktetModule.Controllers
             return Ok("Zbritja u shtua me sukses");
         }
 
-        /*[HttpGet]
-        [Route("shfaqReviews")] // shfaqja e te gjitha reviews per Dashboard te adminit
-        [Authorize(Roles = "Admin,Menaxher")]
-        public async Task<IActionResult> Get()
-        {
-            return Ok(await _reviewService.GetAllReviewsAsync());    
-        }*/
-        /*
         [HttpGet]
-        [Route("shfaqZbritjet")]
-        [Authorize(Roles = "Admin,Menaxher")]
-        public async Task<IActionResult> Get()
-        {
-            var zbritjet = await _context.Zbritja
-                .OrderByDescending(z => z.DataKrijimit)
-                .Select(z => new
-                {
-                    z.Zbritja_ID,
-                    z.ZbritjaEmri,
-                    z.PerqindjaZbritjes,
-                    dataKrijimit = z.DataKrijimit,
-                    dataSkadimit = z.DataSkadimit,
-                }).ToListAsync();
-            return Ok(zbritjet);
-        }*/
-
-        [HttpGet]
-        [Route("shfaqZbritjet")] // shfaqja e te gjitha reviews per Dashboard te adminit
+        [Route("shfaqZbritjet")] 
         [Authorize(Roles = "Admin,Menaxher")]
         public async Task<IActionResult> Get()
         {

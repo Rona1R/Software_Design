@@ -66,12 +66,13 @@ namespace ECommerce.Infrastructure.ProduktetModule.Repositories
         public int PerqindjaZbritjes { get; set; }
         public DateTime? DataSkadimit { get; set; }*/
 
-        public async Task<List<ZbritjaVM>> GetAllZbritjetAsync()
+        public async Task<List<ZbritjaDTO>> GetAllZbritjetAsync()
         {
             var zbritjet = await _context.Zbritja
                .OrderByDescending(r => r.DataKrijimit)
-               .Select(r => new ZbritjaVM
+               .Select(r => new ZbritjaDTO
                {
+                   Zbritja_ID=r.Zbritja_ID,
                    ZbritjaEmri=r.ZbritjaEmri,
                    PerqindjaZbritjes=r.PerqindjaZbritjes,
                    DataSkadimit=r.DataSkadimit

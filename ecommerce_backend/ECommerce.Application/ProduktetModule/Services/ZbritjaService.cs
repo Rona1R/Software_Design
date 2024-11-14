@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ECommerce.Application.ProduktetModule.DTOs;
 using ECommerce.Application.ProduktetModule.Interfaces;
 using ECommerce.Application.ProduktetModule.ViewModels;
 using ECommerce.Application.UsersModule.Interfaces;
@@ -30,7 +31,7 @@ namespace ECommerce.Application.ProduktetModule.Services
             await _zbritjaRepository.AddZbritjaAsync(newZbritja);
         }
 
-        public async Task<List<ZbritjaVM>> GetAllZbritjetAsync()
+        public async Task<List<ZbritjaDTO>> GetAllZbritjetAsync()
         {
             return await _zbritjaRepository.GetAllZbritjetAsync(); 
         }
