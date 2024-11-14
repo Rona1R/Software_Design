@@ -16,5 +16,12 @@ namespace ECommerce.Application.KataloguModule.Interfaces
         Task<List<KategoriaDTO>> GetAllAsync();
 
         Task<List<CategoryDTO>> GetKategoriteNenkategoriteAsync();
+
+        Task<KategoriaDTO> GetCategoryByIdAsync(int id);
+
+        Task<KategoriaSidebarData> GetSidebarDataAsync(int id);
+
+        Task<ProduktetSipasKategoriseResponse> GetProductsByCategoryAsync(int id, string sortBy, int pageNumber, int pageSize, FiltersDTO filters);
+
     }
 }

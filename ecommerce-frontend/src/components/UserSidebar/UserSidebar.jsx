@@ -29,13 +29,30 @@ const theme = createTheme({
       styleOverrides: {
         root: {
           width: "100%",
-          height: "80px",
+          height: "90px",
           "&:hover &:active": {
             color: "black",
           },
         },
       },
     },
+    MuiListItemText :{
+      styleOverrides:{
+        primary: {
+          color: "#0F0520",
+          fontWeight: "bold", 
+          fontSize:"larger"
+        },
+      }
+    },
+    MuiListItemIcon:{
+      styleOverrides:{
+        root:{
+          fontWeight:"bold",
+          color: "#0F0520",
+        }
+      }
+    }
   },
 });
 
@@ -44,13 +61,6 @@ function UserSidebar({ show, handleClose, ...props }) {
   const [profilePic,setProfilePic] = useState(null)
   // const [userId,setUserId] = useState(null);
   const useri  = JSON.parse(localStorage.getItem("userDetails"));
-  
-  // useEffect(()=>{
-  //   if(useri)
-  //   {
-  //     setUserId(parseInt(useri.userId));
-  //   }
-  // },[useri])
 
   useEffect(() => {
  
@@ -73,15 +83,11 @@ function UserSidebar({ show, handleClose, ...props }) {
 
   const handleLogOut = async () => {
     try {
-      const response = await axios.post("https://localhost:7061/api/Authentication/logout",{},/*, {
-        refreshToken: refreshToken,
-      }*/);
+      const response = await axios.post("https://localhost:7061/api/Authentication/logout",{});
       if (response.status === 200) {
         localStorage.removeItem("accessToken");
-        // localStorage.removeItem("refreshToken");
         localStorage.removeItem("userDetails");
         navigate('/LogIn');
-        // window.location.reload();
       }
     } catch (error) {
       console.error("Logout failed:", error);
@@ -89,9 +95,6 @@ function UserSidebar({ show, handleClose, ...props }) {
   };
   return (
     <>
-      {/* <Button variant="primary" onClick={handleShow} className="me-2">
-        {name}
-      </Button> */}
       <Offcanvas
         show={show}
         onHide={handleClose}
@@ -99,7 +102,6 @@ function UserSidebar({ show, handleClose, ...props }) {
         style={{ zIndex: "1200" }}
       >
         <Offcanvas.Header closeButton>
-          {/* <Offcanvas.Title>Offcanvas</Offcanvas.Title> */}
         </Offcanvas.Header>
         <Offcanvas.Body>
           <div className="profilePicture">
@@ -126,7 +128,7 @@ function UserSidebar({ show, handleClose, ...props }) {
                     <ListItemIcon>
                       <ManageAccountsIcon />
                     </ListItemIcon>
-                    <ListItemText primary="Account Settings" />
+                    <ListItemText primary="Account Settings"/>
                   </ListItemButton>
                 </Link>
                 {
@@ -138,7 +140,6 @@ function UserSidebar({ show, handleClose, ...props }) {
                         <FontAwesomeIcon icon={faChartLine} />
                       </ListItemIcon>
                       <ListItemText primary="Dashboard" />{" "}
-                      {/*sx={{display:"none"}}--> kur te bojm funksionale userit trregullt dashboard opsioni mos mi dal hiq */}
                     </ListItemButton>
                   </Link>
                   )
@@ -184,14 +185,3 @@ function UserSidebar({ show, handleClose, ...props }) {
 
 export default UserSidebar;
 
-// function Example() {
-//   return (
-//     <>
-//       {['start', 'end', 'top', 'bottom'].map((placement, idx) => (
-//         <OffCanvasExample key={idx} placement={placement} name={placement} />
-//       ))}
-//     </>
-//   );
-// }
-
-// render(<Example />);
