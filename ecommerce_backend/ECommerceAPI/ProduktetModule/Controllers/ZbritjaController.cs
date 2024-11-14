@@ -1,4 +1,6 @@
-﻿using ECommerce.Application.ProduktetModule.ViewModels;
+﻿using ECommerce.Application.Exceptions;
+using ECommerce.Application.ProduktetModule.Interfaces;
+using ECommerce.Application.ProduktetModule.ViewModels;
 using ECommerce.Domain.ProduktetModule.Entities;
 using ECommerce.Infrastructure.Data;
 using Microsoft.AspNetCore.Authorization;
@@ -13,13 +15,23 @@ namespace ECommerceAPI.ProduktetModule.Controllers
     [ApiController]
     public class ZbritjaController : ControllerBase
     {
+        private readonly IZbritjaService _zbritjaService;
+
         private readonly ECommerceDBContext _context;
 
-        public ZbritjaController(ECommerceDBContext context)
+        public ZbritjaController(IZbritjaService zbritjaService, ECommerceDBContext context)
         {
+            _zbritjaService = zbritjaService;
             _context = context;
         }
 
+        /*private readonly IReviewService _reviewService;
+
+        public ReviewController(IReviewService reviewService)
+        {
+           _reviewService = reviewService;  
+        }*/
+        /*
         [HttpPost]
         [Route("krijoZbritjen")]
         [Authorize(Roles = "Admin,Menaxher")]
@@ -36,8 +48,37 @@ namespace ECommerceAPI.ProduktetModule.Controllers
             await _context.SaveChangesAsync();
 
             return CreatedAtAction(nameof(Post), new { id = z.Zbritja_ID }, z);
+        }*/
+        
+        [HttpPost]
+        [Route("krijoZbritjen")]
+        [Authorize(Roles = "Admin,Menaxher")]
+        public async Task<IActionResult> Post([FromBody] ZbritjaVM newZbritja)
+        {
+            try
+            {
+                await _zbritjaService.PostZbritjaAsync(newZbritja);
+            }
+            catch (NotFoundException)
+            {
+                return NotFound();
+            }
+            catch (Exception e)
+            {
+                return BadRequest(new ErrorMessage { Message = e.Message });
+            }
+
+            return Ok("Zbritja u shtua me sukses");
         }
 
+        /*[HttpGet]
+        [Route("shfaqReviews")] // shfaqja e te gjitha reviews per Dashboard te adminit
+        [Authorize(Roles = "Admin,Menaxher")]
+        public async Task<IActionResult> Get()
+        {
+            return Ok(await _reviewService.GetAllReviewsAsync());    
+        }*/
+        /*
         [HttpGet]
         [Route("shfaqZbritjet")]
         [Authorize(Roles = "Admin,Menaxher")]
@@ -54,6 +95,14 @@ namespace ECommerceAPI.ProduktetModule.Controllers
                     dataSkadimit = z.DataSkadimit,
                 }).ToListAsync();
             return Ok(zbritjet);
+        }*/
+
+        [HttpGet]
+        [Route("shfaqZbritjet")] // shfaqja e te gjitha reviews per Dashboard te adminit
+        [Authorize(Roles = "Admin,Menaxher")]
+        public async Task<IActionResult> Get()
+        {
+            return Ok(await _zbritjaService.GetAllZbritjetAsync());
         }
 
         [HttpGet]

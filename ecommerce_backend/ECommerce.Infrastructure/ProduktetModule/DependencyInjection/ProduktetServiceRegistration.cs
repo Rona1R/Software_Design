@@ -29,6 +29,10 @@ namespace ECommerce.Infrastructure.ProduktetModule.DependencyInjection
             services.AddScoped<IAtributiRepository, AtributiRepository>();
             services.AddScoped<IAtributiService, AtributiService>();
 
+
+            services.AddScoped<IZbritjaRepository, ZbritjaRepository>();
+            services.AddScoped<IZbritjaService, ZbritjaService>();
+
             return services;
         }
     }
