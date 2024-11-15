@@ -6,12 +6,12 @@ using System.Threading.Tasks;
 
 namespace ECommerce.Application.Exceptions
 {
-    public class AttributeExistsException : Exception
+    public class ExistsException : Exception
     {
-        public AttributeExistsException() 
+        public ExistsException() 
         {
         }
-        public AttributeExistsException(string message) : base(message)
+        public ExistsException(string message) : base(message)
         {
         }
     }

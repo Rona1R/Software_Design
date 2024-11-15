@@ -1,4 +1,7 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using ECommerce.Application.KataloguModule.Interfaces;
+using ECommerce.Application.KataloguModule.Services;
+using ECommerce.Infrastructure.KataloguModule.Repositories;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace ECommerce.Infrastructure.KataloguModule.DependencyInjection
 {
@@ -8,6 +11,9 @@ namespace ECommerce.Infrastructure.KataloguModule.DependencyInjection
         {
 
             // mapping with interfaces for Katalogu Module will be added here
+
+            services.AddScoped<IKategoriaRepository, KategoriaRepository>();
+            services.AddScoped<IKategoriaService, KategoriaService>();
 
             return services;
         }

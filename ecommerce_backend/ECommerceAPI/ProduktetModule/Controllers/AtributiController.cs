@@ -28,7 +28,7 @@ namespace ECommerceAPI.ProduktetModule.Controllers
             {
                 await _atributiService.AddAttributeAsync(atributiVM);
                 return Ok("Atributi u krijua me sukses!");
-            }catch(AttributeExistsException ex)
+            }catch(ExistsException ex)
             {
                 return BadRequest(ex.Message);
             }
@@ -67,7 +67,7 @@ namespace ECommerceAPI.ProduktetModule.Controllers
             }
             catch(NotFoundException) {
                 return NotFound();
-            }catch(AttributeExistsException) {
+            }catch(ExistsException) {
                 return BadRequest("Ky atribut ekzsiton! Zgjedh nje emer tjeter!");
             }
 
