@@ -1,7 +1,9 @@
-﻿using ECommerce.Domain.KataloguModule.Entities;
+﻿using ECommerce.Application.Exceptions;
+//using ECommerce.Application.KataloguModule.DTOs;
+using ECommerce.Application.KataloguModule.Interfaces;
+using ECommerce.Application.KataloguModule.ViewModels;
 using ECommerce.Infrastructure.Data;
 using ECommerceAPI.DTOs;
-using ECommerceAPI.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -15,10 +17,12 @@ namespace ECommerceAPI.KataloguModule.Controllers
     public class NenKategoriaController : ControllerBase
     {
         private readonly ECommerceDBContext _context;
+        private readonly INenkategoriaService _nenkategoriaService;
 
-        public NenKategoriaController(ECommerceDBContext context)
+        public NenKategoriaController(ECommerceDBContext context,INenkategoriaService nenkategoriaService)
         {
             _context = context;
+            _nenkategoriaService = nenkategoriaService; 
         }
 
         [HttpPost]
@@ -26,22 +30,13 @@ namespace ECommerceAPI.KataloguModule.Controllers
         [Authorize(Roles = "Admin,Menaxher")]
         public async Task<IActionResult> Post([FromBody] NenKategoriaVM nenkategoria)
         {
-            var kategoriaEkziston = await _context.Kategoria.FirstOrDefaultAsync(k => k.Kategoria_ID == nenkategoria.KategoriaID);
-
-            if (kategoriaEkziston == null)
+            try
             {
-                return NotFound();
+                await _nenkategoriaService.CreateAsync(nenkategoria);
+                return Ok("Nenkategoria u krijua me sukses!");
+            }catch(ExistsException ex) {
+                return BadRequest(ex.Message);
             }
-            var nk = new NenKategoria()
-            {
-                EmriNenkategorise = nenkategoria.Emri,
-                Kategoria_ID = nenkategoria.KategoriaID
-            };
-
-            await _context.NenKategoria.AddAsync(nk);
-            await _context.SaveChangesAsync();
-
-            return CreatedAtAction(nameof(Post), new { id = nk.NenKategoria_ID }, nk);
         }
 
         [HttpGet]
@@ -49,19 +44,7 @@ namespace ECommerceAPI.KataloguModule.Controllers
         [Authorize(Roles = "Admin,Menaxher")]
         public async Task<IActionResult> Get()
         {
-            var nenkategorite = await _context.NenKategoria
-                //  .Include(nk=>nk.Kategoria)
-                .OrderByDescending(nk => nk.CreatedAt)
-                .Select(nk => new NenKategoriaDTO
-                {
-                    Id = nk.NenKategoria_ID,
-                    Emri = nk.EmriNenkategorise,
-                    Kategoria = nk.Kategoria.EmriKategorise,
-                    KategoriaID = nk.Kategoria.Kategoria_ID
-                })
-                 .ToListAsync();
-
-            return Ok(nenkategorite);
+            return Ok(await _nenkategoriaService.GetAllAsync());
         }
 
         [HttpGet]
@@ -69,23 +52,14 @@ namespace ECommerceAPI.KataloguModule.Controllers
         [Authorize(Roles = "Admin,Menaxher")]
         public async Task<IActionResult> Get(int id)
         {
-            var nenkategoria = await _context.NenKategoria
-                 .Where(nk => nk.NenKategoria_ID == id)
-                 //   .Include(nk=>nk.Kategoria)
-                 .Select(nk => new NenKategoriaDTO()
-                 {
-                     Id = nk.NenKategoria_ID,
-                     Emri = nk.EmriNenkategorise,
-                     Kategoria = nk.Kategoria.EmriKategorise,
-                     KategoriaID = nk.Kategoria.Kategoria_ID
-                 })
-                 .FirstOrDefaultAsync();
-            if (nenkategoria == null)
+            try
             {
-                return BadRequest("NenKategoria nuk u gjet!");
+                return Ok(await _nenkategoriaService.GetByIdAsync(id));
             }
-
-            return Ok(nenkategoria);
+            catch (NotFoundException)
+            {
+                return NotFound();
+            }
         }
 
         [HttpGet]

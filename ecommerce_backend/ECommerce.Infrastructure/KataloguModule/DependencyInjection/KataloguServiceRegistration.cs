@@ -15,6 +15,9 @@ namespace ECommerce.Infrastructure.KataloguModule.DependencyInjection
             services.AddScoped<IKategoriaRepository, KategoriaRepository>();
             services.AddScoped<IKategoriaService, KategoriaService>();
 
+            services.AddScoped<INenkategoriaRepository, NenkategoriaRepository>(); 
+            services.AddScoped<INenkategoriaService, NenkategoriaService>();    
+
             return services;
         }
     }
