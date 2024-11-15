@@ -7,35 +7,19 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCheckCircle, faXmark } from '@fortawesome/free-solid-svg-icons';
 import { toast } from "react-toastify";
 
-export default function EditoKategorine(props) {
-    const [kategorite,setKategorite] = useState([]);
-    const [kategoria,setKategoria] = useState({}); 
+export default function EditoKategorine(props) {; 
     const [emriKategoriseUpdated,setEmriKategoriseUpdated] = useState("");
     const [pershkrimiKategoriseUpdated,setPershkrimiKategoriseUpdated] = useState("");
-   // const [refreshKey,setRefreshKey] = useState("");
     const [warning,setWarning] = useState("");
 
-    useEffect(()=>{
-        try {
-            axios
-            .get('https://localhost:7061/api/Kategoria/shfaqKategorite')
-            .then((response) => {
-              setKategorite(response.data);
-            });
-          } catch (err) {
-            console.log(err);
-          }
-    },[/*props.refreshKey refreshKey*/])
 
     useEffect(() => {
-        console.log("BRENDA FUNKSIONIT "+props.id);
         if (props.id /*&& props.shfaqFormenEdit*/) {
             console.log("Kategoria to edit:"+props.id);
           try {
             axios
               .get(`https://localhost:7061/api/Kategoria/shaqKategorineSipasID/${props.id}`)
               .then((response) => {
-                setKategoria(response.data);
                 setEmriKategoriseUpdated(response.data.emri);
                 setPershkrimiKategoriseUpdated(response.data.pershkrimi);
                 // setRefreshKey(Date.now());
@@ -72,16 +56,11 @@ export default function EditoKategorine(props) {
             validated = false;
         }
 
-        if(kategorite.filter((k)=>k.emri.toLowerCase() === emriKategoriseUpdated.toLowerCase() && k.id !== kategoria.id).length>0){
-            setWarning("Ekziszon nje kategori me emrin e njejte.Zgjedh nje emer tjeter!")
-            validated = false;
-        }
         return validated
     }
 
     async function editoKategorine(){
         const isValid = validoFormen();
-        console.log("Te dhenat e kategorise te edituara :"+JSON.stringify(kategoria));
     
         if(isValid){
             try {
@@ -90,19 +69,17 @@ export default function EditoKategorine(props) {
                     emri: emriKategoriseUpdated,
                     pershkrimi: pershkrimiKategoriseUpdated
                 })
-                // .then((response) => {
-                  //setKategorite(response.data);
+                
                   console.log(response);
                   props.refreshTeDhenat();
                   props.mbyllEditKategorine();
                   toast.success("Kategoria eshte updatuar me sukses!");
-                  //setRefreshKey(Date.now());
-                //   setEmriKategorise("");
-                //   setPershkrimiKategorise("");
-                // });
               } catch (err) {
-                toast.error("Ndodhi nje problem ne server");
-                console.log(err);
+                if (err.response && err.response.status === 400) {
+                  setWarning(err.response.data);
+                }else{
+                  toast.error("Ndodhi nje problem ne server");
+                }
               }
         }
 

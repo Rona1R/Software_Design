@@ -75,6 +75,40 @@ namespace ECommerce.Application.KataloguModule.Services
 
             return await _kategoriaRepository.GetProductsByCategoryAsync(id,sortBy, pageNumber, pageSize, filters);  
         }
+
+        public async Task UpdateCategoryAsync(int id,KategoriaVM kategoriaVM)
+        {
+            var kategoria = await _kategoriaRepository.GetCategoryByIdAsync(id);
+
+            if (kategoria == null)
+            {
+                throw new NotFoundException();
+            }
+
+
+            // validimi per emer :
+            if(await _kategoriaRepository.KategoriaEkziston(id, kategoriaVM.Emri))
+            {
+                throw new ExistsException("Ekziston nje kategori me kete emer!");
+            }
+
+            // validuar me sukses --> update
+
+           await _kategoriaRepository.UpdateCategoryAsync(kategoria, kategoriaVM);   
+
+        }
+
+        public async Task DeleteCategoryAsync(int id)
+        {
+            var kategoria = await _kategoriaRepository.GetCategoryByIdAsync(id);
+
+            if (kategoria == null)
+            {
+                throw new NotFoundException();
+            }
+            
+            await _kategoriaRepository.DeleteCategoryAsync(kategoria);
+        }
     }
 
 }

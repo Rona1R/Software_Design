@@ -23,5 +23,9 @@ namespace ECommerce.Application.KataloguModule.Interfaces
 
         Task<ProduktetSipasKategoriseResponse> GetProductsByCategoryAsync(int id, string sortBy, int pageNumber, int pageSize, FiltersDTO filters);
 
+        Task UpdateCategoryAsync(int id, KategoriaVM kategoriaVM);
+
+        Task DeleteCategoryAsync(int id);
+
     }
 }

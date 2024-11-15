@@ -196,5 +196,23 @@ namespace ECommerce.Infrastructure.KataloguModule.Repositories
         {
             return await _context.Kategoria.AnyAsync(k=>k.EmriKategorise!.ToLower().Equals(emri.ToLower()));
         }
+
+        public async Task<bool> KategoriaEkziston(int id,string emri)
+        {
+            return await _context.Kategoria.AnyAsync(k => k.Kategoria_ID !=id && k.EmriKategorise!.ToLower().Equals(emri.ToLower()));
+        }
+
+        public async Task UpdateCategoryAsync(Kategoria kategoria,KategoriaVM kategoriaVM)
+        {
+            kategoria.EmriKategorise = kategoriaVM.Emri;
+            kategoria.Pershkrimi = kategoriaVM.Pershkrimi;
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task DeleteCategoryAsync(Kategoria kategoria)
+        {
+            _context.Kategoria.Remove(kategoria);
+            await _context.SaveChangesAsync();
+        }
     }
 }

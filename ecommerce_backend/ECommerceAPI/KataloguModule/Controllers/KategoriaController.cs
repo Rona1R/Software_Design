@@ -2,11 +2,8 @@
 using ECommerce.Application.KataloguModule.DTOs;
 using ECommerce.Application.KataloguModule.Interfaces;
 using ECommerce.Application.KataloguModule.ViewModels;
-using ECommerce.Infrastructure.Data;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
 
 namespace ECommerceAPI.KataloguModule.Controllers
 {
@@ -14,18 +11,16 @@ namespace ECommerceAPI.KataloguModule.Controllers
     [ApiController]
     public class KategoriaController : ControllerBase
     {
-        private readonly ECommerceDBContext _context;
         private readonly IKategoriaService _kategoriaService;
 
-        public KategoriaController(ECommerceDBContext context,IKategoriaService kategoriaService)
+        public KategoriaController(IKategoriaService kategoriaService)
         {
-            _context = context;
             _kategoriaService = kategoriaService;
         }
 
         [HttpPost]
         [Route("shtoKategorine")]
-     //   [Authorize(Roles = "Admin,Menaxher")]
+        [Authorize(Roles = "Admin,Menaxher")]
         public async Task<IActionResult> Post([FromBody] KategoriaVM kategoria)
         {
             try
@@ -101,27 +96,19 @@ namespace ECommerceAPI.KataloguModule.Controllers
         [Authorize(Roles = "Admin,Menaxher")]
         public async Task<IActionResult> Put(int id, [FromBody] KategoriaVM kategoria)
         {
-            var kategoriaPerTuEdituar = await _context.Kategoria.FirstOrDefaultAsync(x => x.Kategoria_ID == id);
-
-            if (kategoriaPerTuEdituar != null)
+            try
             {
-
-                if (!kategoria.Emri.IsNullOrEmpty())
-                {
-                    kategoriaPerTuEdituar.EmriKategorise = kategoria.Emri;
-                }
-
-                if (!kategoria.Pershkrimi.IsNullOrEmpty())
-                {
-                    kategoriaPerTuEdituar.Pershkrimi = kategoria.Pershkrimi;
-                }
-
-                _context.Kategoria.Update(kategoriaPerTuEdituar);
-                await _context.SaveChangesAsync();
-                return Ok(kategoriaPerTuEdituar);
+                await _kategoriaService.UpdateCategoryAsync(id, kategoria); 
+                return Ok("Kategoria u perditesua me sukses!");    
             }
-
-            return BadRequest("Kjo Kategori nuk ekziston");
+            catch (NotFoundException)
+            {
+                return NotFound();
+            }
+            catch (ExistsException e)
+            {
+                return BadRequest(e.Message);
+            }
         }
 
         [HttpDelete]
@@ -129,15 +116,15 @@ namespace ECommerceAPI.KataloguModule.Controllers
         [Authorize(Roles = "Admin,Menaxher")]
         public async Task<IActionResult> Delete(int id)
         {
-            var kategoria = await _context.Kategoria.FirstOrDefaultAsync(k => k.Kategoria_ID == id);
-            if (kategoria != null)
+            try
             {
-                _context.Kategoria.Remove(kategoria);
-                await _context.SaveChangesAsync();
-                return Ok("Kategoria u fshi me sukses!");
+                await _kategoriaService.DeleteCategoryAsync(id);
+                return Ok();
+            }   
+            catch (NotFoundException)
+            {
+                return NotFound();  
             }
-
-            return BadRequest("Kjo kategori nuk ekziston");
         }
     }
 
