@@ -9,39 +9,19 @@ import { toast } from "react-toastify";
 import { Menu, MenuItem } from "@mui/material";
 
 export default function ShtoNenkategorine(props) {
-  const [nenkategorite, setNenkategorite] = useState([]);
   const [kategorite,setKategorite] = useState([]);
   const [emriNenkategorise, setEmriNenKategorise] = useState("");
-  const [anchorEl, setAnchorEl] = useState(null)
-  // const [kategoriaId, setKategoriaId] = useState(null);
-  // const [selectedKategoria,setSelectedKategoria] = useState("");
+  const [anchorEl, setAnchorEl] = useState(null);
   const [selectedKategoria,setSelectedKategoria] = useState(null);
-  //const [refreshKey,setRefreshKey] = useState("");
   const [warning, setWarning] = useState("");
   const [kategoriaWarning,setKategoriaWarning] = useState("");
 
-  useEffect(
-    () => {
-      try {
-        axios
-          .get("https://localhost:7061/api/NenKategoria/shfaqNenKategorite")
-          .then((response) => {
-            setNenkategorite(response.data);
-          });
-      } catch (err) {
-        console.log(err);
-      }
-    },
-    [
-      /*props.refreshKey*/
-    ]
-  );
 
   useEffect(
     () => {
       try {
         axios
-          .get("https://localhost:7061/api/Kategoria/shfaqKategorite")
+          .get("https://localhost:7061/api/Kategoria/shfaqKategorite") // per dropdown
           .then((response) => {
             setKategorite(response.data);
           });
@@ -49,14 +29,11 @@ export default function ShtoNenkategorine(props) {
         console.log(err);
       }
     },
-    [
-      /*props.refreshKey*/
-    ]
+    []
   );
   const anulo = () => {
     setEmriNenKategorise("");
     setKategoriaWarning("");
-    // setKategoriaId(null);
     setSelectedKategoria(null);
     setWarning("");
     props.mbyllShtoNenKategorine();
@@ -74,20 +51,8 @@ export default function ShtoNenkategorine(props) {
   const handleMenuItemClick = (kategoria)=>{
     setKategoriaWarning("");
     setSelectedKategoria(kategoria);
-    // setKategoriaId(id);
-    // setSelectedKategoria(emri);
-    // console.log("You have selected the category with id: "+id);
-    // console.log("You have selected the category with name: "+emri);
     setAnchorEl(null);
   }
-  // const handleMenuItemClick = (id,emri)=>{
-  //   setKategoriaWarning("");
-  //   setKategoriaId(id);
-  //   setSelectedKategoria(emri);
-  //   console.log("You have selected the category with id: "+id);
-  //   console.log("You have selected the category with name: "+emri);
-  //   setAnchorEl(null);
-  // }
   
   const handleClose = () => {
     setAnchorEl(null);
@@ -100,65 +65,35 @@ export default function ShtoNenkategorine(props) {
           validated = false;
       }
 
-      if(nenkategorite.filter((k)=>k.emri.toLowerCase() === emriNenkategorise.toLowerCase()).length>0){
-          setWarning("Ekziszon nje nen-kategori me emrin e njejte.Zgjedh nje emer tjeter!")
-          validated = false;
-      }
-      
       if(!selectedKategoria){
         setKategoriaWarning("Duhet te zgjidhni nje kategori patjeter!");
         validated = false;
       }
-      // if(!kategoriaId){
-      //   setKategoriaWarning("Duhet te zgjidhni nje kategori patjeter!");
-      //   validated = false;
-      // }
+
       return validated
   }
   async function shtoNenKategorine(){
       const isValid = validoFormen();
 
       if(isValid){
-            console.log("Forma eshte validuar me sukses! Te dhenat per insertim : ");
-            console.log(
-                {
-                    emri : emriNenkategorise,
-                    kategoriaID : selectedKategoria.id
-                }
-            );
           try {
               const response = await axios
               .post('https://localhost:7061/api/NenKategoria/shtoNenKategorine',{
                     emri : emriNenkategorise,
                     kategoriaID : selectedKategoria.id
-                    // kategoriaID : kategoriaId
               })
-              // .then((response) => {
-                //setKategorite(response.data);
-                console.log(response);
-                props.refreshTeDhenat();
-                toast.success("Nenkategoria eshte shtuar me sukses!");
-                props.mbyllShtoNenKategorine();
-                // setRefreshKey(Date.now);
-                // setEmriNenKategorise("");
-                // setSelectedKategoria(null);
-                // setKategoriaId("");
-              // });
+
+              props.refreshTeDhenat();
+              toast.success(response.data);
+              props.mbyllShtoNenKategorine();
             } catch (err) {
-              toast.error("Ndodhi nje problem ne server");
-              console.log(err);
+              if (err.response && err.response.status === 400) {
+                setWarning(err.response.data);
+              }else{
+                toast.error("Ndodhi nje problem ne server");
+              }
             }
         }
-    //   }else{
-    //     console.log("Forma nuk eshte valide");
-    //     console.log(
-    //         {
-    //             emri : emriNenkategorise,
-    //             kategoriaID : kategoriaId
-    //         }
-    //     );
-    //   }
-
   }
 
   return (

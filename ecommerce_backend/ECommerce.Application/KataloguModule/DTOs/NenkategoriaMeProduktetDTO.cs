@@ -1,4 +1,10 @@
-﻿namespace ECommerceAPI.DTOs
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace ECommerce.Application.KataloguModule.DTOs
 {
     public class ProduktetNenkategoriseDTO
     {
@@ -15,7 +21,7 @@
         // ktu ka mu perfshi edhe CmimiMeZbritje kur te funksionalizohet qikjo
 
         public decimal? CmimiMeZbritje { get; set; }
-
+        
         public string? Company { get; set; }
 
         public int? CompanyId { get; set; }
@@ -31,7 +37,7 @@
 
         public string? SubCategoryName { get; set; }
 
-        public string? Category {  get; set; }  
+        public string? Category { get; set; }
 
         public List<ProduktetNenkategoriseDTO>? Products { get; set; }
     }
