@@ -15,5 +15,15 @@ namespace ECommerce.Application.KataloguModule.Interfaces
         Task<List<NenKategoriaDTO>> GetAllAsync();
 
         Task<NenKategoriaDTO> GetByIdAsync(int id);
+
+        Task<List<NenKategoriaDTO>> GetByCategoryAsync(int id);
+
+        Task<KategoriaSidebarData> GetSidebarDataAsync(int id);
+
+        Task<ProduktetSipasNenkategorise> GetProductsBySubCategoryAsync(int id, string sortBy, int pageNumber, int pageSize, FiltersDTO filters);
+
+        Task UpdateAsync(int id, NenKategoriaVM nenkategoria);
+
+        Task DeleteAsync(int id);
     }
 }

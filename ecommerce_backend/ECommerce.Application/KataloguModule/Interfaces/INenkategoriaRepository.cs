@@ -23,5 +23,13 @@ namespace ECommerce.Application.KataloguModule.Interfaces
         Task<bool> NenkategoriaEkziston(string emri);
 
         Task<bool> NenkategoriaEkziston(string emri, int id);
+
+        Task<KategoriaSidebarData> GetSidebarDataAsync(int id);
+
+        Task<ProduktetSipasNenkategorise> GetProductsBySubCategoryAsync(int id, string sortBy, int pageNumber, int pageSize, FiltersDTO filters);
+
+        Task UpdateAsync(NenKategoria n, NenKategoriaVM nenkategoria);
+
+        Task DeleteAsync(NenKategoria nenkategoria);
     }
 }

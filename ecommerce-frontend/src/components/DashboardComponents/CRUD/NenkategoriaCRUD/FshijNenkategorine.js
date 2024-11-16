@@ -16,14 +16,11 @@ export default function FshijNenkategorine(props) {
                const response = await axios
                 .delete(`https://localhost:7061/api/NenKategoria/FshijNenKategorine/${props.id}`
                  )
-                // .then((response) => {
+                
                   console.log(response);
                   props.refreshTeDhenat();
                   props.mbyllFshij();
                   toast.success("Nenkategoria eshte fshire me sukses!");
-                //   setEmriKategorise("");
-                //   setPershkrimiKategorise("");
-                // });
               } catch (err) {
                 toast.error("Ndodhi nje problem ne server");
                 console.log(err);

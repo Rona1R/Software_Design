@@ -1,14 +1,10 @@
 ﻿using ECommerce.Application.Exceptions;
-//using ECommerce.Application.KataloguModule.DTOs;
+using ECommerce.Application.KataloguModule.DTOs;
 using ECommerce.Application.KataloguModule.Interfaces;
 using ECommerce.Application.KataloguModule.ViewModels;
-using ECommerce.Infrastructure.Data;
-using ECommerceAPI.DTOs;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
+
 
 namespace ECommerceAPI.KataloguModule.Controllers
 {
@@ -16,12 +12,11 @@ namespace ECommerceAPI.KataloguModule.Controllers
     [ApiController]
     public class NenKategoriaController : ControllerBase
     {
-        private readonly ECommerceDBContext _context;
+       
         private readonly INenkategoriaService _nenkategoriaService;
 
-        public NenKategoriaController(ECommerceDBContext context,INenkategoriaService nenkategoriaService)
+        public NenKategoriaController(INenkategoriaService nenkategoriaService)
         {
-            _context = context;
             _nenkategoriaService = nenkategoriaService; 
         }
 
@@ -49,7 +44,7 @@ namespace ECommerceAPI.KataloguModule.Controllers
 
         [HttpGet]
         [Route("shfaqNenKategorine/{id}")]
-        [Authorize(Roles = "Admin,Menaxher")]
+      //  [Authorize(Roles = "Admin,Menaxher")]
         public async Task<IActionResult> Get(int id)
         {
             try
@@ -66,160 +61,28 @@ namespace ECommerceAPI.KataloguModule.Controllers
         [Route("shfaqNenkategoriseSipasKategorise/{id}")]
         public async Task<IActionResult> GeSipasKategorise(int id)
         {
-            var nenkategorite = await _context
-                .NenKategoria
-                .OrderBy(nk => nk.CreatedAt)
-                .Where(nk => nk.Kategoria_ID == id)
-                .Select(nk => new NenKategoriaDTO
-                {
-                    Id = nk.NenKategoria_ID,
-                    Emri = nk.EmriNenkategorise,
-                    Kategoria = nk.Kategoria.EmriKategorise,
-                    KategoriaID = nk.Kategoria.Kategoria_ID
-
-                }).ToListAsync();
-
-            return Ok(nenkategorite);
+           return Ok(await _nenkategoriaService.GetByCategoryAsync(id));
         }
 
         [HttpGet]
         [Route("shfaqSidebarDataPerNenkategorine/{id}")]
         public async Task<IActionResult> GetSideBarData(int id)
         {
-            var products = await _context.Produkti
-             .Include(p => p.Kompania)
-             .Where(p => p.NenKategoria_ID == id)
-             .ToListAsync();
-
-            var companyNames = products
-             .Select(p => p.Kompania.Kompania_Emri)
-             .Distinct()
-             .Select(name => new { name })
-             .ToList();
-
-            var maxPrice = products.Max(p => p.CmimiPerCope);
-
-            var result = new
-            {
-                CompanyNames = companyNames,
-                MaxPrice = maxPrice
-            };
-
-            return Ok(result);
+             return Ok(await _nenkategoriaService.GetSidebarDataAsync(id));
         }
 
         [HttpPost]
         [Route("shfaqProduktetSipasNenKategorise/{id}/{sortBy}/{pageNumber}/{pageSize}")]
         public async Task<IActionResult> ShfaqProduktetSipasNenKategorise(int id, string sortBy, int pageNumber, int pageSize,
-            [FromBody] FiltersNenkategoriaDTO filters
+            [FromBody] FiltersDTO filters
          )
         {
-            var ekziston = await _context.NenKategoria.FindAsync(id);
-            if (ekziston == null)
+            try
             {
+                return Ok(await _nenkategoriaService.GetProductsBySubCategoryAsync(id, sortBy, pageNumber, pageSize, filters));
+            }catch(NotFoundException) {
                 return NotFound();
             }
-            var selectedCompanies = filters.SelectedCompanies;
-            decimal? minPrice = null;
-            decimal? maxPrice = null;
-
-            if (filters.PriceRange != null && filters.PriceRange.Length == 2)
-            {
-                minPrice = filters.PriceRange[0];
-                maxPrice = filters.PriceRange[1];
-            }
-
-            var totalProductsCount = await _context.NenKategoria
-                .Where(k => k.NenKategoria_ID == id)
-                .SelectMany(k => k.Produkti.Where(p => p.NeShitje == true
-                           && (string.IsNullOrEmpty(filters.SearchTerm) || p.EmriProdukti.Contains(filters.SearchTerm))
-                        && (selectedCompanies.Length == 0 || selectedCompanies.Contains(p.Kompania.Kompania_Emri)) // Filter by company
-                        && (
-                            !minPrice.HasValue || p.CmimiPerCope >= minPrice // Regular price meets minimum price
-                            || p.Zbritja != null && p.Zbritja.DataSkadimit >= DateTime.Now
-                                && p.CmimiPerCope - (decimal)p.Zbritja.PerqindjaZbritjes / 100 * p.CmimiPerCope >= minPrice // Discounted price meets minimum price
-                           )
-                        && (
-                            !maxPrice.HasValue || p.CmimiPerCope <= maxPrice // Regular price meets maximum price
-                            || p.Zbritja != null && p.Zbritja.DataSkadimit >= DateTime.Now
-                                && p.CmimiPerCope - (decimal)p.Zbritja.PerqindjaZbritjes / 100 * p.CmimiPerCope <= maxPrice // Discounted price meets maximum price
-                       )
-                )
-                )
-                .CountAsync();
-
-            var productsQuery = _context.NenKategoria
-                .Where(k => k.NenKategoria_ID == id)
-                .SelectMany(k => k.Produkti
-                    .Where(p => p.NeShitje == true
-                           && (string.IsNullOrEmpty(filters.SearchTerm) || p.EmriProdukti.Contains(filters.SearchTerm))
-                            && (selectedCompanies.Length == 0 || selectedCompanies.Contains(p.Kompania.Kompania_Emri)) // Filter by company
-                            && (
-                                !minPrice.HasValue || p.CmimiPerCope >= minPrice // Regular price meets minimum price
-                                || p.Zbritja != null && p.Zbritja.DataSkadimit >= DateTime.Now
-                                    && p.CmimiPerCope - (decimal)p.Zbritja.PerqindjaZbritjes / 100 * p.CmimiPerCope >= minPrice // Discounted price meets minimum price
-                               )
-                            && (
-                                !maxPrice.HasValue || p.CmimiPerCope <= maxPrice // Regular price meets maximum price
-                                || p.Zbritja != null && p.Zbritja.DataSkadimit >= DateTime.Now
-                                    && p.CmimiPerCope - (decimal)p.Zbritja.PerqindjaZbritjes / 100 * p.CmimiPerCope <= maxPrice // Discounted price meets maximum price
-                           )
-                    )
-                    .Select(p => new ProduktetNenkategoriseDTO
-                    {
-                        Id = p.Produkti_ID,
-                        Name = p.EmriProdukti,
-                        Description = p.PershkrimiProduktit,
-                        Img = p.FotoProduktit,
-                        Cost = p.CmimiPerCope,
-                        Company = p.Kompania.Kompania_Emri,
-                        CompanyId = p.Kompania_ID,
-                        Stock = p.SasiaNeStok,
-                        CmimiMeZbritje = p.Zbritja != null && p.Zbritja.DataSkadimit >= DateTime.Now
-                           ? p.CmimiPerCope - (decimal)p.Zbritja.PerqindjaZbritjes / 100 * p.CmimiPerCope
-                           : null,
-                        Rating = p.Review.Any() ? (int)Math.Round(p.Review.Average(r => (double)r.Rating)) : null,
-                    }));
-
-            productsQuery = sortBy.ToLower() switch
-            {
-                "asc" => productsQuery.OrderBy(p => p.Cost),
-                "desc" => productsQuery.OrderByDescending(p => p.Cost),
-                _ => throw new ArgumentException("Invalid sorting order. Use 'asc' or 'desc'.")
-            };
-
-            var pagedProducts = await productsQuery
-                .Skip((pageNumber - 1) * pageSize)
-                .Take(pageSize)
-                .ToListAsync();
-
-            var subcategory = await _context.NenKategoria
-           .Where(nk => nk.NenKategoria_ID == id)
-           .Select(nk => new
-           {
-               SubcategoryName = nk.EmriNenkategorise,
-               CategoryName = nk.Kategoria.EmriKategorise
-           })
-           .FirstOrDefaultAsync();
-
-            if (subcategory == null)
-            {
-                return BadRequest("Nenkategoria nuk u gjet ne sistem");
-            }
-
-            var teDhenat = new NenkategoriaMeProduktetDTO
-            {
-                SubcategoryId = id,
-                SubCategoryName = subcategory.SubcategoryName,
-                Category = subcategory.CategoryName,
-                Products = pagedProducts
-            };
-
-            return Ok(new
-            {
-                teDhenat,
-                TotalCount = totalProductsCount
-            });
         }
 
 
@@ -228,52 +91,18 @@ namespace ECommerceAPI.KataloguModule.Controllers
         [Authorize(Roles = "Admin,Menaxher")]
         public async Task<IActionResult> Put(int id, [FromBody] NenKategoriaVM nenkategoria)
         {
-            var nenKategoriaPerTuEdituar = await _context.NenKategoria.Include(nk => nk.Produkti).FirstOrDefaultAsync(x => x.NenKategoria_ID == id);
-            var kategoriaERe = await _context.Kategoria.FirstOrDefaultAsync(x => x.Kategoria_ID == nenkategoria.KategoriaID);
-
-            if (nenKategoriaPerTuEdituar != null)
+            try
             {
-
-                if (!nenkategoria.Emri.IsNullOrEmpty())
-                {
-                    nenKategoriaPerTuEdituar.EmriNenkategorise = nenkategoria.Emri;
-                }
-                else
-                {
-                    return BadRequest("Emri  i nenkategorise sduhet te jete i zbrazet!");
-                }
-
-                if (kategoriaERe != null)
-                {
-                    if (nenKategoriaPerTuEdituar.Kategoria_ID != nenkategoria.KategoriaID)
-                    {
-                        foreach (var produkt in nenKategoriaPerTuEdituar.Produkti)
-                        {
-                            produkt.Kategoria_ID = nenkategoria.KategoriaID;
-                            //   _context.Produkti.Update(produkt);
-                            //   await _context.SaveChangesAsync();
-                        }
-                        nenKategoriaPerTuEdituar.Kategoria_ID = nenkategoria.KategoriaID;
-                    }
-                    // nese eshte ndryshuar ID e kategorise nga e vjetra , barte ndryshimin te produktet:
-
-                    // nese eshte ndryshuar ID e kategorise nga e vjetra , barte ndryshimin te produktet:
-                    //if (nenKategoriaPerTuEdituar.Kategoria_ID != nenkategoria.KategoriaID)
-                    //{
-                    //}
-                }
-                else
-                {
-
-                    return BadRequest("Kategoria e specifik nuk ekziston");
-                }
-
-                _context.NenKategoria.Update(nenKategoriaPerTuEdituar);
-                await _context.SaveChangesAsync();
-                return Ok(nenKategoriaPerTuEdituar);
+                await _nenkategoriaService.UpdateAsync(id, nenkategoria);   
+                return Ok("Nenkategoria u perditesua me sukses!");
             }
-
-            return BadRequest("Kjo NenKategori nuk ekziston!");
+            catch (NotFoundException)
+            {
+                return NotFound();
+            }catch(ExistsException e)
+            {
+                return BadRequest(e.Message);   
+            }
         }
 
 
@@ -282,32 +111,17 @@ namespace ECommerceAPI.KataloguModule.Controllers
         [Authorize(Roles = "Admin,Menaxher")]
         public async Task<IActionResult> Delete(int id)
         {
-            var nenkategoria = await _context.NenKategoria.Include(nk => nk.Produkti).FirstOrDefaultAsync(nk => nk.NenKategoria_ID == id);
-            if (nenkategoria != null)
+            try
             {
-                // fshiji produktet qe e referecojn ate nenkategori:
-                foreach (var product in nenkategoria.Produkti)
-                {
-                    _context.Produkti.Remove(product);
-                }
-
-                _context.NenKategoria.Remove(nenkategoria);
-                await _context.SaveChangesAsync();
+                await _nenkategoriaService.DeleteAsync(id);
                 return Ok("Nenkategoria u fshi me sukses!");
             }
-
-            return BadRequest("Kjo nenkategori nuk ekziston");
+            catch (NotFoundException)
+            {
+                return NotFound();
+            }
         }
 
 
-    }
-
-    public class FiltersNenkategoriaDTO
-    {
-        public string[] SelectedCompanies { get; set; }
-
-        public decimal[] PriceRange { get; set; }
-
-        public string SearchTerm { get; set; }
     }
 }
