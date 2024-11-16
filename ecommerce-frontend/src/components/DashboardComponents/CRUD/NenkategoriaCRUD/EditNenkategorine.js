@@ -9,33 +9,18 @@ import { toast } from "react-toastify";
 import { Menu, MenuItem } from "@mui/material";
 
 export default function EditNenkategorine(props) {
-  const [nenkategorite, setNenkategorite] = useState([]);
-  const [nenkategoria, setNenkategoria] = useState(null);
+  const [nenkategoria, setNenkategoria] = useState({
+    emri : "",
+    kategoriaID : null
+  });
   const [kategorite,setKategorite] = useState([]);
-  const [emriNenkategoriseUpdated, setEmriNenKategoriseUpdated] = useState("");
-  const [anchorEl, setAnchorEl] = useState(null);
-  const [kategoriaUpdatedEmri,setKategoriaUpdatedEmri] = useState(null);
-  const [kategoriaUpdatedID,setKategoriaUpdatedID] = useState(null);
+  const [selectedKategoria,setSelectedKategoria] = useState({
+    id: null,
+    emri:""
+  });
   const [warning, setWarning] = useState("");
- 
-  useEffect(
-    () => {
-      try {
-        axios
-          .get("https://localhost:7061/api/NenKategoria/shfaqNenKategorite")
-          .then((response) => {
-            setNenkategorite(response.data);
-
-          });
-      } catch (err) {
-        console.log(err);
-      }
-    },
-    [
-      /*props.refreshKey*/
-    ]
-  );
-
+  const [anchorEl, setAnchorEl] = useState(null);
+  
   useEffect(
     () => {
       try {
@@ -48,49 +33,41 @@ export default function EditNenkategorine(props) {
         console.log(err);
       }
     },
-    [
-      /*props.refreshKey*/
-    ]
+    []
   );
 
   useEffect(
-    () => {
-      try {
-        axios
-          .get(`https://localhost:7061/api/NenKategoria/shfaqNenKategorine/${props.id}`)
-          .then((response) => {
-            setNenkategoria(response.data)
-            setEmriNenKategoriseUpdated(response.data.emri);
-            setKategoriaUpdatedEmri(response.data.kategoria);
-            setKategoriaUpdatedID(response.data.kategoriaID);
-            // setKategoriaIDUpdatedEmri(response.data.kategoriaID);
-          });
-      } catch (err) {
-        console.log(err);
+
+    ()=>{
+
+      const fetchData = async ()=>{
+        const response  = await  axios.get(`https://localhost:7061/api/NenKategoria/shfaqNenKategorine/${props.id}`);
+        setNenkategoria({emri:response.data.emri, kategoriaID : response.data.kategoriaID});
+        setSelectedKategoria({ id : response.data.kategoriaID,emri : response.data.kategoria});
       }
-    },
-    [
-      props.id
-      /*props.refreshKey*/
-    ]
-  );
+
+      fetchData();
+    },[props.id]);
   const anulo = () => {
     setWarning("");
     props.mbyllEditNenKategorine();
   };
 
-  const handleEmri = (value) => {
-     setWarning("");
-     setEmriNenKategoriseUpdated(value);
-  };
+  const handleChange =(e)=> {
+    setNenkategoria({...nenkategoria,[e.target.name]:e.target.value});
+  }
 
   const handleKategoria = (event) => {
     setAnchorEl(event.currentTarget);
   };
 
   const handleMenuItemClick = (id,emri)=>{
-    setKategoriaUpdatedEmri(emri);
-    setKategoriaUpdatedID(id);
+    setSelectedKategoria({
+      id : id,
+      emri:emri
+    });
+
+    setNenkategoria({...nenkategoria,kategoriaID:id});
     setAnchorEl(null);
   }
 
@@ -100,64 +77,41 @@ export default function EditNenkategorine(props) {
 
   function validoFormen(){
       let validated=true;
-      if (!emriNenkategoriseUpdated || emriNenkategoriseUpdated.trim() === "") {
+      if (!nenkategoria.emri || nenkategoria.emri.trim() === "") {
           setWarning("Emri i nen-kategorise nuk duhet te jete i zbrazet!");
           validated = false;
-      }
-
-      if(nenkategorite.filter((k)=>k.emri.toLowerCase() === emriNenkategoriseUpdated.toLowerCase() && k.id !== nenkategoria.id).length>0){
-          setWarning("Ekziszon nje nen-kategori me emrin e njejte.Zgjedh nje emer tjeter!")
-          validated = false;
-      }
-      
+      }     
       return validated
   }
   async function editoNenkategorine(){
       const isValid = validoFormen();
 
       if(isValid){
-            // console.log("Forma eshte validuar me sukses! Te dhenat per insertim : ");
-            // console.log(
-            //     {
-            //         emri : emriNenkategoriseUpdated,
-            //         kategoriaID : kategoriaUpdatedID
-            //     }
-            // );
+
           try {
               const response = await axios
-              .put(`https://localhost:7061/api/NenKategoria/perditesoNenKategorine/${props.id}`,{
-                    emri : emriNenkategoriseUpdated,
-                    kategoriaID : kategoriaUpdatedID
-                    // kategoriaID : kategoriaId
-              })
-              // .then((response) => {
+              .put(`https://localhost:7061/api/NenKategoria/perditesoNenKategorine/${props.id}`,nenkategoria);
+              
                 //setKategorite(response.data);
                 console.log(response);
                 props.refreshTeDhenat();
-                toast.success("Nenkategoria eshte perditesuar me sukses!");
+                toast.success(response.data);
                 props.mbyllEditNenKategorine();
-              // });
+
             } catch (err) {
-              toast.error("Ndodhi nje problem ne server");
-              console.log(err);
+               if (err.response && err.response.status === 400) { // validimi per emer te njejte
+                  setWarning(err.response.data);
+                }else{
+                  toast.error("Ndodhi nje problem ne server");
+                }
             }
         }
-    //   else{
-    //     console.log("Forma nuk eshte valide");
-    //     console.log(
-    //         {
-    //             emri : emriNenkategoriseUpdated,
-    //             kategoriaID : kategoriaUpdatedID
-    //         }
-    //     );
-    //   }
-
   }
 
   return (
     <>
       <Modal
-        /* show={props.shfaqFormen}*/ show={true}
+        show={true}
         onHide={props.mbyllEditNenKategorine}
         centered
       >
@@ -174,14 +128,18 @@ export default function EditNenkategorine(props) {
                 <span style={{ color: "red" }}>*</span>
               </Form.Label>
               <Form.Control
-                onChange={(e) => handleEmri(e.target.value)}
-                value={emriNenkategoriseUpdated}
+                onChange={(e)=>{
+                  setWarning("");
+                  handleChange(e);
+                }}
+                name ="emri"
+                value={nenkategoria.emri}
                 type="text"
                 placeholder="Lloji i nenkategorise"
                 autoFocus
               />
               {warning && (
-                <p /*style={{color:"red"}}*/ className={`crudFormWarning ${warning ? 'fade-in' : ''}`}>
+                <p className={`crudFormWarning ${warning ? 'fade-in' : ''}`}>
                   {warning}
                 </p>
               )}
@@ -197,7 +155,7 @@ export default function EditNenkategorine(props) {
                 variant="contained"
                 className="crudDropdownButton"
               >
-                {kategoriaUpdatedEmri} <FontAwesomeIcon icon={faCaretDown}/>
+                {selectedKategoria.emri ? selectedKategoria.emri : "Perzgjedh kategorine: "} <FontAwesomeIcon icon={faCaretDown}/>
               </Button>
               <span style={{ color: "red" ,paddingLeft:'2px'}}>*</span>
               <Menu
