@@ -13,6 +13,12 @@ namespace ECommerce.Application.ProduktetModule.Interfaces
     {
         Task PostZbritjaAsync(ZbritjaVM newZbritja);
 
-        Task<List<ZbritjaDTO>> GetAllZbritjetAsync();
+        Task<List<Zbritja>> GetAllZbritjetAsync();
+
+        Task<Zbritja> GetZbritjaByIdsAsync(int id);
+
+        Task UpdateZbritjaAsync(int id, ZbritjaVM zbritjaVM);
+
+       // Task<bool> ZbritjaExists(int id, string name);
     }
 }

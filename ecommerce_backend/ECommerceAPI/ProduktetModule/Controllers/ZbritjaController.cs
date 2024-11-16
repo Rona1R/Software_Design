@@ -1,5 +1,6 @@
 ﻿using ECommerce.Application.Exceptions;
 using ECommerce.Application.ProduktetModule.Interfaces;
+using ECommerce.Application.ProduktetModule.Services;
 using ECommerce.Application.ProduktetModule.ViewModels;
 using ECommerce.Domain.ProduktetModule.Entities;
 using ECommerce.Infrastructure.Data;
@@ -32,19 +33,8 @@ namespace ECommerceAPI.ProduktetModule.Controllers
         [Authorize(Roles = "Admin,Menaxher")]
         public async Task<IActionResult> Post([FromBody] ZbritjaVM newZbritja)
         {
-            try
-            {
-                await _zbritjaService.PostZbritjaAsync(newZbritja);
-            }
-            catch (NotFoundException)
-            {
-                return NotFound();
-            }
-            catch (Exception e)
-            {
-                return BadRequest(new ErrorMessage { Message = e.Message });
-            }
-
+            
+            await _zbritjaService.PostZbritjaAsync(newZbritja);
             return Ok("Zbritja u shtua me sukses");
         }
 
@@ -61,53 +51,28 @@ namespace ECommerceAPI.ProduktetModule.Controllers
         [Authorize(Roles = "Admin,Menaxher")]
         public async Task<IActionResult> Get(int id)
         {
-            var zbritja = await _context.Zbritja
-                .Where(z => z.Zbritja_ID == id)
-                .OrderByDescending(z => z.DataKrijimit)
-                .Select(z => new
-                {
-                    z.Zbritja_ID,
-                    z.ZbritjaEmri,
-                    z.PerqindjaZbritjes,
-                    z.DataKrijimit,
-                    z.DataSkadimit,
-
-                }).FirstOrDefaultAsync();
-
-            if (zbritja == null)
+            try
             {
-                return BadRequest("Zbritja nuk u gjet ne sistem.");
+                return Ok(await _zbritjaService.GetZbritjaByIdsAsync(id));
             }
-
-            return Ok(zbritja);
+            catch (NotFoundException)
+            {
+                return NotFound();
+            }
         }
         [HttpPut]
         [Route("perditesoZbritjen/{id}")]
         [Authorize(Roles = "Admin,Menaxher")]
         public async Task<IActionResult> Put(int id, [FromBody] ZbritjaVM zbritja)
         {
-            var zbritjaPerTuEdituar = await _context.Zbritja.FirstOrDefaultAsync(x => x.Zbritja_ID == id);
-
-            if (zbritjaPerTuEdituar != null)
+            try
             {
-
-                if (!zbritja.ZbritjaEmri.IsNullOrEmpty())
-                {
-                    zbritjaPerTuEdituar.ZbritjaEmri = zbritja.ZbritjaEmri;
-                }
-
-
-                zbritjaPerTuEdituar.PerqindjaZbritjes = zbritja.PerqindjaZbritjes;
-
-                zbritjaPerTuEdituar.DataSkadimit = zbritja.DataSkadimit;
-
-
-                _context.Zbritja.Update(zbritjaPerTuEdituar);
-                await _context.SaveChangesAsync();
-                return Ok(zbritjaPerTuEdituar);
+                await _zbritjaService.UpdateZbritjaAsync(id, zbritja);
+                return Ok("Zbritja eshte perditsuar me sukses!");
+            }catch(NotFoundException)
+            {
+                return NotFound();
             }
-
-            return BadRequest("Kjo Zbritje nuk ekziston");
         }
 
         [HttpDelete]
@@ -125,6 +90,7 @@ namespace ECommerceAPI.ProduktetModule.Controllers
 
             return BadRequest("Kjo zbritje nuk ekziston ne sistem.");
         }
+
 
     }
 }

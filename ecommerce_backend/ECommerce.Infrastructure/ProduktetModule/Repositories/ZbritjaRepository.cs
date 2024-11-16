@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using ECommerce.Application.ProduktetModule.DTOs;
 using ECommerce.Application.ProduktetModule.Interfaces;
 using ECommerce.Application.ProduktetModule.ViewModels;
 using ECommerce.Domain.ProduktetModule.Entities;
@@ -36,45 +35,16 @@ namespace ECommerce.Infrastructure.ProduktetModule.Repositories
             await _context.SaveChangesAsync();
         }
 
-        /*[HttpGet]
-        [Route("shfaqZbritjen/{id}")]
-        [Authorize(Roles = "Admin,Menaxher")]
-        public async Task<IActionResult> Get(int id)
-        {
-            var zbritja = await _context.Zbritja
-                .Where(z => z.Zbritja_ID == id)
-                .OrderByDescending(z => z.DataKrijimit)
-                .Select(z => new
-                {
-                    z.Zbritja_ID,
-                    z.ZbritjaEmri,
-                    z.PerqindjaZbritjes,
-                    z.DataKrijimit,
-                    z.DataSkadimit,
-
-                }).FirstOrDefaultAsync();
-
-            if (zbritja == null)
-            {
-                return BadRequest("Zbritja nuk u gjet ne sistem.");
-            }
-
-            return Ok(zbritja);
-        }*/
-
-        /* public string? ZbritjaEmri { get; set; }
-        public int PerqindjaZbritjes { get; set; }
-        public DateTime? DataSkadimit { get; set; }*/
-
-        public async Task<List<ZbritjaDTO>> GetAllZbritjetAsync()
+        public async Task<List<Zbritja>> GetAllZbritjetAsync()
         {
             var zbritjet = await _context.Zbritja
                .OrderByDescending(r => r.DataKrijimit)
-               .Select(r => new ZbritjaDTO
+               .Select(r => new Zbritja
                {
                    Zbritja_ID=r.Zbritja_ID,
                    ZbritjaEmri=r.ZbritjaEmri,
                    PerqindjaZbritjes=r.PerqindjaZbritjes,
+                   DataKrijimit=r.DataKrijimit, 
                    DataSkadimit=r.DataSkadimit
 
                }).ToListAsync();
@@ -82,6 +52,32 @@ namespace ECommerce.Infrastructure.ProduktetModule.Repositories
             return zbritjet;
         }
 
+        public async Task<Zbritja?> GetZbritjaByIdAsync(int id)
+        {
+            var zbritja = await _context.Zbritja
+                .Where(z => z.Zbritja_ID == id)
+                .OrderByDescending(z => z.DataKrijimit)
+                .Select(z => new Zbritja
+                {
+                    Zbritja_ID = z.Zbritja_ID,
+                    ZbritjaEmri = z.ZbritjaEmri,
+                    PerqindjaZbritjes = z.PerqindjaZbritjes,
+                    DataKrijimit = z.DataKrijimit,
+                    DataSkadimit = z.DataSkadimit
+                })
+                .FirstOrDefaultAsync();
+
+            return zbritja;
+        }
+
+        public async Task UpdateZbritjaAsync(Zbritja zbritja,ZbritjaVM zbritjaVM)
+        {
+            zbritja.ZbritjaEmri = zbritjaVM.ZbritjaEmri;    
+            zbritja.PerqindjaZbritjes = zbritjaVM.PerqindjaZbritjes;
+            zbritja.DataSkadimit = zbritjaVM.DataSkadimit;
+            _context.Zbritja.Update(zbritja);
+            await _context.SaveChangesAsync();
+        }
 
 
 
