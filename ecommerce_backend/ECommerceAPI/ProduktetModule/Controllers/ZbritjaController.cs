@@ -1,14 +1,11 @@
 ﻿using ECommerce.Application.Exceptions;
 using ECommerce.Application.ProduktetModule.Interfaces;
-using ECommerce.Application.ProduktetModule.Services;
 using ECommerce.Application.ProduktetModule.ViewModels;
-using ECommerce.Domain.ProduktetModule.Entities;
 using ECommerce.Infrastructure.Data;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
+
 
 namespace ECommerceAPI.ProduktetModule.Controllers
 {
@@ -53,7 +50,7 @@ namespace ECommerceAPI.ProduktetModule.Controllers
         {
             try
             {
-                return Ok(await _zbritjaService.GetZbritjaByIdsAsync(id));
+                return Ok(await _zbritjaService.GetZbritjaByIdAsync(id));
             }
             catch (NotFoundException)
             {

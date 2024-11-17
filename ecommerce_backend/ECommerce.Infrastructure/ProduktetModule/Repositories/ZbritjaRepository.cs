@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ECommerce.Application.ProduktetModule.DTOs;
 using ECommerce.Application.ProduktetModule.Interfaces;
 using ECommerce.Application.ProduktetModule.ViewModels;
 using ECommerce.Domain.ProduktetModule.Entities;
@@ -35,11 +36,11 @@ namespace ECommerce.Infrastructure.ProduktetModule.Repositories
             await _context.SaveChangesAsync();
         }
 
-        public async Task<List<Zbritja>> GetAllZbritjetAsync()
+        public async Task<List<ZbritjaDTO>> GetAllZbritjetAsync()
         {
             var zbritjet = await _context.Zbritja
                .OrderByDescending(r => r.DataKrijimit)
-               .Select(r => new Zbritja
+               .Select(r => new ZbritjaDTO
                {
                    Zbritja_ID=r.Zbritja_ID,
                    ZbritjaEmri=r.ZbritjaEmri,
@@ -57,16 +58,8 @@ namespace ECommerce.Infrastructure.ProduktetModule.Repositories
             var zbritja = await _context.Zbritja
                 .Where(z => z.Zbritja_ID == id)
                 .OrderByDescending(z => z.DataKrijimit)
-                .Select(z => new Zbritja
-                {
-                    Zbritja_ID = z.Zbritja_ID,
-                    ZbritjaEmri = z.ZbritjaEmri,
-                    PerqindjaZbritjes = z.PerqindjaZbritjes,
-                    DataKrijimit = z.DataKrijimit,
-                    DataSkadimit = z.DataSkadimit
-                })
+                
                 .FirstOrDefaultAsync();
-
             return zbritja;
         }
 

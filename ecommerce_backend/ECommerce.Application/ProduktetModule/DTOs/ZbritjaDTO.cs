@@ -10,8 +10,10 @@ namespace ECommerce.Application.ProduktetModule.DTOs
     {
         public int Zbritja_ID { get; set; }
 
-        public string? ZbritjaEmri { get; set; }
+        public string ZbritjaEmri { get; set; }
         public int PerqindjaZbritjes { get; set; }
+
+        public DateTime? DataKrijimit { get; set; }
         public DateTime? DataSkadimit { get; set; }
 
 

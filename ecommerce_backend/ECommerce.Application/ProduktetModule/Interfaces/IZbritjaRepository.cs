@@ -15,7 +15,7 @@ namespace ECommerce.Application.ProduktetModule.Interfaces
 
         Task AddZbritjaAsync(ZbritjaVM newZbritja);
 
-        Task<List<Zbritja>> GetAllZbritjetAsync();
+        Task<List<ZbritjaDTO>> GetAllZbritjetAsync();
 
         Task<Zbritja?> GetZbritjaByIdAsync(int id);
 
