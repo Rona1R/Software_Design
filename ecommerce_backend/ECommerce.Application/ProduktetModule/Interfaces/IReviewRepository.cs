@@ -17,7 +17,6 @@ namespace ECommerce.Application.ProduktetModule.Interfaces
 
         Task<PaginatedReviewsDTO> GetReviewsByProductId(int produktiId, string sortOrder, int pageSize, int pageNumber);
 
-        Task<ReviewEditDTO> GetSingleReviewAsync(int id);
 
         Task UpdateReviewAsync(Review review, ReviewEditVM editedReview);
 

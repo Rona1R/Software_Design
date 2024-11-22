@@ -120,11 +120,8 @@
     font-size: larger;
 }
 .link{
-        padding-left: 10px;
-        padding-top: 10px;
-        font-size: medium;
-        padding-bottom: 10px;
-        /* background-color: #F73862; */}
+    padding: 10px;
+}
 
 .link a{
     color: #333;

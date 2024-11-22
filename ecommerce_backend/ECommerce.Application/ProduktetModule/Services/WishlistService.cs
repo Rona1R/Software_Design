@@ -23,9 +23,10 @@ namespace ECommerce.Application.ProduktetModule.Services
 
         public async Task AddToWishlistAsync(WishlistItemVM wishlistItemVM)
         {
-            var productExists = await _produktiRepository.GetProduktiFromDbAsync(wishlistItemVM.Produkti_ID);
+            //var productExists = await _produktiRepository.GetProduktiFromDbAsync(wishlistItemVM.Produkti_ID);
+            var productExists = await _produktiRepository.GetByIdAsync(wishlistItemVM.Produkti_ID);
 
-            if(productExists == null) {
+            if (productExists == null) {
                 throw new NotFoundException();
             }
 

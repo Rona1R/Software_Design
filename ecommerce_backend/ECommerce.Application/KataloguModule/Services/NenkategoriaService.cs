@@ -7,7 +7,6 @@ using ECommerce.Application.Exceptions;
 using ECommerce.Application.KataloguModule.DTOs;
 using ECommerce.Application.KataloguModule.Interfaces;
 using ECommerce.Application.KataloguModule.ViewModels;
-using ECommerce.Application.ProduktetModule.Interfaces;
 
 namespace ECommerce.Application.KataloguModule.Services
 {
