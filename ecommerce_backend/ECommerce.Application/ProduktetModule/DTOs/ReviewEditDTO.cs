@@ -8,8 +8,8 @@ namespace ECommerce.Application.ProduktetModule.DTOs
 {
     public class ReviewEditDTO
     { 
-        public int Rating { get; set; } 
+        public int? Rating { get; set; } 
 
-        public string Komenti { get; set; } 
+        public string? Komenti { get; set; } 
     }
 }

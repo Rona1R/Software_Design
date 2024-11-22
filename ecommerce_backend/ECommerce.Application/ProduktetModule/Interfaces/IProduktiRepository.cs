@@ -10,18 +10,16 @@ namespace ECommerce.Application.ProduktetModule.Interfaces
 
         Task<List<ProduktiDTO>> GetAllProductsAsync();
 
-        Task<ProduktiDTO> GetProductByIdAsync(int id);
+        Task<Produkti?> GetByIdAsync(int id);
+
 
         Task<SidebarDataNeZbritje> GetSidebarDataNeZbritjeAsync();
 
         Task<ProductsResponseDTO> GetFilteredProducts(string sortBy, int pageNumber, int pageSize
          , FilterNeZbritjeVM filters);
 
-        Task<DetajetProduktitVM> GetProductDetailsByIdAsync(int id);
 
         Task<List<CartProductDTO>> GetProduktetSipasId(List<int> productIds);
-
-        Task<Produkti?> GetProduktiFromDbAsync(int id);
 
         Task UpdateProductAsync(Produkti produktiPerTuEdituar, ProduktiVM produkti);
 
