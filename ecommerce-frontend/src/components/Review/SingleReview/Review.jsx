@@ -49,7 +49,7 @@ const Review = (props) => {
       props.resetPage(); // back to page 1
   }
   
-  const limitedText = props.Teksti.slice(0, 205);
+  const limitedText = props.Teksti.slice(0, 230);
 
   const badgeIcons = {
     "New User": faUser,
@@ -170,7 +170,7 @@ const Review = (props) => {
           </p>
         </div>
         <div>
-          {props.Teksti.length > 205 && (
+          {props.Teksti.length > 230 && (
             <button onClick={toggleShowMore} className="toggleText">
               {showMore ? (
                 <span>
