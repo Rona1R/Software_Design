@@ -76,6 +76,48 @@ namespace ECommerce.Infrastructure.ProduktetModule.Repositories
             return true; 
         }
 
+        public async Task<object> GetProduktinMeZbritjeAsync(int id)
+        {
+            
+            var produkti = await _context.Produkti
+                .Where(p => p.Produkti_ID == id)
+                .Select(p => new
+                {
+                    p.Produkti_ID,
+                    p.EmriProdukti,
+                    p.Zbritja_ID,
+                    p.Zbritja.ZbritjaEmri,
+                    p.Zbritja.PerqindjaZbritjes
+                }).FirstOrDefaultAsync();
+
+            return produkti;
+        }
+
+        public async Task<Produkti> PerditesoZbritjenProduktiAsync(int produktiId, int zbritjaId)
+        {
+            // Fetch the product and discount
+            var produkti = await _context.Produkti.FirstOrDefaultAsync(p => p.Produkti_ID == produktiId);
+            var zbritja = await _context.Zbritja.FirstOrDefaultAsync(z => z.Zbritja_ID == zbritjaId);
+
+            // Validate product existence
+            if (produkti == null)
+            {
+                throw new ArgumentException("Ky produkt nuk u gjet ne sistem!");
+            }
+
+            // Validate discount existence
+            if (zbritja == null)
+            {
+                throw new ArgumentException("Kjo zbritje nuk u gjet ne sistem!");
+            }
+
+            // Update product's discount
+            produkti.Zbritja_ID = zbritjaId;
+            _context.Produkti.Update(produkti);
+            await _context.SaveChangesAsync();
+
+            return produkti;
+        }
 
     }
 

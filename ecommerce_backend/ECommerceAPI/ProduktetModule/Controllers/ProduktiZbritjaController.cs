@@ -48,29 +48,30 @@ namespace ECommerceAPI.ProduktetModule.Controllers
             }
         }
 
-
-
-
         [HttpGet]
-        [Route("shfaqProduktinNeZbritje/{id}")] // produkti qe ka me´u selektu per me iu ndryshu lloji i zbritjes
+        [Route("shfaqProduktinNeZbritje/{id}")]
         [Authorize(Roles = "Admin,Menaxher")]
         public async Task<IActionResult> Get(int id)
         {
+            try
+            {
+                var produkti = await _produktService.GetProduktinMeZbritjeAsync(id);
 
-            var produkti = await _context.Produkti
-                .Where(p => p.Produkti_ID == id)
-                .Select(p => new
+                if (produkti == null)
                 {
-                    p.Produkti_ID,
-                    p.EmriProdukti,
-                    p.Zbritja_ID,
-                    p.Zbritja.ZbritjaEmri,
-                    p.Zbritja.PerqindjaZbritjes
-                }).FirstOrDefaultAsync();
+                    return NotFound("Produkti nuk u gjet ne sistem!");
+                }
 
-            return Ok(produkti);
+                return Ok(produkti);
+            }
+            catch (Exception ex)
+            {
+        
+                Console.WriteLine($"Error: {ex.Message}");
+                return StatusCode(500, "Gabim i brendshëm!");
+            }
         }
-    
+
         [HttpPut]
         [Route("largoProduktinNgaZbritja/{produktiId}")]
         [Authorize(Roles = "Admin,Menaxher")]
@@ -86,30 +87,29 @@ namespace ECommerceAPI.ProduktetModule.Controllers
 
             return Ok("Produkti u largua nga zbritja me sukses!");
         }
-
+    
         [HttpPut]
         [Route("perditesoZbritenProduktit/{produktiId}/{zbritjaId}")]
         [Authorize(Roles = "Admin,Menaxher")]
         public async Task<IActionResult> PerditesoZbritjenProdukti(int produktiId, int zbritjaId)
         {
-            var produkti = await _context.Produkti.FirstOrDefaultAsync(p => p.Produkti_ID == produktiId);
-            var zbritja = await _context.Zbritja.FirstOrDefaultAsync(z => z.Zbritja_ID == zbritjaId);
-            if (produkti == null)
+            try
             {
-                return BadRequest("Ky produkt nuk u gjet ne sistem!");
-            }
+         
+                var produkti = await _produktService.PerditesoZbritjenProduktiAsync(produktiId, zbritjaId);
 
-            if (zbritja == null)
+              
+                return Ok(produkti);
+            }
+            catch (ArgumentException ex)
             {
-                return BadRequest("Kjo zbritje nuk u gjet ne sistem!");
+                return BadRequest(ex.Message);
             }
-
-            // Perditesimi i zbritjes se produktit:
-            produkti.Zbritja_ID = zbritjaId;
-            _context.Update(produkti);
-            await _context.SaveChangesAsync();
-
-            return Ok("Zbritja e produktit u perditesua me sukses!");
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error: {ex.Message}");
+                return StatusCode(500, "Gabim i brendshëm!");
+            }
         }
 
         [HttpGet]

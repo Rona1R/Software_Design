@@ -24,6 +24,11 @@ namespace ECommerce.Application.ProduktetModule.Services
 
         }
 
+        public async Task<object> GetProduktinMeZbritjeAsync(int id)
+        {
+            return await _produktzbritjaRepository.GetProduktinMeZbritjeAsync(id);
+        }
+
         public async Task<string> VendosNeZbritjeAsync(int produktiId, int zbritjaId)
         {
             return await _produktzbritjaRepository.VendosNeZbritjeAsync(produktiId, zbritjaId);
@@ -33,6 +38,11 @@ namespace ECommerce.Application.ProduktetModule.Services
         {
             
             return await _produktzbritjaRepository.LargoNgaZbritjaAsync(produktiId);
+        }
+
+        public async Task<Produkti> PerditesoZbritjenProduktiAsync(int produktiId, int zbritjaId)
+        {
+            return await _produktzbritjaRepository.PerditesoZbritjenProduktiAsync(produktiId, zbritjaId);
         }
     }
 }

@@ -14,5 +14,8 @@ namespace ECommerce.Application.ProduktetModule.Interfaces
 
         Task<string> VendosNeZbritjeAsync(int produktiId, int zbritjaId);
 
+        Task<object> GetProduktinMeZbritjeAsync(int id);
+
+        Task<Produkti> PerditesoZbritjenProduktiAsync(int produktiId, int zbritjaId);
     }
 }
