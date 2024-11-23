@@ -95,28 +95,60 @@ namespace ECommerce.Infrastructure.ProduktetModule.Repositories
 
         public async Task<Produkti> PerditesoZbritjenProduktiAsync(int produktiId, int zbritjaId)
         {
-            // Fetch the product and discount
+          
             var produkti = await _context.Produkti.FirstOrDefaultAsync(p => p.Produkti_ID == produktiId);
             var zbritja = await _context.Zbritja.FirstOrDefaultAsync(z => z.Zbritja_ID == zbritjaId);
 
-            // Validate product existence
+        
             if (produkti == null)
             {
                 throw new ArgumentException("Ky produkt nuk u gjet ne sistem!");
             }
 
-            // Validate discount existence
+           
             if (zbritja == null)
             {
                 throw new ArgumentException("Kjo zbritje nuk u gjet ne sistem!");
             }
 
-            // Update product's discount
+           
             produkti.Zbritja_ID = zbritjaId;
             _context.Produkti.Update(produkti);
             await _context.SaveChangesAsync();
 
             return produkti;
+        }
+
+        public async Task<List<ProduktZbritjaDTO>> ShfaqZbritjetProdukteveAsync()
+        {
+            var zbritjet = await _context.Produkti
+                .Include(z => z.Zbritja) 
+                .Where(z => z.Zbritja_ID != null) 
+                .OrderByDescending(z => z.DataVendsojesNeZbritje)
+                .Select(pz => new ProduktZbritjaDTO
+                {
+                    ProduktiID = pz.Produkti_ID,
+                    ZbritjaID = pz.Zbritja_ID,
+                    ProduktiEmri = pz.EmriProdukti,
+                    CmimiParaZbritjes = pz.CmimiPerCope,
+                    CmimiMeZbritje = pz.CmimiPerCope - (decimal)pz.Zbritja.PerqindjaZbritjes / 100 * pz.CmimiPerCope,
+                }).ToListAsync();
+
+            return zbritjet;
+        }
+
+        public async Task<List<object>> ShfaqProduktetPaZbritjeAsync()
+        {
+            var paZbritje = await _context.Produkti
+                .Where(p => p.Zbritja_ID == null) 
+                .OrderByDescending(p => p.CreatedAt)
+                .Select(p => new
+                {
+                    ProduktiID = p.Produkti_ID,
+                    Emri = p.EmriProdukti
+                }).ToListAsync();
+
+            return paZbritje.Cast<object>().ToList();
         }
 
     }

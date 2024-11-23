@@ -44,5 +44,17 @@ namespace ECommerce.Application.ProduktetModule.Services
         {
             return await _produktzbritjaRepository.PerditesoZbritjenProduktiAsync(produktiId, zbritjaId);
         }
+
+
+        public async Task<List<ProduktZbritjaDTO>> ShfaqZbritjetProdukteveAsync()
+        {
+            return await _produktzbritjaRepository.ShfaqZbritjetProdukteveAsync();
+        }
+
+
+        public async Task<List<object>> ShfaqProduktetPaZbritjeAsync()
+        {
+            return await _produktzbritjaRepository.ShfaqProduktetPaZbritjeAsync();
+        }
     }
 }

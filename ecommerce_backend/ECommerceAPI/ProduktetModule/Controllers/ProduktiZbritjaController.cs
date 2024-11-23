@@ -111,43 +111,41 @@ namespace ECommerceAPI.ProduktetModule.Controllers
                 return StatusCode(500, "Gabim i brendshëm!");
             }
         }
-
+      
         [HttpGet]
         [Route("shfaqZbritjetProdukteve")]
         [Authorize(Roles = "Admin,Menaxher")]
         public async Task<IActionResult> Get()
         {
-            var zbritjet = await _context.Produkti
-                .Include(z => z.Zbritja)
-                .Where(z => z.Zbritja_ID != null)
-                .OrderByDescending(z => z.DataVendsojesNeZbritje)
-                .Select(pz => new ProduktiZbritjaDTO
-                {
-                    ProduktiID = pz.Produkti_ID,
-                    ZbritjaID = pz.Zbritja_ID,
-                    ProduktiEmri = pz.EmriProdukti,
-                    CmimiParaZbritjes = pz.CmimiPerCope,
-                    CmimiMeZbritje = pz.CmimiPerCope - (decimal)pz.Zbritja.PerqindjaZbritjes / 100 * pz.CmimiPerCope,
-
-                }).ToListAsync();
-            return Ok(zbritjet);
+            try
+            {
+             
+                var zbritjet = await _produktService.ShfaqZbritjetProdukteveAsync();
+                return Ok(zbritjet);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error: {ex.Message}");
+                return StatusCode(500, "Gabim i brendshëm!");
+            }
         }
-
+  
         [HttpGet]
         [Route("shfaqProduktetPaZbritje")]
         [Authorize(Roles = "Admin,Menaxher")]
-        public async Task<IActionResult> GetProduktet() // Produktet qe nuk kane zbritje per Dropdown
+        public async Task<IActionResult> GetProduktet()
         {
-            var paZbritje = await _context.Produkti
-              .Where(p => p.Zbritja_ID == null)
-              .OrderByDescending(p => p.CreatedAt)
-              .Select(p => new
-              {
-                  ProduktiID = p.Produkti_ID,
-                  Emri = p.EmriProdukti
-              }).ToListAsync();
-
-            return Ok(paZbritje);
+            try
+            {
+                var paZbritje = await _produktService.ShfaqProduktetPaZbritjeAsync();
+                return Ok(paZbritje);
+            }
+            catch (Exception ex)
+            {
+              
+                Console.WriteLine($"Error: {ex.Message}");
+                return StatusCode(500, "Gabim i brendshëm!");
+            }
         }
     }
 }
