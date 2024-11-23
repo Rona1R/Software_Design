@@ -63,6 +63,18 @@ namespace ECommerce.Application.ProduktetModule.Services
 
              await _zbritjaRepository.UpdateZbritjaAsync(zbritja, zbritjaVM);
          }
+
+        public async Task RemoveZbritjaAsync(int id)
+        {
+            var zbritja = await _zbritjaRepository.GetZbritjaByIdAsync(id);
+            if (zbritja == null)
+            {
+                throw new NotFoundException();
+            }
+
+            await _zbritjaRepository.DeleteZbritjaAsync(zbritja);
+
+        }
     }
 
 

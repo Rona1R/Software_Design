@@ -1,4 +1,7 @@
-﻿using ECommerce.Infrastructure.Data;
+﻿using ECommerce.Application.Exceptions;
+using ECommerce.Application.ProduktetModule.Interfaces;
+using ECommerce.Application.ProduktetModule.Services;
+using ECommerce.Infrastructure.Data;
 using ECommerceAPI.DTOs;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -13,10 +16,12 @@ namespace ECommerceAPI.ProduktetModule.Controllers
     {
 
         private readonly ECommerceDBContext _context;
+        private readonly IProduktiZbritjaService _produktService;
 
-        public ProduktiZbritjaController(ECommerceDBContext context)
+        public ProduktiZbritjaController(ECommerceDBContext context, IProduktiZbritjaService produktService)
         {
             _context = context;
+            _produktService = produktService;
         }
 
         [HttpPut]
@@ -24,34 +29,27 @@ namespace ECommerceAPI.ProduktetModule.Controllers
         [Authorize(Roles = "Admin,Menaxher")]
         public async Task<IActionResult> VendosNeZbritje(int produktiId, int zbritjaId)
         {
-            var ekzistonProdukti = await _context.Produkti.FirstOrDefaultAsync(p => p.Produkti_ID == produktiId);
-            var ekzistonZbritja = await _context.Zbritja.FirstOrDefaultAsync(z => z.Zbritja_ID == zbritjaId);
-
-            if (ekzistonProdukti == null)
+            try
             {
-                return BadRequest("Ky produkt nuk u gjet ne sistem!");
-            }
-            else
-            { // Nese ekziston Produkti dhe ka nje Zbritje per te , mos e lejo qe te vendoset zbritje tjeter. -- KJO ka me ia shfaq perdoruesit si mesazh Validimi ne front 
+                var result = await _produktService.VendosNeZbritjeAsync(produktiId, zbritjaId);
 
-                if (ekzistonProdukti.Zbritja_ID != null)
+                if (result == "Produkti u vendos ne zbritje me sukses!")
                 {
-                    return BadRequest("Ky Produkt ndodhet ne zbritje!");
+                    return Ok(result);
                 }
-            }
 
-            if (ekzistonZbritja == null)
+                return BadRequest(result);
+            }
+            catch (Exception ex)
             {
-                return BadRequest("Kjo zbritje nuk u gjet ne sistem!");
+              
+                Console.WriteLine($"Error: {ex.Message}");
+                return StatusCode(500, "Gabim i brendshëm!");
             }
-
-            ekzistonProdukti.Zbritja_ID = zbritjaId;
-            ekzistonProdukti.DataVendsojesNeZbritje = DateTime.UtcNow;
-            _context.Produkti.Update(ekzistonProdukti);
-            await _context.SaveChangesAsync();
-
-            return Ok("Produkti u vendos ne zbritje me sukses!");
         }
+
+
+
 
         [HttpGet]
         [Route("shfaqProduktinNeZbritje/{id}")] // produkti qe ka me´u selektu per me iu ndryshu lloji i zbritjes
@@ -72,26 +70,21 @@ namespace ECommerceAPI.ProduktetModule.Controllers
 
             return Ok(produkti);
         }
-
+    
         [HttpPut]
         [Route("largoProduktinNgaZbritja/{produktiId}")]
         [Authorize(Roles = "Admin,Menaxher")]
+
         public async Task<IActionResult> LargoNgaZbritja(int produktiId)
         {
-            var produkti = await _context.Produkti.FirstOrDefaultAsync(p => p.Produkti_ID == produktiId);
-            if (produkti == null)
+            var success = await _produktService.RemoveProductNgaZbritjaAsync(produktiId);
+
+            if (!success)
             {
-                return BadRequest("Produkti nuk u gjet ne sistem!");
+                return BadRequest("Produkti nuk u gjet në sistem!");
             }
 
-            // nese produkti gjendet , atehere le te largohet Asocimi me Zbritjen duke e bere fk te zbritjes null:
-
-            produkti.Zbritja_ID = null;
-            _context.Produkti.Update(produkti);
-            await _context.SaveChangesAsync();
-
             return Ok("Produkti u largua nga zbritja me sukses!");
-
         }
 
         [HttpPut]

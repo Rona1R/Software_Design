@@ -19,6 +19,9 @@ namespace ECommerce.Application.ProduktetModule.Interfaces
 
         Task UpdateZbritjaAsync(int id, ZbritjaVM zbritjaVM);
 
-       // Task<bool> ZbritjaExists(int id, string name);
+        // Task<bool> ZbritjaExists(int id, string name);
+
+        Task RemoveZbritjaAsync(int id);
+
     }
 }

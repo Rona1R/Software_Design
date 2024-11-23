@@ -1,5 +1,6 @@
 ﻿using ECommerce.Application.Exceptions;
 using ECommerce.Application.ProduktetModule.Interfaces;
+using ECommerce.Application.ProduktetModule.Services;
 using ECommerce.Application.ProduktetModule.ViewModels;
 using ECommerce.Infrastructure.Data;
 using Microsoft.AspNetCore.Authorization;
@@ -71,7 +72,7 @@ namespace ECommerceAPI.ProduktetModule.Controllers
                 return NotFound();
             }
         }
-
+        /*
         [HttpDelete]
         [Route("fshijZbritjen/{id}")]
         [Authorize(Roles = "Admin,Menaxher")]
@@ -86,6 +87,24 @@ namespace ECommerceAPI.ProduktetModule.Controllers
             }
 
             return BadRequest("Kjo zbritje nuk ekziston ne sistem.");
+        }*/
+
+
+        [HttpDelete]
+        [Route("fshijZbritjen/{id}")]
+        [Authorize(Roles = "Admin,Menaxher")]
+        public async Task<IActionResult> Delete(int id)
+        {
+            try
+            {
+
+                await _zbritjaService.RemoveZbritjaAsync(id);
+                return Ok("Zbritja u fshi me sukses!");
+            }
+            catch (NotFoundException)
+            {
+                return NotFound();
+            }
         }
 
 
