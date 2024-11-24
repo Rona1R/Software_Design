@@ -1,12 +1,8 @@
 ﻿using ECommerce.Application.Exceptions;
 using ECommerce.Application.ProduktetModule.Interfaces;
-using ECommerce.Application.ProduktetModule.Services;
-using ECommerce.Infrastructure.Data;
-using ECommerceAPI.DTOs;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+
 
 namespace ECommerceAPI.ProduktetModule.Controllers
 {
@@ -14,13 +10,10 @@ namespace ECommerceAPI.ProduktetModule.Controllers
     [ApiController]
     public class ProduktiZbritjaController : ControllerBase
     {
-
-        private readonly ECommerceDBContext _context;
         private readonly IProduktiZbritjaService _produktService;
 
-        public ProduktiZbritjaController(ECommerceDBContext context, IProduktiZbritjaService produktService)
+        public ProduktiZbritjaController(IProduktiZbritjaService produktService)
         {
-            _context = context;
             _produktService = produktService;
         }
 
@@ -31,14 +24,12 @@ namespace ECommerceAPI.ProduktetModule.Controllers
         {
             try
             {
-                var result = await _produktService.VendosNeZbritjeAsync(produktiId, zbritjaId);
-
-                if (result == "Produkti u vendos ne zbritje me sukses!")
-                {
-                    return Ok(result);
-                }
-
-                return BadRequest(result);
+                await _produktService.VendosNeZbritjeAsync(produktiId, zbritjaId);
+                return Ok("Produkti u vendos ne zbritje me sukses!");
+            }
+            catch(NotFoundException e)
+            {
+                return NotFound(e.Message); 
             }
             catch (Exception ex)
             {
@@ -56,13 +47,10 @@ namespace ECommerceAPI.ProduktetModule.Controllers
             try
             {
                 var produkti = await _produktService.GetProduktinMeZbritjeAsync(id);
-
-                if (produkti == null)
-                {
-                    return NotFound("Produkti nuk u gjet ne sistem!");
-                }
-
                 return Ok(produkti);
+            }
+            catch(NotFoundException e) {
+                return NotFound(e.Message);
             }
             catch (Exception ex)
             {
@@ -78,14 +66,16 @@ namespace ECommerceAPI.ProduktetModule.Controllers
 
         public async Task<IActionResult> LargoNgaZbritja(int produktiId)
         {
-            var success = await _produktService.RemoveProductNgaZbritjaAsync(produktiId);
-
-            if (!success)
+            try
             {
-                return BadRequest("Produkti nuk u gjet në sistem!");
-            }
+               await _produktService.RemoveProductNgaZbritjaAsync(produktiId);
+                return Ok("Produkti u largua nga zbritja me sukses!");
 
-            return Ok("Produkti u largua nga zbritja me sukses!");
+            }
+            catch (NotFoundException)
+            {
+                return NotFound();
+            }
         }
     
         [HttpPut]
@@ -95,15 +85,14 @@ namespace ECommerceAPI.ProduktetModule.Controllers
         {
             try
             {
-         
-                var produkti = await _produktService.PerditesoZbritjenProduktiAsync(produktiId, zbritjaId);
 
-              
-                return Ok(produkti);
+                await _produktService.VendosNeZbritjeAsync(produktiId, zbritjaId);
+                return Ok("Zbritja e produktit u perditesua me sukses!");
+
             }
-            catch (ArgumentException ex)
+            catch (NotFoundException ex)
             {
-                return BadRequest(ex.Message);
+                return NotFound(ex.Message);
             }
             catch (Exception ex)
             {

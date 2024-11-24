@@ -57,8 +57,7 @@ namespace ECommerce.Infrastructure.ProduktetModule.Repositories
         {
             var zbritja = await _context.Zbritja
                 .Where(z => z.Zbritja_ID == id)
-                .OrderByDescending(z => z.DataKrijimit)
-                
+                .OrderByDescending(z => z.DataKrijimit)   
                 .FirstOrDefaultAsync();
             return zbritja;
         }
@@ -71,22 +70,6 @@ namespace ECommerce.Infrastructure.ProduktetModule.Repositories
             _context.Zbritja.Update(zbritja);
             await _context.SaveChangesAsync();
         }
-
-        /*[HttpDelete]
-        [Route("fshijZbritjen/{id}")]
-        [Authorize(Roles = "Admin,Menaxher")]
-        public async Task<IActionResult> Delete(int id)
-        {
-            var zbritja = await _context.Zbritja.FirstOrDefaultAsync(z => z.Zbritja_ID == id);
-            if (zbritja != null)
-            {
-                _context.Zbritja.Remove(zbritja);
-                await _context.SaveChangesAsync();
-                return Ok("Zbritja u fshi me sukses!");
-            }
-
-            return BadRequest("Kjo zbritje nuk ekziston ne sistem.");
-        }*/
 
         public async Task DeleteZbritjaAsync(Zbritja zbritja)
         {

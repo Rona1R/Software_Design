@@ -10,13 +10,10 @@ namespace ECommerce.Application.ProduktetModule.Interfaces
 {
     public interface IProduktiZbritjaService
     {
-        Task<object> GetProduktinMeZbritjeAsync(int id);
-        Task<bool> RemoveProductNgaZbritjaAsync(int produktiId);
+        Task<ProduktiZbritjaEdit> GetProduktinMeZbritjeAsync(int id);
+        Task RemoveProductNgaZbritjaAsync(int produktiId);
 
-        Task<string> VendosNeZbritjeAsync(int produktiId, int zbritjaId);
-
-
-        Task<Produkti> PerditesoZbritjenProduktiAsync(int produktiId, int zbritjaId);
+        Task VendosNeZbritjeAsync(int produktiId, int zbritjaId);
 
         Task<List<ProduktZbritjaDTO>> ShfaqZbritjetProdukteveAsync();
 

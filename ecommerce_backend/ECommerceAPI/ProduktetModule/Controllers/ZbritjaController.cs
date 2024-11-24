@@ -1,12 +1,8 @@
 ﻿using ECommerce.Application.Exceptions;
 using ECommerce.Application.ProduktetModule.Interfaces;
-using ECommerce.Application.ProduktetModule.Services;
 using ECommerce.Application.ProduktetModule.ViewModels;
-using ECommerce.Infrastructure.Data;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-
 
 namespace ECommerceAPI.ProduktetModule.Controllers
 {
@@ -16,12 +12,10 @@ namespace ECommerceAPI.ProduktetModule.Controllers
     {
         private readonly IZbritjaService _zbritjaService;
 
-        private readonly ECommerceDBContext _context;
 
-        public ZbritjaController(IZbritjaService zbritjaService, ECommerceDBContext context)
+        public ZbritjaController(IZbritjaService zbritjaService)
         {
             _zbritjaService = zbritjaService;
-            _context = context;
         }
 
         
@@ -72,23 +66,6 @@ namespace ECommerceAPI.ProduktetModule.Controllers
                 return NotFound();
             }
         }
-        /*
-        [HttpDelete]
-        [Route("fshijZbritjen/{id}")]
-        [Authorize(Roles = "Admin,Menaxher")]
-        public async Task<IActionResult> Delete(int id)
-        {
-            var zbritja = await _context.Zbritja.FirstOrDefaultAsync(z => z.Zbritja_ID == id);
-            if (zbritja != null)
-            {
-                _context.Zbritja.Remove(zbritja);
-                await _context.SaveChangesAsync();
-                return Ok("Zbritja u fshi me sukses!");
-            }
-
-            return BadRequest("Kjo zbritje nuk ekziston ne sistem.");
-        }*/
-
 
         [HttpDelete]
         [Route("fshijZbritjen/{id}")]
