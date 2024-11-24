@@ -217,7 +217,7 @@ export default function TabelaPorosive() {
         // className="order-details"
       >
         <Modal.Header closeButton className="cart-header">
-          <Modal.Title>Detajet E Porosise</Modal.Title>
+          {/* <Modal.Title className="crudFormLabel">Detajet E Porosise</Modal.Title> */}
         </Modal.Header>
         <Modal.Body className="text-center">
           <h3 style={{fontWeight:"bold",color:"#00004",fontSize:"2em"}}>Detajet e porosise:</h3>

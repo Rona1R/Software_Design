@@ -131,7 +131,6 @@ const CardDetails = ({ products, onRemove }) => {
                     </Link>
                     <div className="cartProductDetails"  style={{padding:'10px'}}>
                         <h3 className="product-title">{product.name}</h3>
-                        <p className="product-description">{product.description}</p>
                         <p className="product-price">{formatPrice(product.cmimi)} €</p>
                         <div className="quantity-butonat">
                             <button className="quantity-button" onClick={()=>handleQuantityChange("decrement",product.id)}  disabled={product.sasia === 1}>-</button>

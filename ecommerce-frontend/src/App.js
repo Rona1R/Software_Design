@@ -1,7 +1,7 @@
 import { Route, Routes } from "react-router-dom";
 import ProductDetails from "./pages/ProductDetails";
 import Wishlist from "./pages/WishlistPage/Wishlist";
-import Cart from "./pages/CartPage/Cart";
+// import Cart from "./pages/CartPage/Cart";
 import ProfilePage from "./pages/UserProfile/ProfilePage";
 import Home from "./pages/Home/Home";
 import ProductsByCategory from "./pages/ProductPages/ProductsByCategory";
@@ -29,6 +29,7 @@ import "api/axiosConfig";
 import PrivateRoute from "PrivateRoute";
 import ProtectedRoute from "ProtectedRoute";
 import "./App.css";
+import CartTest from "pages/CartPage/CartTest";
 
 function App() {
   return (
@@ -76,7 +77,8 @@ function App() {
             </ProtectedRoute>
           }
         />
-        <Route path="/Cart" element={<Cart />} />
+        <Route path="/Cart" element={<CartTest/>}/>
+        {/* <Route path="/Cart" element={<Cart />} /> */}
         <Route path="/Wishlist" element={<Wishlist />} />
         <Route
           path="/ProfilePage"

@@ -24,26 +24,26 @@ function Dashboard() {
   const [loading, setLoading] = useState(true);
   const [shifrat, setShifrat] = useState(null);
   const [teDhenatBiznesit, setTeDhenatBiznesit] = useState(null);
-  const [refreshKey,setRefreshKey] = useState('');
-  const [shfaqEdit,setShfaqEdit] = useState(false);
+  const [refreshKey, setRefreshKey] = useState("");
+  const [shfaqEdit, setShfaqEdit] = useState(false);
   const [teDhenatBiznesitLoading, setTeDhenatBiznesitLoading] = useState(true);
-  const useri  = JSON.parse(localStorage.getItem("userDetails"));
+  const useri = JSON.parse(localStorage.getItem("userDetails"));
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const [biznesData, shifraData] = await Promise.all([
           axios.get("https://localhost:7061/api/TeDhenatBiznesit/getTeDhenat"),
-          axios.get("https://localhost:7061/api/Statistika/getShifrat")
+          axios.get("https://localhost:7061/api/Statistika/getShifrat"),
         ]);
         console.log("Dashboard details fetched !");
 
-        if(biznesData && biznesData.status === 200) {
+        if (biznesData && biznesData.status === 200) {
           setTeDhenatBiznesit(biznesData.data);
           setTeDhenatBiznesitLoading(false);
         }
 
-        if(shifraData && shifraData.status === 200) {
+        if (shifraData && shifraData.status === 200) {
           setShifrat(shifraData.data);
           setLoading(false);
         }
@@ -53,72 +53,29 @@ function Dashboard() {
     };
 
     fetchData();
-}, [refreshKey]);
+  }, [refreshKey]);
 
-
-
-  // useEffect(() => {
-  //   const fetchData = async ()=> {
-  //     try {
-  //       await axios
-  //       .get("https://localhost:7061/api/TeDhenatBiznesit/getTeDhenat")
-  //       .then((response) => {
-  //         if(response && response.status === 200)
-  //           {
-  //             setTeDhenatBiznesit(response.data);
-  //             setTeDhenatBiznesitLoading(false);
-  //           }
-  //         });
-
-  //         await axios
-  //         .get("https://localhost:7061/api/Statistika/getShifrat")
-  //         .then((response) => {
-  //           if(response && response.status === 200){
-  //             setShifrat(response.data);
-  //             setLoading(false);
-  //           }
-  //         });
-  //       } catch (error) {
-  //         console.log(error);
-  //       }
-  //    }
-
-  //   fetchData();     
-  // }, [refreshKey]);
-
-  // useEffect(() => {
-  //   const fetchData = async ()=>{
-  //     try {
-  //       await axios
-  //         .get("https://localhost:7061/api/Statistika/getShifrat")
-  //         .then((response) => {
-  //           if(response && response.status === 200){
-  //             setShifrat(response.data);
-  //             setLoading(false);
-  //           }
-  //         });
-  //     } catch (error) {
-  //       console.log(error);
-  //     }
-  //   }
-
-  //   fetchData();
-  // }, []);
+  function formatNumber(value) {
+    if (value >= 1000000) {
+      return (value / 1000000).toFixed(1).replace(/\.0$/, "") + "M"; 
+    } else if (value >= 1000) {
+      return (value / 1000).toFixed(1).replace(/\.0$/, "") + "k";
+    }
+    return value.toString(); 
+  }
 
   return (
     <>
-      {
-        shfaqEdit && (
-          <EditTeDhenatBiznesit 
-            mbyllEdit = {()=>setShfaqEdit(false)}
-            refreshTeDhenat = {()=>setRefreshKey(Date.now())}
-          />
-        )
-      }
+      {shfaqEdit && (
+        <EditTeDhenatBiznesit
+          mbyllEdit={() => setShfaqEdit(false)}
+          refreshTeDhenat={() => setRefreshKey(Date.now())}
+        />
+      )}
       <Container fluid>
         <Row className="business-data-container">
           <Col>
-            {teDhenatBiznesitLoading? (
+            {teDhenatBiznesitLoading ? (
               <div className="loading">
                 <TailSpin
                   height="200"
@@ -133,30 +90,28 @@ function Dashboard() {
               </div>
             ) : (
               <>
-               {
-                useri && useri.roles.includes("Admin") && (
-                <div className="business-edit-button">
-                  <Button
-                    sx={{
-                      backgroundColor: "inherit",
-                      "&:hover": { backgroundColor: "inherit" },
-                      padding: 0,
-                      minWidth: "auto",
-                    }}
-                    onClick={()=>setShfaqEdit(true)}
-                  >
-                    <FontAwesomeIcon
-                      icon={faPenToSquare}
-                      style={{
-                        color: "#000004",
-                        fontSize: "23px",
-                        marginRight: "15px",
+                {useri && useri.roles.includes("Admin") && (
+                  <div className="business-edit-button">
+                    <Button
+                      sx={{
+                        backgroundColor: "inherit",
+                        "&:hover": { backgroundColor: "inherit" },
+                        padding: 0,
+                        minWidth: "auto",
                       }}
-                    />
-                  </Button>
-                </div>
-                )
-               }
+                      onClick={() => setShfaqEdit(true)}
+                    >
+                      <FontAwesomeIcon
+                        icon={faPenToSquare}
+                        style={{
+                          color: "#000004",
+                          fontSize: "23px",
+                          marginRight: "15px",
+                        }}
+                      />
+                    </Button>
+                  </div>
+                )}
                 <div>
                   <p className="business-data-title">Te dhenat e biznesit</p>
                   <p className="business-data-item">
@@ -166,30 +121,31 @@ function Dashboard() {
                     <strong>Email:</strong> {teDhenatBiznesit.emailBiznesit}
                   </p>
                   <p className="business-data-item">
-                    <strong>Numri i telefonit:</strong> + {teDhenatBiznesit.nrKontaktues}
+                    <strong>Numri i telefonit:</strong> +{" "}
+                    {teDhenatBiznesit.nrKontaktues}
                   </p>
                   <p className="business-data-item">
-                    <strong>Instagram Link: </strong> 
+                    <strong>Instagram Link: </strong>
                     <a href={teDhenatBiznesit.instagramLink}>
-                    {teDhenatBiznesit.instagramLink}
+                      {teDhenatBiznesit.instagramLink}
                     </a>
                   </p>
                   <p className="business-data-item">
-                    <strong>Twitter Link: </strong> 
+                    <strong>Twitter Link: </strong>
                     <a href={teDhenatBiznesit.twitterLink}>
-                     {teDhenatBiznesit.twitterLink}
+                      {teDhenatBiznesit.twitterLink}
                     </a>
                   </p>
                   <p className="business-data-item">
-                    <strong>LinkedIn Link: </strong> 
+                    <strong>LinkedIn Link: </strong>
                     <a href={teDhenatBiznesit.linkedInLink}>
-                     {teDhenatBiznesit.linkedInLink}
+                      {teDhenatBiznesit.linkedInLink}
                     </a>
                   </p>
                   <p className="business-data-item">
-                    <strong>Facebook Link: </strong> 
+                    <strong>Facebook Link: </strong>
                     <a href={teDhenatBiznesit.facebookLink}>
-                     {teDhenatBiznesit.facebookLink}
+                      {teDhenatBiznesit.facebookLink}
                     </a>
                   </p>
                 </div>
@@ -223,13 +179,12 @@ function Dashboard() {
                             icon={faPerson}
                             style={{ height: "50px" }}
                           />
-                          {/* <i className="nc-icon nc-chart text-warning"></i> */}
                         </div>
                       </Col>
                       <Col xs="7">
                         <div className="numbers">
                           <p className="card-category">Costumers</p>
-                          <Card.Title as="h4">{shifrat.nrKlienteve}</Card.Title>
+                          <Card.Title as="h4">{formatNumber(shifrat.nrKlienteve)}</Card.Title>
                         </div>
                       </Col>
                     </Row>
@@ -258,7 +213,7 @@ function Dashboard() {
                       <Col xs="7">
                         <div className="numbers">
                           <p className="card-category">Revenue</p>
-                          <Card.Title as="h4"> {shifrat.revenue} €</Card.Title>
+                          <Card.Title as="h4">{formatNumber(shifrat.revenue)} €</Card.Title>
                         </div>
                       </Col>
                     </Row>
@@ -287,7 +242,7 @@ function Dashboard() {
                       <Col xs="7">
                         <div className="numbers">
                           <p className="card-category">Orders</p>
-                          <Card.Title as="h4">{shifrat.nrOrders}</Card.Title>
+                          <Card.Title as="h4">{formatNumber(shifrat.nrOrders)}</Card.Title>
                         </div>
                       </Col>
                     </Row>
@@ -295,7 +250,7 @@ function Dashboard() {
                   <Card.Footer>
                     <hr></hr>
                     <div className="stats">
-                      Orders this week : {shifrat.ordersThisWeek}
+                      Orders this week : {formatNumber(shifrat.ordersThisWeek)}
                     </div>
                   </Card.Footer>
                 </Card>
@@ -316,7 +271,7 @@ function Dashboard() {
                         <div className="numbers">
                           <p className="card-category">Products</p>
                           <Card.Title as="h4">
-                            {shifrat.nrProdukteve}
+                            {formatNumber(shifrat.nrProdukteve)}
                           </Card.Title>
                         </div>
                       </Col>
@@ -325,7 +280,7 @@ function Dashboard() {
                   <Card.Footer>
                     <hr></hr>
                     <div className="stats">
-                      {shifrat.nrKategorive} Different Categories
+                      {formatNumber(shifrat.nrKategorive)} Different Categories
                     </div>
                   </Card.Footer>
                 </Card>
@@ -338,7 +293,6 @@ function Dashboard() {
             <Card>
               <Card.Header>
                 <Card.Title as="h4">Sale Statistics</Card.Title>
-                {/* <p className="card-category">Filter By Year</p> */}
               </Card.Header>
               <Card.Body>
                 <ShitjetStatistika />

@@ -21,7 +21,6 @@
 }
 
 .cart-icon {
-    /* color: #F73862; */
     margin-right: 10px;
 }
 
@@ -100,8 +99,6 @@
     font-size: 16px;
     cursor: pointer;
     transition: background-color 0.3s;
-    /* margin: 5px; */
-
 }
 
 .proceed-to-checkout:hover, .continue-shopping:hover {

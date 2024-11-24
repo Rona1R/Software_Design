@@ -1,3 +1,9 @@
+.product-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
 .wishlist-details-container {
     text-align: center; 
 }
@@ -67,6 +73,17 @@
 .removeButton:hover {
     background-color: #3128a2;
 }
+
+.emptyCart{
+    margin: 300px;
+}
+
+.emptyCart p{
+    letter-spacing: 0.5px;
+    color: #706c6c;
+    font-weight: 800;
+    font-size: larger;
+} 
 
 /* Adjusting layout for two cards side by side */
 /* @media only screen and (min-width: 768px) {
