@@ -7,9 +7,9 @@
   pointer-events: none;
 }
 
-body{
-  font-family: sans-serif;
-}
+*{
+  font-family:  sans-serif;
+} 
 
 @media (prefers-reduced-motion: no-preference) {
   .App-logo {

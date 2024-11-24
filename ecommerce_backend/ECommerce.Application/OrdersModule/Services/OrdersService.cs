@@ -24,7 +24,8 @@ namespace ECommerce.Application.OrdersModule.Services
             foreach (var item in cartItems)
             {
 
-                var ekziston = await _produktiRepository.GetProduktiFromDbAsync(item.Id);
+                //var ekziston = await _produktiRepository.GetProduktiFromDbAsync(item.Id);
+                var ekziston = await _produktiRepository.GetByIdAsync(item.Id);
 
                 if (ekziston == null)
                 {
@@ -57,13 +58,14 @@ namespace ECommerce.Application.OrdersModule.Services
 
         public async Task<ReceiptDetails> GetReceiptAsync(int orderId)
         {
-            var exists  = await _ordersRepository.GetPorosiaFromDbAsync(orderId);   
-            if(exists == null)
+            var receipt =  await _ordersRepository.GetReceiptAsnyc(orderId);
+
+            if(receipt == null)
             {
                 throw new NotFoundException();
             }
 
-            return await _ordersRepository.GetReceiptAsnyc(orderId);
+            return receipt;
         }
 
         public async Task<List<OrderDTO>> GetAllOrdersAsync()

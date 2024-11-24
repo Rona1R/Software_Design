@@ -77,7 +77,8 @@ namespace ECommerce.Infrastructure.OrdersModule.Repositories
 
                     foreach (var porosiaItem in porosia.Items)
                     {
-                        var productExists = await _produktiRepository.GetProduktiFromDbAsync(porosiaItem.ProduktiId);
+                        var productExists = await _produktiRepository.GetByIdAsync(porosiaItem.ProduktiId);
+                        //var productExists = await _produktiRepository.GetProduktiFromDbAsync(porosiaItem.ProduktiId);
                         if (productExists == null)
                         {                   
                             throw new OrdersException("Produkti me id " + porosiaItem.ProduktiId + " nuk u gjet ne sistem");
@@ -114,7 +115,7 @@ namespace ECommerce.Infrastructure.OrdersModule.Repositories
             return await _context.Porosia.FindAsync(id);
         }
 
-        public async Task<ReceiptDetails> GetReceiptAsnyc(int orderId)
+        public async Task<ReceiptDetails?> GetReceiptAsnyc(int orderId)
         {
             var order  =  await _context.Porosia
                 .Where(p => p.Porosia_ID == orderId)

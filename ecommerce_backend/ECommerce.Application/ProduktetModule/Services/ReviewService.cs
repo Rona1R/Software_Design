@@ -30,7 +30,7 @@ namespace ECommerce.Application.ProduktetModule.Services
                 throw new NotFoundException("Ky perdorues nuk u gjet ne sistem!");
             }
 
-            var ekistonProdukti = await _produktiRepository.GetProductByIdAsync(reviewVM.Produkti_ID);
+            var ekistonProdukti = await _produktiRepository.GetByIdAsync(reviewVM.Produkti_ID);
             if (ekistonProdukti == null)
             {
                 throw new NotFoundException("Ky produkt nuk u gjet ne sistem!");
@@ -64,7 +64,18 @@ namespace ECommerce.Application.ProduktetModule.Services
 
         public async Task<ReviewEditDTO> GetSingleReviewAsync(int id)
         {
-            return await _reviewRepository.GetSingleReviewAsync(id);
+         //   return await _reviewRepository.GetSingleReviewAsync(id);
+           var r = await _reviewRepository.GetReviewFromDbAsync(id);
+            if(r == null)
+            {
+                throw new NotFoundException();
+            }
+
+            return new ReviewEditDTO
+            {
+                Rating = r.Rating,
+                Komenti = r.ReviewContent,
+            };
         }
 
         public async Task UpdateReviewAsync(int id,ReviewEditVM editedReview)

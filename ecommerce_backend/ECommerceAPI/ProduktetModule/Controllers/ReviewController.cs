@@ -58,7 +58,15 @@ namespace ECommerceAPI.ProduktetModule.Controllers
         [Authorize]
         public async Task<IActionResult> Get(int id) // review Per mu bo edit nga Useri qe e ka shkru ate review
         {
-            return Ok(await _reviewService.GetSingleReviewAsync(id));
+
+            try
+            {
+                return Ok(await _reviewService.GetSingleReviewAsync(id));
+
+            }catch(NotFoundException)
+            {
+                return NotFound();  
+            }
         }
 
         [HttpPut]

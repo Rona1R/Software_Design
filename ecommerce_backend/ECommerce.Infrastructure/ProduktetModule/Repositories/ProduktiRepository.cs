@@ -63,30 +63,17 @@ namespace ECommerce.Infrastructure.ProduktetModule.Repositories
             return produktet;
         }
 
-        public async Task<ProduktiDTO> GetProductByIdAsync(int id)
-        {
-            var produkti = await _context.Produkti
-                .Where(p => p.Produkti_ID == id)
-                .Select(
-                    p => new ProduktiDTO
-                    {
-                        Id = p.Produkti_ID,
-                        Emri = p.EmriProdukti,
-                        Foto = p.FotoProduktit,
-                        Pershkrimi = p.PershkrimiProduktit,
-                        Stoku = p.SasiaNeStok,
-                        Cmimi = p.CmimiPerCope,
-                        Kompania_ID = p.Kompania_ID,
-                        Kompania = p.Kompania.Kompania_Emri,
-                        Kategoria_ID = p.Kategoria_ID,
-                        Kategoria = p.Kategoria.EmriKategorise,
-                        NenKategoria_ID = p.NenKategoria_ID,
-                        Nenkategoria = p.NenKategoria.EmriNenkategorise,
-                        NeShitje = p.NeShitje
-                    }
-                ).FirstOrDefaultAsync();
 
-            return produkti;
+        // added:
+
+        public async Task<Produkti?> GetByIdAsync(int id)
+        {
+            return await _context.Produkti.Include(p=>p.Kompania)
+                .Include(p => p.Kategoria).
+                Include(p=>p.NenKategoria).
+                Include(p=>p.Zbritja).
+                Include(p=>p.Review).
+                FirstOrDefaultAsync(p => p.Produkti_ID == id);
         }
 
         public async Task<SidebarDataNeZbritje> GetSidebarDataNeZbritjeAsync()
@@ -208,32 +195,6 @@ namespace ECommerce.Infrastructure.ProduktetModule.Repositories
             };
         }
 
-        public async Task<DetajetProduktitVM> GetProductDetailsByIdAsync(int id)
-        {
-
-            var produkti = await _context.Produkti
-                .Where(p => p.Produkti_ID == id && p.NeShitje == true)
-                .Select(p => new DetajetProduktitVM
-                {
-                    Id = p.Produkti_ID,
-                    Name = p.EmriProdukti,
-                    Description = p.PershkrimiProduktit,
-                    Img = p.FotoProduktit,
-                    Cost = p.CmimiPerCope,
-                    Category = p.Kategoria.EmriKategorise,
-                    Subcategory = p.NenKategoria.EmriNenkategorise,
-                    CategoryId = p.Kategoria_ID,
-                    SubcategoryId = p.NenKategoria_ID,
-                    Stock = p.SasiaNeStok,
-                    CmimiMeZbritje = p.Zbritja != null && p.Zbritja.DataSkadimit >= DateTime.Now
-                           ? p.CmimiPerCope - (decimal)p.Zbritja.PerqindjaZbritjes / 100 * p.CmimiPerCope
-                           : null,
-                    Rating = p.Review.Any() ? (int)Math.Round(p.Review.Average(r => (double)r.Rating)) : null,
-                }
-                ).FirstOrDefaultAsync();
-            return produkti!;
-        }
-
         public async Task<List<CartProductDTO>> GetProduktetSipasId(List<int> productIds)
         {
             var products = await _context.Produkti
@@ -252,10 +213,6 @@ namespace ECommerce.Infrastructure.ProduktetModule.Repositories
             return products;
         }
 
-        public async Task<Produkti?> GetProduktiFromDbAsync(int id)
-        {
-            return await _context.Produkti.FirstOrDefaultAsync(p => p.Produkti_ID == id);
-        }
 
         public async Task UpdateProductAsync(Produkti produktiPerTuEdituar,ProduktiVM produkti)
         {

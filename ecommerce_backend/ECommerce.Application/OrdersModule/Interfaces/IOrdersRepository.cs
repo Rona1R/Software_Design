@@ -16,7 +16,7 @@ namespace ECommerce.Application.OrdersModule.Interfaces
 
         Task<Porosia?> GetPorosiaFromDbAsync(int id);
 
-        Task<ReceiptDetails> GetReceiptAsnyc(int orderId);
+        Task<ReceiptDetails?> GetReceiptAsnyc(int orderId);
 
         Task<List<OrderDTO>> GetAllOrdersAsync();
 

@@ -106,19 +106,7 @@ namespace ECommerce.Infrastructure.ProduktetModule.Repositories
             };
         }
 
-        public async Task<ReviewEditDTO> GetSingleReviewAsync(int id)
-        {
-            var review = await _context.Review
-               .Where(r => r.Review_ID == id)
-               .Select(r => new ReviewEditDTO
-               {
-                   Rating = (int)r.Rating,
-                   Komenti = r.ReviewContent,
-
-               }).FirstOrDefaultAsync();
-            return review;
-        }
-
+ 
         public async Task<Review?> GetReviewFromDbAsync(int id)
         {
             return await _context.Review.FirstOrDefaultAsync(x => x.Review_ID == id);

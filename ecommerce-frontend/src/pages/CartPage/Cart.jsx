@@ -185,8 +185,9 @@ const Cart = () => {
               style={{
                 textDecoration: "none",
                 color: "white",
+                fontWeight:"bold",
                 display: "inline-block",
-                padding: "10px 20px",
+                padding: "15px",
                 background: "#333",
                 borderRadius: "5px",
                 boxShadow: "0 2px 4px rgba(0, 0, 0, 0.1)",
