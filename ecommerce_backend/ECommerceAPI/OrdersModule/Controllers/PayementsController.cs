@@ -23,6 +23,7 @@ namespace ECommerceAPI.OrdersModule.Controllers
             {
                 Amount = request.Amount,
                 Currency = "eur",
+                PaymentMethodTypes = ["card"]
             };
 
             var service = new PaymentIntentService();

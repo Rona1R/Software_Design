@@ -1,9 +1,7 @@
-import React, { Component, useState } from "react";
+import React, {useState } from "react";
 import { useLocation, NavLink } from "react-router-dom";
 import { useEffect } from "react";
 import { Nav } from "react-bootstrap";
-
-import logo from "assets/img/reactlogo.png";
 import { Link } from "react-router-dom";
 import { faShop } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -85,7 +83,7 @@ function Sidebar({ color, image, routes }) {
                   <NavLink
                     to={prop.layout + "/" + prop.path}
                     className="nav-link"
-                    activeClassName="active"
+                    ClassName="active"
                   >
                     <i className={prop.icon} />
                     <p>{prop.name}</p>
