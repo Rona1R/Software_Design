@@ -10,6 +10,7 @@ import {
     MDBTypography,
   } from "mdb-react-ui-kit";
 import "./CardDetailsTest.css"; 
+import { Link } from "react-router-dom";
 
 const CardDetailsTest = ({ products , onRemove }) => {
   const { dispatch } = useCart();
@@ -121,13 +122,15 @@ const CardDetailsTest = ({ products , onRemove }) => {
         <div key={product.id}>
         <hr className="my-4" />
         <MDBRow className="mb-4 d-flex justify-content-between align-items-center">
-          <MDBCol md="2" lg="2" xl="2">
-            <MDBCardImage
-              src={'/images/'+product.img} alt={product.name}
-              fluid
-              className="rounded-3"
-              />
-          </MDBCol>
+            <MDBCol md="2" lg="2" xl="2">
+              <Link to={`/ProductDetails/${product.id}`}>   
+              <MDBCardImage
+                src={'/images/'+product.img} alt={product.name}
+                fluid
+                className="rounded-3"
+                />
+             </Link>
+            </MDBCol>
           <MDBCol md="3" lg="3" xl="3">
             <MDBTypography tag="h6" className="text-black mb-0" style={{ padding: "16px" }}>
             {product.name}

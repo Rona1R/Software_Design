@@ -10,7 +10,6 @@ import { Link } from "react-router-dom";
 const ProductPopUp = (props) => {
 
   return (
-    <>
       <Modal show={props.show} onHide={props.onHide}>
         <div className="popUp">
           <Modal.Header closeButton className="popUpHeader">
@@ -34,7 +33,6 @@ const ProductPopUp = (props) => {
         }
         </div>
       </Modal>
-    </>
   );
 };
 

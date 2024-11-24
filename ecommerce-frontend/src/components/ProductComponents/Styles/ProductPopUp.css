@@ -25,10 +25,10 @@
     border-bottom: none !important;
 }
 
-.btn-close{
-    color: #ccc !important;
-}
-
 #chevronRightIcon{
     margin-right:5px
 }
+
+/* .pop-up-modal button .btn-close{
+    color: pink !important;
+} */

@@ -83,7 +83,7 @@ function Sidebar({ color, image, routes }) {
                   <NavLink
                     to={prop.layout + "/" + prop.path}
                     className="nav-link"
-                    ClassName="active"
+              
                   >
                     <i className={prop.icon} />
                     <p>{prop.name}</p>
