@@ -1,9 +1,8 @@
-﻿using ECommerce.Infrastructure.Data;
-using ECommerceAPI.DTOs;
+﻿using ECommerce.Application.Exceptions;
+using ECommerce.Application.ProduktetModule.Interfaces;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+
 
 namespace ECommerceAPI.ProduktetModule.Controllers
 {
@@ -11,12 +10,11 @@ namespace ECommerceAPI.ProduktetModule.Controllers
     [ApiController]
     public class ProduktiZbritjaController : ControllerBase
     {
+        private readonly IProduktiZbritjaService _produktService;
 
-        private readonly ECommerceDBContext _context;
-
-        public ProduktiZbritjaController(ECommerceDBContext context)
+        public ProduktiZbritjaController(IProduktiZbritjaService produktService)
         {
-            _context = context;
+            _produktService = produktService;
         }
 
         [HttpPut]
@@ -24,137 +22,119 @@ namespace ECommerceAPI.ProduktetModule.Controllers
         [Authorize(Roles = "Admin,Menaxher")]
         public async Task<IActionResult> VendosNeZbritje(int produktiId, int zbritjaId)
         {
-            var ekzistonProdukti = await _context.Produkti.FirstOrDefaultAsync(p => p.Produkti_ID == produktiId);
-            var ekzistonZbritja = await _context.Zbritja.FirstOrDefaultAsync(z => z.Zbritja_ID == zbritjaId);
-
-            if (ekzistonProdukti == null)
+            try
             {
-                return BadRequest("Ky produkt nuk u gjet ne sistem!");
+                await _produktService.VendosNeZbritjeAsync(produktiId, zbritjaId);
+                return Ok("Produkti u vendos ne zbritje me sukses!");
             }
-            else
-            { // Nese ekziston Produkti dhe ka nje Zbritje per te , mos e lejo qe te vendoset zbritje tjeter. -- KJO ka me ia shfaq perdoruesit si mesazh Validimi ne front 
-
-                if (ekzistonProdukti.Zbritja_ID != null)
-                {
-                    return BadRequest("Ky Produkt ndodhet ne zbritje!");
-                }
-            }
-
-            if (ekzistonZbritja == null)
+            catch(NotFoundException e)
             {
-                return BadRequest("Kjo zbritje nuk u gjet ne sistem!");
+                return NotFound(e.Message); 
             }
-
-            ekzistonProdukti.Zbritja_ID = zbritjaId;
-            ekzistonProdukti.DataVendsojesNeZbritje = DateTime.UtcNow;
-            _context.Produkti.Update(ekzistonProdukti);
-            await _context.SaveChangesAsync();
-
-            return Ok("Produkti u vendos ne zbritje me sukses!");
+            catch (Exception ex)
+            {
+              
+                Console.WriteLine($"Error: {ex.Message}");
+                return StatusCode(500, "Gabim i brendshëm!");
+            }
         }
 
         [HttpGet]
-        [Route("shfaqProduktinNeZbritje/{id}")] // produkti qe ka me´u selektu per me iu ndryshu lloji i zbritjes
+        [Route("shfaqProduktinNeZbritje/{id}")]
         [Authorize(Roles = "Admin,Menaxher")]
         public async Task<IActionResult> Get(int id)
         {
-
-            var produkti = await _context.Produkti
-                .Where(p => p.Produkti_ID == id)
-                .Select(p => new
-                {
-                    p.Produkti_ID,
-                    p.EmriProdukti,
-                    p.Zbritja_ID,
-                    p.Zbritja.ZbritjaEmri,
-                    p.Zbritja.PerqindjaZbritjes
-                }).FirstOrDefaultAsync();
-
-            return Ok(produkti);
+            try
+            {
+                var produkti = await _produktService.GetProduktinMeZbritjeAsync(id);
+                return Ok(produkti);
+            }
+            catch(NotFoundException e) {
+                return NotFound(e.Message);
+            }
+            catch (Exception ex)
+            {
+        
+                Console.WriteLine($"Error: {ex.Message}");
+                return StatusCode(500, "Gabim i brendshëm!");
+            }
         }
 
         [HttpPut]
         [Route("largoProduktinNgaZbritja/{produktiId}")]
         [Authorize(Roles = "Admin,Menaxher")]
+
         public async Task<IActionResult> LargoNgaZbritja(int produktiId)
         {
-            var produkti = await _context.Produkti.FirstOrDefaultAsync(p => p.Produkti_ID == produktiId);
-            if (produkti == null)
+            try
             {
-                return BadRequest("Produkti nuk u gjet ne sistem!");
+               await _produktService.RemoveProductNgaZbritjaAsync(produktiId);
+                return Ok("Produkti u largua nga zbritja me sukses!");
+
             }
-
-            // nese produkti gjendet , atehere le te largohet Asocimi me Zbritjen duke e bere fk te zbritjes null:
-
-            produkti.Zbritja_ID = null;
-            _context.Produkti.Update(produkti);
-            await _context.SaveChangesAsync();
-
-            return Ok("Produkti u largua nga zbritja me sukses!");
-
+            catch (NotFoundException)
+            {
+                return NotFound();
+            }
         }
-
+    
         [HttpPut]
         [Route("perditesoZbritenProduktit/{produktiId}/{zbritjaId}")]
         [Authorize(Roles = "Admin,Menaxher")]
         public async Task<IActionResult> PerditesoZbritjenProdukti(int produktiId, int zbritjaId)
         {
-            var produkti = await _context.Produkti.FirstOrDefaultAsync(p => p.Produkti_ID == produktiId);
-            var zbritja = await _context.Zbritja.FirstOrDefaultAsync(z => z.Zbritja_ID == zbritjaId);
-            if (produkti == null)
+            try
             {
-                return BadRequest("Ky produkt nuk u gjet ne sistem!");
-            }
 
-            if (zbritja == null)
+                await _produktService.VendosNeZbritjeAsync(produktiId, zbritjaId);
+                return Ok("Zbritja e produktit u perditesua me sukses!");
+
+            }
+            catch (NotFoundException ex)
             {
-                return BadRequest("Kjo zbritje nuk u gjet ne sistem!");
+                return NotFound(ex.Message);
             }
-
-            // Perditesimi i zbritjes se produktit:
-            produkti.Zbritja_ID = zbritjaId;
-            _context.Update(produkti);
-            await _context.SaveChangesAsync();
-
-            return Ok("Zbritja e produktit u perditesua me sukses!");
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error: {ex.Message}");
+                return StatusCode(500, "Gabim i brendshëm!");
+            }
         }
-
+      
         [HttpGet]
         [Route("shfaqZbritjetProdukteve")]
         [Authorize(Roles = "Admin,Menaxher")]
         public async Task<IActionResult> Get()
         {
-            var zbritjet = await _context.Produkti
-                .Include(z => z.Zbritja)
-                .Where(z => z.Zbritja_ID != null)
-                .OrderByDescending(z => z.DataVendsojesNeZbritje)
-                .Select(pz => new ProduktiZbritjaDTO
-                {
-                    ProduktiID = pz.Produkti_ID,
-                    ZbritjaID = pz.Zbritja_ID,
-                    ProduktiEmri = pz.EmriProdukti,
-                    CmimiParaZbritjes = pz.CmimiPerCope,
-                    CmimiMeZbritje = pz.CmimiPerCope - (decimal)pz.Zbritja.PerqindjaZbritjes / 100 * pz.CmimiPerCope,
-
-                }).ToListAsync();
-            return Ok(zbritjet);
+            try
+            {
+             
+                var zbritjet = await _produktService.ShfaqZbritjetProdukteveAsync();
+                return Ok(zbritjet);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error: {ex.Message}");
+                return StatusCode(500, "Gabim i brendshëm!");
+            }
         }
-
+  
         [HttpGet]
         [Route("shfaqProduktetPaZbritje")]
         [Authorize(Roles = "Admin,Menaxher")]
-        public async Task<IActionResult> GetProduktet() // Produktet qe nuk kane zbritje per Dropdown
+        public async Task<IActionResult> GetProduktet()
         {
-            var paZbritje = await _context.Produkti
-              .Where(p => p.Zbritja_ID == null)
-              .OrderByDescending(p => p.CreatedAt)
-              .Select(p => new
-              {
-                  ProduktiID = p.Produkti_ID,
-                  Emri = p.EmriProdukti
-              }).ToListAsync();
-
-            return Ok(paZbritje);
+            try
+            {
+                var paZbritje = await _produktService.ShfaqProduktetPaZbritjeAsync();
+                return Ok(paZbritje);
+            }
+            catch (Exception ex)
+            {
+              
+                Console.WriteLine($"Error: {ex.Message}");
+                return StatusCode(500, "Gabim i brendshëm!");
+            }
         }
     }
 }
