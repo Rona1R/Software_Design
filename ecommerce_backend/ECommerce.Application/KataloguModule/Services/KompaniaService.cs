@@ -15,10 +15,12 @@ namespace ECommerce.Application.KataloguModule.Services
     {
 
         private readonly IKompaniaRepository _repository;
+        private readonly IKategoriaRepository _kategoriaRepository; 
 
-        public KompaniaService(IKompaniaRepository repository)
+        public KompaniaService(IKompaniaRepository repository,IKategoriaRepository kategoriaRepository)
         {
             _repository = repository;   
+            _kategoriaRepository = kategoriaRepository;
         }
 
         public async Task CreateAsync(KompaniaVM kompania)
@@ -59,6 +61,64 @@ namespace ECommerce.Application.KataloguModule.Services
         public async Task<KompaniaKategoriaSidebarData> GetSidebarDataAsync(int companyId, int categoryId)
         {
             return await _repository.GetSidebarDataAsync(companyId, categoryId);
+        }
+
+        public async Task<KompaniaKategoriaResponse> GetProductsByCompanyCategoryAsync(int companyId, int categoryId, string sortBy, int pageNumber, int pageSize, FilterNeZbritjeVM filters)
+        {
+            if(await _repository.GetByIdAsync(companyId) == null
+                || await _kategoriaRepository.GetCategoryByIdAsync(categoryId) == null
+            )
+            {
+                throw new NotFoundException();
+            }
+
+            return await _repository.GetProductsByCompanyCategoryAsync(companyId,categoryId,sortBy,pageNumber, pageSize, filters);  
+        }
+
+        public async Task<KompaniaDTO> GetByIdAsync(int id)
+        {
+            var kompania = await _repository.GetByIdAsync(id);  
+
+            if(kompania == null)
+            {
+                throw new NotFoundException();  
+            }
+
+            return new KompaniaDTO
+            {
+                Id = id,
+                Emri = kompania.Kompania_Emri ?? "Unprovided"
+            };
+        }
+
+        public async Task UpdateAsync(int id,KompaniaVM kompaniaVM)
+        {
+            var kompania = await _repository.GetByIdAsync(id);
+
+            if (kompania == null)
+            {
+                throw new NotFoundException();
+            }
+
+            // validimi:
+            if(await _repository.NameTaken(kompaniaVM.Emri, id))
+            {
+                throw new ExistsException("Existon nje kompani me kete emer!");
+            }
+
+            await _repository.UpdateAsync(kompania, kompaniaVM);
+        }
+
+        public async Task DeleteAsync(int id)
+        {
+            var kompania = await _repository.GetByIdAsync(id);
+
+            if (kompania == null)
+            {
+                throw new NotFoundException();
+            }
+
+            await _repository.DeleteAsync(kompania);
         }
     }
 }

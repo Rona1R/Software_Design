@@ -28,5 +28,10 @@ namespace ECommerce.Application.KataloguModule.Interfaces
 
         Task<KompaniaKategoriaSidebarData> GetSidebarDataAsync(int companyId, int categoryId);
 
+        Task<KompaniaKategoriaResponse> GetProductsByCompanyCategoryAsync(int companyId, int categoryId, string sortBy, int pageNumber, int pageSize, FilterNeZbritjeVM filters);
+
+        Task UpdateAsync(Kompania kompania, KompaniaVM kompaniaVM);
+
+        Task DeleteAsync(Kompania kompania);
     }
 }

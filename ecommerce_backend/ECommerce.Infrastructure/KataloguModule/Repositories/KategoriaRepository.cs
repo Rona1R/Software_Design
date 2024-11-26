@@ -112,24 +112,6 @@ namespace ECommerce.Infrastructure.KataloguModule.Repositories
                 maxPrice = filters.PriceRange[1];
             }
 
-            var totalProductsCount = await _context.Kategoria
-            .Where(k => k.Kategoria_ID == id)
-            .SelectMany(k => k.Produkti.Where(p => p.NeShitje == true
-                && (string.IsNullOrEmpty(filters.SearchTerm) || p.EmriProdukti.Contains(filters.SearchTerm))
-                && (selectedCompanies.Length == 0 || selectedCompanies.Contains(p.Kompania.Kompania_Emri)) // Filter by company
-                && (
-                    !minPrice.HasValue || p.CmimiPerCope >= minPrice // Regular price meets minimum price
-                    || p.Zbritja != null && p.Zbritja.DataSkadimit >= DateTime.Now
-                        && p.CmimiPerCope - (decimal)p.Zbritja.PerqindjaZbritjes / 100 * p.CmimiPerCope >= minPrice // Discounted price meets minimum price
-                   )
-                && (
-                    !maxPrice.HasValue || p.CmimiPerCope <= maxPrice // Regular price meets maximum price
-                    || p.Zbritja != null && p.Zbritja.DataSkadimit >= DateTime.Now
-                        && p.CmimiPerCope - (decimal)p.Zbritja.PerqindjaZbritjes / 100 * p.CmimiPerCope <= maxPrice // Discounted price meets maximum price
-               )
-             ))
-            .CountAsync();
-
             var productsQuery = _context.Kategoria
             .Where(k => k.Kategoria_ID == id)
             .SelectMany(k => k.Produkti
@@ -188,7 +170,7 @@ namespace ECommerce.Infrastructure.KataloguModule.Repositories
             return new ProduktetSipasKategoriseResponse
             {
                 TeDhenat = teDhenat,
-                TotalCount = totalProductsCount
+                TotalCount = productsQuery.Count(),
             };
         }
 

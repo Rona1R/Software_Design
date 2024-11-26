@@ -82,6 +82,7 @@ const ProductsByCompany = () => {
           const { teDhenat, totalCount } = response.data;
           setCurrentCompany(teDhenat);
           setTotalProducts(totalCount);
+          
         } catch (error) {
           if (error.response && error.response.status === 404) {
             console.log(error.response.status);

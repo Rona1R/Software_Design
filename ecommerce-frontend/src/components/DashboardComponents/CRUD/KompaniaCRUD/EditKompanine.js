@@ -8,50 +8,30 @@ import { faCheckCircle, faXmark } from '@fortawesome/free-solid-svg-icons';
 import { toast } from "react-toastify";
 
 export default function EditKompanine(props) {
-    const [kompanite,setKompanite] = useState([]);
     const [kompania,setKompania] = useState({}); 
     const [emriKompaniseUpdated,setEmriKompaniseUpdated] = useState("");
-   // const [refreshKey,setRefreshKey] = useState("");
     const [warning,setWarning] = useState("");
 
-    useEffect(()=>{
-        try {
-            axios
-            .get('https://localhost:7061/api/Kompania/shfaqKompanine')
-            .then((response) => {
-              setKompanite(response.data);
-            });
-          } catch (err) {
-            console.log(err);
-          }
-    },[/*props.refreshKey refreshKey*/])
-
     useEffect(() => {
-        console.log("BRENDA FUNKSIONIT "+props.id);
-        if (props.id /*&& props.shfaqFormenEdit*/) {
-            console.log("Kompania to edit:"+props.id);
+        if (props.id) {
           try {
             axios
               .get(`https://localhost:7061/api/Kompania/shfaqKompaninesipasID/${props.id}`)
               .then((response) => {
                 setKompania(response.data);
                 setEmriKompaniseUpdated(response.data.emri);
-                // setRefreshKey(Date.now());
-                console.log("Kompania per tu edituar eshte : --------------");
-                console.log(response.data);
               });
           } catch (err) {
             console.log(err);
           }
         }
-      }, [props.id,/*,props.refreshKeyrefreshKey*/]);
+      }, [props.id]);
 
       const handleEmri=(value)=>{
         setWarning("");
         setEmriKompaniseUpdated(value)
       }
   
-    
      const anulo=()=>{
   
        setWarning("");
@@ -65,11 +45,7 @@ export default function EditKompanine(props) {
             setWarning("Emri i kompanise nuk duhet te jete i zbrazet!");
             validated = false;
         }
-
-        if(kompanite.filter((k)=>k.emri.toLowerCase() === emriKompaniseUpdated.toLowerCase() && k.id !== kompania.id).length>0){
-            setWarning("Ekziszon nje kompani me emrin e njejte.Zgjedh nje emer tjeter!")
-            validated = false;
-        }
+        
         return validated
     }
 
@@ -82,18 +58,18 @@ export default function EditKompanine(props) {
                 const response = await axios
                 .put(`https://localhost:7061/api/Kompania/perditesoKompanine/${props.id}`,{
                     emri: emriKompaniseUpdated
-                })
-                // .then((response) => {
-             
-                  console.log(response);
-                  props.refreshTeDhenat();
-                  props.mbyllEditKompanine();
-                  toast.success("Kompania eshte updatuar me sukses!");
-                 
-                // });
+                })  
+                props.refreshTeDhenat();
+                props.mbyllEditKompanine();
+                toast.success(response.data);
               } catch (err) {
-                toast.error("Ndodhi nje problem ne server");
-                console.log(err);
+                if (err.response && err.response.status === 400) { // backend validimi
+                  setWarning(err.response.data);
+                }
+                else{
+                  toast.error("Ndodhi nje problem ne server");
+                  console.log(err);
+                }
               }
         }
 
@@ -102,7 +78,7 @@ export default function EditKompanine(props) {
     return (
     <>
       <Modal 
-     /* show={props.shfaqFormenEdit}*/ show = {true} onHide={props.mbyllEditKompanine}
+      show = {true} onHide={props.mbyllEditKompanine}
       centered
       >
         <Modal.Header>
@@ -123,7 +99,7 @@ export default function EditKompanine(props) {
               />
               {
                 warning && 
-                 <p /*style={{color:"red"}}*/className={`crudFormWarning ${warning ? 'fade-in' : ''}`}>
+                 <p className={`crudFormWarning ${warning ? 'fade-in' : ''}`}>
                  {warning}
                  </p>
               }

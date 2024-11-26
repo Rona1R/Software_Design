@@ -84,6 +84,8 @@ const ProductsByCategory = () => {
           setCurrentCategory(teDhenat);
           setTotalProducts(totalCount);
           setLoading(false);
+
+          console.log("Kjo faqe ka ne total: "+totalCount+" produkte");
         } catch (error) {
           if (error.response && error.response.status === 404) {
             console.log(error.response.status);

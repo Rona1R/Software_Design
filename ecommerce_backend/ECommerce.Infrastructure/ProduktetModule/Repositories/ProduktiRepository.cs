@@ -126,24 +126,6 @@ namespace ECommerce.Infrastructure.ProduktetModule.Repositories
                 maxPrice = filters.PriceRange[1];
             }
 
-            var totalProductsCount = await _context.Produkti
-                .Where(p => p.NeShitje == true && p.Zbritja_ID != null && p.Zbritja.DataSkadimit >= DateTime.Now
-                 && (string.IsNullOrEmpty(filters.SearchTerm) || p.EmriProdukti.Contains(filters.SearchTerm))
-                            && (selectedSubCategories.Length == 0 || selectedSubCategories.Contains(p.NenKategoria.EmriNenkategorise))
-                            && (
-                                !minPrice.HasValue || p.CmimiPerCope >= minPrice
-                                || p.Zbritja != null && p.Zbritja.DataSkadimit >= DateTime.Now
-                                    && p.CmimiPerCope - (decimal)p.Zbritja.PerqindjaZbritjes / 100 * p.CmimiPerCope >= minPrice // Discounted price meets minimum price
-                               )
-                            && (
-                                !maxPrice.HasValue || p.CmimiPerCope <= maxPrice // Regular price meets maximum price
-                                || p.Zbritja != null && p.Zbritja.DataSkadimit >= DateTime.Now
-                                    && p.CmimiPerCope - (decimal)p.Zbritja.PerqindjaZbritjes / 100 * p.CmimiPerCope <= maxPrice // Discounted price meets maximum price
-                  )
-                )
-                .CountAsync();
-
-
             var productsQuery = _context.Produkti
                     .Where(p => p.NeShitje == true
                      && p.Zbritja_ID != null && p.Zbritja.DataSkadimit >= DateTime.Now
@@ -192,7 +174,7 @@ namespace ECommerce.Infrastructure.ProduktetModule.Repositories
             return new ProductsResponseDTO
             {
                 PagedProducts = pagedProducts,
-                TotalCount = totalProductsCount
+                TotalCount = productsQuery.Count(),
             };
         }
 

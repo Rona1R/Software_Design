@@ -1,4 +1,4 @@
-﻿namespace ECommerceAPI.DTOs
+﻿namespace ECommerce.Application.KataloguModule.DTOs
 {
     public class ProduktetKompaniseKategoriseDTO
     {
@@ -16,7 +16,7 @@
 
         public string? Subcategory { get; set; }
 
-        public int? SubcategoryId { get; set; }  
+        public int? SubcategoryId { get; set; }
 
         public int? Stock { get; set; }
 

@@ -231,5 +231,91 @@ namespace ECommerce.Infrastructure.KataloguModule.Repositories
             };
         }
 
+        public async Task<KompaniaKategoriaResponse> GetProductsByCompanyCategoryAsync(int companyId,int categoryId,string sortBy,int pageNumber,int pageSize,FilterNeZbritjeVM filters)
+        {
+            var selectedSubCategories = filters.SelectedSubCategories;
+            decimal? minPrice = null;
+            decimal? maxPrice = null;
+
+            if (filters.PriceRange != null && filters.PriceRange.Length == 2)
+            {
+                minPrice = filters.PriceRange[0];
+                maxPrice = filters.PriceRange[1];
+            }
+
+            var productsQuery = _context.Kompania
+            .Where(k => k.Kompania_ID == companyId)
+            .SelectMany(k => k.Produkti
+              .Where(p => p.NeShitje == true && p.Kategoria_ID == categoryId
+                                  && (string.IsNullOrEmpty(filters.SearchTerm) || p.EmriProdukti.Contains(filters.SearchTerm))
+                  && (selectedSubCategories.Length == 0 || selectedSubCategories.Contains(p.NenKategoria.EmriNenkategorise)) // Filter by company
+                  && (
+                      !minPrice.HasValue || p.CmimiPerCope >= minPrice // Regular price meets minimum price
+                      || p.Zbritja != null && p.Zbritja.DataSkadimit >= DateTime.Now
+                          && p.CmimiPerCope - (decimal)p.Zbritja.PerqindjaZbritjes / 100 * p.CmimiPerCope >= minPrice // Discounted price meets minimum price
+                     )
+                  && (
+                      !maxPrice.HasValue || p.CmimiPerCope <= maxPrice // Regular price meets maximum price
+                      || p.Zbritja != null && p.Zbritja.DataSkadimit >= DateTime.Now
+                          && p.CmimiPerCope - (decimal)p.Zbritja.PerqindjaZbritjes / 100 * p.CmimiPerCope <= maxPrice // Discounted price meets maximum price
+                 )
+              )
+          .Select(p => new ProduktetKompaniseKategoriseDTO
+          {
+              Id = p.Produkti_ID,
+              Name = p.EmriProdukti,
+              Description = p.PershkrimiProduktit,
+              Img = p.FotoProduktit,
+              Cost = p.CmimiPerCope,
+              Stock = p.SasiaNeStok,
+              Subcategory = p.NenKategoria.EmriNenkategorise,
+              SubcategoryId = p.NenKategoria_ID,
+              CmimiMeZbritje = p.Zbritja != null && p.Zbritja.DataSkadimit >= DateTime.Now
+                 ? p.CmimiPerCope - (decimal)p.Zbritja.PerqindjaZbritjes / 100 * p.CmimiPerCope
+                 : null,
+              Rating = p.Review.Any() ? (int)Math.Round(p.Review.Average(r => (double)r.Rating)) : null,
+          }));
+
+            productsQuery = sortBy.ToLower() switch
+            {
+                "asc" => productsQuery.OrderBy(p => p.Cost),
+                "desc" => productsQuery.OrderByDescending(p => p.Cost),
+                _ => throw new ArgumentException("Invalid sorting order. Use 'asc' or 'desc'.")
+            };
+
+            var pagedProducts = await productsQuery
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+
+            var teDhenat = new KompaniaKategoriaMeProduktetDTO
+            {
+                Id = companyId,
+                Name = (await _context.Kompania.FindAsync(companyId))?.Kompania_Emri,
+                CategoryId = categoryId,
+                CategoryName = (await _context.Kategoria.FindAsync(categoryId))?.EmriKategorise,
+                Products = pagedProducts
+            };
+
+            return new KompaniaKategoriaResponse
+            {
+                TeDhenat = teDhenat,
+                TotalCount = productsQuery.Count(),
+            };
+        }
+
+        public async Task UpdateAsync(Kompania kompania,KompaniaVM kompaniaVM)
+        {
+            kompania.Kompania_Emri = kompaniaVM.Emri;
+            _context.Kompania.Update(kompania);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task DeleteAsync(Kompania kompania)
+        {
+            _context.Kompania.Remove(kompania);
+            await _context.SaveChangesAsync();
+        }
+
     }
 }
