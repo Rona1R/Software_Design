@@ -43,12 +43,12 @@ namespace ECommerce.Infrastructure.KataloguModule.Repositories
 
         public async Task<bool> NameTaken(string name) // validation for create
         {
-            return await _context.Kompania.AnyAsync(k => k.Kompania_Emri!.ToLower().Equals(name.ToLower()));
+            return await _context.Kompania.AnyAsync(k => k.Kompania_Emri.ToLower().Equals(name.ToLower()));
         }
 
         public async Task<bool> NameTaken(string name,int id) // validation for edit
         {
-            return await _context.Kompania.AnyAsync(k => k.Kompania_Emri!.ToLower().Equals(name.ToLower()) && k.Kompania_ID != id);
+            return await _context.Kompania.AnyAsync(k => k.Kompania_Emri.ToLower().Equals(name.ToLower()) && k.Kompania_ID != id);
         }
 
         public async Task<List<KompaniaDTO>> GetAllAsync()
@@ -58,7 +58,7 @@ namespace ECommerce.Infrastructure.KataloguModule.Repositories
                 .Select(k => new KompaniaDTO
                 {
                     Id = k.Kompania_ID,
-                    Emri = k.Kompania_Emri?? "Not provided"
+                    Emri = k.Kompania_Emri
 
                 })
                  .ToListAsync();

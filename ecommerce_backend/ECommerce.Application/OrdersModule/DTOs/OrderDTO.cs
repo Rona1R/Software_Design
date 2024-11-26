@@ -13,7 +13,7 @@ namespace ECommerce.Application.OrdersModule.DTOs
 
         public int KlientiId { get; set; }
 
-        public string Klienti { get; set; }
+        public string? Klienti { get; set; }
 
         public DateTime DataPorosise { get; set; }
 

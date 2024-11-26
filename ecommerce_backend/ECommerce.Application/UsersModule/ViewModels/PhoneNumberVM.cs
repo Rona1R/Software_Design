@@ -8,6 +8,6 @@ namespace ECommerce.Application.UsersModule.ViewModels
 {
     public class PhoneNumberVM
     {
-        public string? NewPhoneNumber { get; set; }
+        public string NewPhoneNumber { get; set; }
     }
 }

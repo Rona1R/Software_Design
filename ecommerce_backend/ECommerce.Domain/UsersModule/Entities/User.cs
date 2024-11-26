@@ -25,15 +25,15 @@ namespace ECommerce.Domain.UsersModule.Entities
         public virtual IdentityUser AspNetUser { get; set; }
 
         // User - Review 1- shume
-        public virtual List<Review>? Review { get; set; }
+        public virtual List<Review> Review { get; set; } = new List<Review>();  
 
         [ForeignKey(nameof(Badge_Id))]
         public virtual AchievementBadge? AchievementBadge { get; set; }
 
-        public virtual List<Wishlist>? Wishlist { get; set; }
+        public virtual List<Wishlist> Wishlist { get; set; } = new List<Wishlist>();
 
-        public virtual List<Porosia>? Porosia { get; set; }
+        public virtual List<Porosia> Porosia { get; set; } = new List<Porosia>();   
 
-        public virtual List<Adresa>? Adresa { get; set; }
+        public virtual List<Adresa> Adresa { get; set; } = new List<Adresa>();  
     }
 }

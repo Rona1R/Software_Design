@@ -11,7 +11,7 @@ namespace ECommerce.Application.OrdersModule.DTOs
 
         public int PorosiaId { get; set; }
 
-        public string KlientiEmri {  get; set; }
+        public string? KlientiEmri {  get; set; }
 
 
         public string Adresa { get; set; }  

@@ -269,32 +269,34 @@ const ProductsBySubCategory = () => {
                   ]}
                 />
               </div>
-              <div className="productsHeader">
-                <div className="Filter-and-Sorts">
-                  <button
-                    onClick={handleFiltersClick}
-                    id="show-filters-sidebar"
-                  >
+              {
+                <div className="productsHeader">
+                  <div className="Filter-and-Sorts">
+                    <button
+                      onClick={handleFiltersClick}
+                      id="show-filters-sidebar"
+                    >
                     Filters{" "}
                     {filtersAppliedCount === 0
-                      ? ""
-                      : `(${filtersAppliedCount})`}
+                    ? ""
+                    : `(${filtersAppliedCount})`}
                     <TuneIcon />
-                  </button>
-                  <ProductsSort
-                    handleSortFunc={updateSortOrder}
-                    sortBy={sortBy}
-                  />
-                </div>
-                <div className="searchComponent">
-                  <ProductSearch
-                    className="products-page"
-                    searchTerm={searchTerm}
-                    setSearchTerm={setSearchTerm}
-                    handleSearchResults={getCategorySearchResults}
-                  />
-                </div>
-              </div>
+                    </button>
+                    <ProductsSort
+                      handleSortFunc={updateSortOrder}
+                      sortBy={sortBy}
+                    />
+                    </div>
+                    <div className="searchComponent">
+                      <ProductSearch
+                        className="products-page"
+                        searchTerm={searchTerm}
+                        setSearchTerm={setSearchTerm}
+                        handleSearchResults={getCategorySearchResults}
+                      />
+                    </div>
+                  </div>
+              }
               <ProductSidebar
                 key={subCategoryId}
                 title="Companies"

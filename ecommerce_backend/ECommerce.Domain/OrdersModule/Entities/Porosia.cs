@@ -34,6 +34,6 @@ namespace ECommerce.Domain.OrdersModule.Entities
         [ForeignKey(nameof(UserId))]
         public virtual User User { get; set; }
 
-        public virtual List<PorosiaItem>? PorosiaItem { get; set; }
+        public virtual List<PorosiaItem> PorosiaItem { get; set; } = new List<PorosiaItem>();   
     }
 }

@@ -26,10 +26,10 @@ namespace ECommerce.Infrastructure.UsersModule.Repositories
                 .Select(u => new UsersVM
                 {
                     Id = u.User_Id,
-                    Username = u.AspNetUser.UserName,
+                    Username = u.AspNetUser.UserName??"Unprovided",
                     AspNetUserId = u.AspNetUserId,
-                    AchievementBadge = u.AchievementBadge != null ? u.AchievementBadge.Badge_Name : "Unavailable",
-                    Email = u.AspNetUser.Email,
+                    AchievementBadge = u.AchievementBadge != null ? u.AchievementBadge.Badge_Name:"Unprovided",
+                    Email = u.AspNetUser.Email??"Unprovided",
                     PhoneNumber = u.AspNetUser.PhoneNumber ?? "Not Provided"
                 })
                 .ToListAsync();

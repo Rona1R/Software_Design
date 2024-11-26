@@ -58,7 +58,7 @@ namespace ECommerce.Infrastructure.ProduktetModule.Repositories
                        Foto = p.FotoProduktit,
                        Cmimi = p.CmimiPerCope,
                        Stoku = p.SasiaNeStok,
-                      NeShitje = p.NeShitje
+                       NeShitje = p.NeShitje
                    }
                ).ToListAsync();
             return produktet;
@@ -82,7 +82,7 @@ namespace ECommerce.Infrastructure.ProduktetModule.Repositories
             var products = await _context.Produkti
                 .Include(p => p.Kategoria)
                 .Include(p => p.NenKategoria)
-                .Where(p => p.Zbritja_ID != null && p.Zbritja.DataSkadimit >= DateTime.Now)
+                .Where(p => p.Zbritja_ID != null && p.Zbritja!=null && p.Zbritja.DataSkadimit >= DateTime.Now)
                 .ToListAsync();
 
             var transformedCategories = products
@@ -128,7 +128,7 @@ namespace ECommerce.Infrastructure.ProduktetModule.Repositories
 
             var productsQuery = _context.Produkti
                     .Where(p => p.NeShitje == true
-                     && p.Zbritja_ID != null && p.Zbritja.DataSkadimit >= DateTime.Now
+                     && p.Zbritja_ID != null && p.Zbritja != null && p.Zbritja.DataSkadimit >= DateTime.Now
                                     && (string.IsNullOrEmpty(filters.SearchTerm) || p.EmriProdukti.Contains(filters.SearchTerm))
                                 && (selectedSubCategories.Length == 0 || selectedSubCategories.Contains(p.NenKategoria.EmriNenkategorise))
                                 && (
@@ -154,7 +154,7 @@ namespace ECommerce.Infrastructure.ProduktetModule.Repositories
                         CategoryId = p.Kategoria_ID,
                         Subcategory = p.NenKategoria.EmriNenkategorise,
                         SubcategoryId = p.NenKategoria_ID,
-                        CmimiMeZbritje = p.CmimiPerCope - (decimal)p.Zbritja.PerqindjaZbritjes / 100 * p.CmimiPerCope,
+                        CmimiMeZbritje = p.Zbritja !=null ? p.CmimiPerCope - (decimal)p.Zbritja.PerqindjaZbritjes / 100 * p.CmimiPerCope:p.CmimiPerCope ,
                         Rating = p.Review.Any() ? (int)Math.Round(p.Review.Average(r => (double)r.Rating)) : null,
                     });
 

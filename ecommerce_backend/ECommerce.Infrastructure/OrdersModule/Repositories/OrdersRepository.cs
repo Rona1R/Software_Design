@@ -98,7 +98,7 @@ namespace ECommerce.Infrastructure.OrdersModule.Repositories
                 await transaction.CommitAsync();
                 return order.Porosia_ID;
                 }
-                catch (OrdersException ex)
+                catch (OrdersException)
                 {
                     await transaction.RollbackAsync();
                     throw; // Propagate the exception to be handled by the controller
