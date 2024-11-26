@@ -291,6 +291,7 @@ const ProductsByCategory = () => {
                 </div>
               </div>
               <ProductSidebar
+              key={categoryId}
                 title="Companies"
                 companies={allCompanies}
                 isOpen={sidebarOpen}

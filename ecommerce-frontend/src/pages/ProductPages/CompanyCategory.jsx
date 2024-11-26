@@ -300,6 +300,7 @@ const CompanyCategory = () => {
                 </div>
               </div>
               <ProductSidebar
+                key={categoryId}
                 title="Subcategories"
                 subcategories={subCategories}
                 isOpen={sidebarOpen}
