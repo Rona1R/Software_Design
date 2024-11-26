@@ -36,9 +36,10 @@ const ProductSidebar = ({
   maxPrice,
   applyFilters,
   resetFiltersFunc,
+  // registerResetFunc,
 }) => {
   const [selectedCategories, setSelectedCategories] = useState([]);
-  const  [selectedCompanies,setSelectedCompanies] = useState([]);
+  const [selectedCompanies,setSelectedCompanies] = useState([]);
   const [selectedSubCategories , setSelectedSubCategories]  = useState([]);
   const [priceRange, setPriceRange] = useState([0, maxPrice]);
   const sidebarRef = useRef(null);
@@ -112,6 +113,19 @@ const ProductSidebar = ({
     setPriceRange([0, maxPrice]);
     resetFiltersFunc();
   };
+
+  // const resetChildState =()=>{
+  //   setSelectedCategories([]);
+  //   setSelectedCompanies([]);
+  //   setSelectedSubCategories([]);
+  //   setPriceRange([0, maxPrice]);
+  // }
+
+  // useEffect(() => {
+  //   if (registerResetFunc) {
+  //     registerResetFunc(resetChildState);
+  //   }
+  // }, [registerResetFunc]);
 
   const handleApplyFilters = () => {
     if(categories){

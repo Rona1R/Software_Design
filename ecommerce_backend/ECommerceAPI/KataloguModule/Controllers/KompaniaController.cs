@@ -1,9 +1,10 @@
-﻿using ECommerce.Domain.KataloguModule.Entities;
+﻿using ECommerce.Application.Exceptions;
+using ECommerce.Application.KataloguModule.Interfaces;
+using ECommerce.Application.KataloguModule.ViewModels;
+using ECommerce.Application.ProduktetModule.ViewModels;
 using ECommerce.Infrastructure.Data;
 using ECommerceAPI.DTOs;
-using ECommerceAPI.ViewModels;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -15,10 +16,12 @@ namespace ECommerceAPI.KataloguModule.Controllers
     public class KompaniaController : ControllerBase
     {
         private readonly ECommerceDBContext _context;
+        private readonly IKompaniaService _kompaniaService;
 
-        public KompaniaController(ECommerceDBContext context)
+        public KompaniaController(ECommerceDBContext context,IKompaniaService kompaniaService)
         {
             _context = context;
+            _kompaniaService = kompaniaService; 
         }
 
         [HttpPost]//Add
@@ -26,16 +29,14 @@ namespace ECommerceAPI.KataloguModule.Controllers
         [Authorize(Roles = "Admin,Menaxher")]
         public async Task<IActionResult> Post([FromBody] KompaniaVM kompania)
         {
-            var k = new Kompania()
+            try
             {
-                Kompania_Emri = kompania.Emri,
-            };
-
-            await _context.Kompania.AddAsync(k);
-            await _context.SaveChangesAsync();
-
-            return CreatedAtAction(nameof(Post), new { id = k.Kompania_ID }, k);
-
+                await _kompaniaService.CreateAsync(kompania);
+                return Ok("Kompania u shtua me sukses!");
+            }catch(ExistsException e)
+            {
+                return BadRequest(e.Message);
+            }
 
         }
 
@@ -44,78 +45,21 @@ namespace ECommerceAPI.KataloguModule.Controllers
         [Authorize(Roles = "Admin,Menaxher")]
         public async Task<IActionResult> Get()
         {
-            var kompanite = await _context.Kompania
-                .OrderByDescending(k => k.CreatedAt)
-                .Select(k => new KompaniaDTO
-                {
-                    Id = k.Kompania_ID,
-                    Emri = k.Kompania_Emri
-
-                })
-                 .ToListAsync();
-
-            return Ok(kompanite);
+            return Ok(await _kompaniaService.GetAllAsync());    
         }
 
         [HttpGet]
         [Route("shfaqKompaniteKategorite")]
         public async Task<IActionResult> ShfaqKompaniteKategorite()
         {
-            var teDhenatPerNav = await _context.Kompania
-                .OrderByDescending(k => k.CreatedAt)
-                .Select(k => new CompanyDTO
-                {
-                    Id = k.Kompania_ID,
-                    Name = k.Kompania_Emri,
-
-                    CompanyCategories = k.Produkti.Select(p => new CompanyCategoryDTO
-                    {
-                        CategoryId = p.Kategoria_ID,
-                        CategoryName = p.Kategoria.EmriKategorise
-                    }
-                    ).GroupBy(c => c.CategoryId)
-                     .Select(g => g.First()).ToList()
-                }).ToListAsync();
-
-            return Ok(teDhenatPerNav);
+            return Ok(await _kompaniaService.GetCompaniesAndCategoriesAsync()); 
         }
 
         [HttpGet]
         [Route("shfaqSidebarDataPerKompanine/{id}")]
         public async Task<IActionResult> GetSideBarData(int id)
         {
-
-            var products = await _context.Produkti
-                .Include(p => p.Kategoria)
-                .Include(p => p.NenKategoria)
-                .Where(p => p.Kompania_ID == id)
-                .ToListAsync();
-
-            var transformedCategories = products
-                .GroupBy(p => new { p.Kategoria.Kategoria_ID, p.Kategoria.EmriKategorise })
-                .Select(g => new
-                {
-                    categoryId = g.Key.Kategoria_ID,
-                    categoryName = g.Key.EmriKategorise,
-                    subCategory = g.Select(p => new
-                    {
-                        subcategoryId = p.NenKategoria.NenKategoria_ID,
-                        subCategoryName = p.NenKategoria.EmriNenkategorise
-                    })
-                    .Distinct()
-                    .ToList()
-                })
-                .ToList();
-
-            var maxPrice = products.Max(p => p.CmimiPerCope);
-
-            var result = new
-            {
-                Categories = transformedCategories,
-                MaxPrice = maxPrice
-            };
-
-            return Ok(result);
+            return Ok(await _kompaniaService.GetSidebarDataAsync(id));
         }
 
 
@@ -123,152 +67,31 @@ namespace ECommerceAPI.KataloguModule.Controllers
         [HttpPost]
         [Route("shfaqProduktetSipasKompanise/{id}/{sortBy}/{pageNumber}/{pageSize}")]
         public async Task<IActionResult> ShfaqProduktetSipasNenKategorise(int id, string sortBy, int pageNumber, int pageSize
-        , [FromBody] FiltersKompaniaDTO filters
+        , [FromBody] FilterNeZbritjeVM filters
         )
         {
-            var ekziston = await _context.Kompania.FindAsync(id);
-            if (ekziston == null)
+            try
             {
-                return NotFound();
+                return Ok(await _kompaniaService.GetProductsByCompanyAsync(id,sortBy,pageNumber,pageSize,filters));
             }
-
-
-            var selectedSubCategories = filters.SelectedSubCategories;
-            decimal? minPrice = null;
-            decimal? maxPrice = null;
-
-            if (filters.PriceRange != null && filters.PriceRange.Length == 2)
+            catch (NotFoundException)
             {
-                minPrice = filters.PriceRange[0];
-                maxPrice = filters.PriceRange[1];
+                return NotFound();  
             }
-
-            var totalProductsCount = await _context.Kompania
-                .Where(k => k.Kompania_ID == id)
-                .SelectMany(k => k.Produkti.Where(p => p.NeShitje == true
-                    && (string.IsNullOrEmpty(filters.SearchTerm) || p.EmriProdukti.Contains(filters.SearchTerm))
-                        && (selectedSubCategories.Length == 0 || selectedSubCategories.Contains(p.NenKategoria.EmriNenkategorise)) // Filter by company
-                        && (
-                            !minPrice.HasValue || p.CmimiPerCope >= minPrice // Regular price meets minimum price
-                            || p.Zbritja != null && p.Zbritja.DataSkadimit >= DateTime.Now
-                                && p.CmimiPerCope - (decimal)p.Zbritja.PerqindjaZbritjes / 100 * p.CmimiPerCope >= minPrice // Discounted price meets minimum price
-                           )
-                        && (
-                            !maxPrice.HasValue || p.CmimiPerCope <= maxPrice // Regular price meets maximum price
-                            || p.Zbritja != null && p.Zbritja.DataSkadimit >= DateTime.Now
-                                && p.CmimiPerCope - (decimal)p.Zbritja.PerqindjaZbritjes / 100 * p.CmimiPerCope <= maxPrice // Discounted price meets maximum price
-                       )
-                ))
-                .CountAsync();
-
-            var productsQuery = _context.Kompania
-                .Where(k => k.Kompania_ID == id)
-                .SelectMany(k => k.Produkti
-                    .Where(p => p.NeShitje == true
-                           && (string.IsNullOrEmpty(filters.SearchTerm) || p.EmriProdukti.Contains(filters.SearchTerm))
-                        && (selectedSubCategories.Length == 0 || selectedSubCategories.Contains(p.NenKategoria.EmriNenkategorise)) // Filter by company
-                        && (
-                            !minPrice.HasValue || p.CmimiPerCope >= minPrice // Regular price meets minimum price
-                            || p.Zbritja != null && p.Zbritja.DataSkadimit >= DateTime.Now
-                                && p.CmimiPerCope - (decimal)p.Zbritja.PerqindjaZbritjes / 100 * p.CmimiPerCope >= minPrice // Discounted price meets minimum price
-                           )
-                        && (
-                            !maxPrice.HasValue || p.CmimiPerCope <= maxPrice // Regular price meets maximum price
-                            || p.Zbritja != null && p.Zbritja.DataSkadimit >= DateTime.Now
-                                && p.CmimiPerCope - (decimal)p.Zbritja.PerqindjaZbritjes / 100 * p.CmimiPerCope <= maxPrice // Discounted price meets maximum price
-                       )
-                    )
-                    .Select(p => new ProduktetKompaniseDTO
-                    {
-                        Id = p.Produkti_ID,
-                        Name = p.EmriProdukti,
-                        Description = p.PershkrimiProduktit,
-                        Img = p.FotoProduktit,
-                        Cost = p.CmimiPerCope,
-                        Stock = p.SasiaNeStok,
-                        Category = p.Kategoria.EmriKategorise,
-                        CategoryId = p.Kategoria_ID,
-                        Subcategory = p.NenKategoria.EmriNenkategorise,
-                        SubcategoryId = p.NenKategoria_ID,
-                        CmimiMeZbritje = p.Zbritja != null && p.Zbritja.DataSkadimit >= DateTime.Now
-                           ? p.CmimiPerCope - (decimal)p.Zbritja.PerqindjaZbritjes / 100 * p.CmimiPerCope
-                           : null,
-                        Rating = p.Review.Any() ? (int)Math.Round(p.Review.Average(r => (double)r.Rating)) : null,
-                    }));
-
-            productsQuery = sortBy.ToLower() switch
-            {
-                "asc" => productsQuery.OrderBy(p => p.Cost),
-                "desc" => productsQuery.OrderByDescending(p => p.Cost),
-                _ => throw new ArgumentException("Invalid sorting order. Use 'asc' or 'desc'.")
-            };
-
-            var pagedProducts = await productsQuery
-                .Skip((pageNumber - 1) * pageSize)
-                .Take(pageSize)
-                .ToListAsync();
-
-            var kompania = await _context.Kompania
-           .Where(nk => nk.Kompania_ID == id)
-           .Select(nk => new
-           {
-               Name = nk.Kompania_Emri
-           })
-           .FirstOrDefaultAsync();
-
-            if (kompania == null)
-            {
-                return BadRequest("Kjo kompani nuk u gjet");
-            }
-
-            var teDhenat = new KompaniaMeProduktetDTO
-            {
-                Id = id,
-                Name = kompania.Name,
-                Products = pagedProducts
-            };
-
-            return Ok(new
-            {
-                teDhenat,
-                TotalCount = totalProductsCount
-            });
         }
 
         [HttpGet]
         [Route("getSidebarDataPerKompanineKategorine/{companyId}/{categoryId}")]
         public async Task<IActionResult> GetSidebarData(int companyId, int categoryId)
         {
-            var products = await _context.Produkti
-                .Include(p => p.NenKategoria)
-                .Where(p => p.Kompania_ID == companyId && p.Kategoria_ID == categoryId)
-                .ToListAsync();
-
-            var maxPrice = products.Max(p => p.CmimiPerCope);
-
-            var uniqueSubcategories = products
-                .Select(p => new
-                {
-                    SubcategoryId = p.NenKategoria.NenKategoria_ID,
-                    SubCategoryName = p.NenKategoria.EmriNenkategorise
-                })
-                .Distinct()
-                .ToList();
-
-            var result = new
-            {
-                MaxPrice = maxPrice,
-                Subcategories = uniqueSubcategories
-            };
-
-            return Ok(result);
+            return Ok(await _kompaniaService.GetSidebarDataAsync(companyId,categoryId));    
         }
 
 
         [HttpPost]
         [Route("shfaqProduktetSipasKompaniseDheKategorise/{companyId}/{categoryId}/{sortBy}/{pageNumber}/{pageSize}")]
         public async Task<IActionResult> ShfaqProduktetSipasKompaniseDheKategorise(int companyId, int categoryId, string sortBy, int pageNumber, int pageSize
-         , [FromBody] FiltersKompaniaDTO filters
+         , [FromBody] FilterNeZbritjeVM filters
          )
         {
             var ekzistonKompania = await _context.Kompania.FindAsync(companyId);
@@ -457,18 +280,6 @@ namespace ECommerceAPI.KataloguModule.Controllers
 
             return BadRequest("Kjo kompani nuk ekziston");
         }
-
-
-
-
-    }
-    public class FiltersKompaniaDTO
-    {
-        public string[] SelectedSubCategories { get; set; }
-
-        public decimal[] PriceRange { get; set; }
-
-        public string SearchTerm { get; set; }
-    }
+    } 
 
 }

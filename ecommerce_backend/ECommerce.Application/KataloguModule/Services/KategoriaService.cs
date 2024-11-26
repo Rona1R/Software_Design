@@ -7,7 +7,6 @@ using ECommerce.Application.Exceptions;
 using ECommerce.Application.KataloguModule.DTOs;
 using ECommerce.Application.KataloguModule.Interfaces;
 using ECommerce.Application.KataloguModule.ViewModels;
-using ECommerce.Application.ProduktetModule.DTOs;
 
 namespace ECommerce.Application.KataloguModule.Services
 {
@@ -35,7 +34,7 @@ namespace ECommerce.Application.KataloguModule.Services
             return await _kategoriaRepository.GetAllAsync();
         }
 
-        public async Task<List<CategoryDTO>> GetKategoriteNenkategoriteAsync()
+        public async Task<List<KategoriaNenkategoriteDTO>> GetKategoriteNenkategoriteAsync()
         {
             return await _kategoriaRepository.GetKategoriteNenkategoriteAsync();
         }

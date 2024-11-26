@@ -82,7 +82,7 @@ const DesktopNav = ({kategoriteNenkategorite,kompaniteKategorite}) => {
                     </div>
                   ))
                 ) : (
-                  <p>No subcategories</p>
+                  <p style={{color:"black"}}>No subcategories</p>
                 )}
               </div>
             </div>
@@ -105,7 +105,7 @@ const DesktopNav = ({kategoriteNenkategorite,kompaniteKategorite}) => {
               {kompaniteKategorite.map((company) => (
                 <div key={company.id} className="desktop-dropdown-item">
                   <button onClick={() => handleCompanyClick(company)}>
-                    {company.name}
+                    {company.emri}
                     <FontAwesomeIcon icon={faChevronRight} />
                   </button>
                 </div>
@@ -119,7 +119,7 @@ const DesktopNav = ({kategoriteNenkategorite,kompaniteKategorite}) => {
                 <FontAwesomeIcon icon={faChevronLeft} /> Back to Companies
               </button>
               <div className="desktop-subcategory-items">
-                <h3>{selectedCompany.name}</h3>
+                <h3>{selectedCompany.emri}</h3>
                 <div className="desktop-dropdown-item">
                       <Link
                         to={`/Products/Company/${selectedCompany.id}`}
@@ -140,7 +140,7 @@ const DesktopNav = ({kategoriteNenkategorite,kompaniteKategorite}) => {
                     </div>
                   ))
                 ) : (
-                  <p>No categories for this company</p>
+                  <p style={{color:"black"}}>No categories for this company</p>
                 )}
               </div>
             </div>

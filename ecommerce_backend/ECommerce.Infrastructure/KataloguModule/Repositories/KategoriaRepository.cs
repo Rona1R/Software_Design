@@ -47,13 +47,13 @@ namespace ECommerce.Infrastructure.KataloguModule.Repositories
                  .ToListAsync();
         }
 
-        public async Task<List<CategoryDTO>> GetKategoriteNenkategoriteAsync()
+        public async Task<List<KategoriaNenkategoriteDTO>> GetKategoriteNenkategoriteAsync()
         {
             var teDhenat =
                     await _context.Kategoria
                  //   .Include(k => k.NenKategoria)
                     .OrderByDescending(k => k.CreatedAt)
-                    .Select(k => new CategoryDTO
+                    .Select(k => new KategoriaNenkategoriteDTO
                     {
                         CategoryId = k.Kategoria_ID,
                         CategoryName = k.EmriKategorise,

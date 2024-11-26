@@ -1,4 +1,5 @@
-﻿using ECommerce.Application.ProduktetModule.DTOs;
+﻿using ECommerce.Application.KataloguModule.DTOs;
+using ECommerce.Application.ProduktetModule.DTOs;
 using ECommerce.Application.ProduktetModule.Interfaces;
 using ECommerce.Application.ProduktetModule.ViewModels;
 using ECommerce.Domain.ProduktetModule.Entities;
@@ -86,7 +87,7 @@ namespace ECommerce.Infrastructure.ProduktetModule.Repositories
 
             var transformedCategories = products
                 .GroupBy(p => new { p.Kategoria.Kategoria_ID, p.Kategoria.EmriKategorise })
-                .Select(g => new CategoryDTO
+                .Select(g => new KategoriaNenkategoriteDTO
                 {
                     CategoryId = g.Key.Kategoria_ID,
                     CategoryName = g.Key.EmriKategorise,

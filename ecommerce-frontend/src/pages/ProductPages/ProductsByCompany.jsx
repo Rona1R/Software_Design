@@ -44,11 +44,13 @@ const ProductsByCompany = () => {
     priceRange:[],
     searchTerm:"" 
   })
+  // let childResetFiltersFunc = null;
 
   useEffect(() => {
     setSortBy("asc");
     setCurrentPage(1);
     filtersReset();
+    // triggerResetFilters();
   }, [companyId]);
 
   useEffect(()=>{
@@ -151,6 +153,15 @@ const ProductsByCompany = () => {
     setFilters({selectedSubCategories:[],priceRange:[],searchTerm:""});
     setFiltersAppliedCount(0);
   };
+
+  // const triggerResetFilters = () => {
+  //   if (childResetFiltersFunc) {
+  //     childResetFiltersFunc(); // Trigger the child's resetFilters method
+  //   } else {
+  //     console.warn("Reset function is not registered yet.");
+  //   }
+  // };
+
 
   const getSearchResults = () => {
     setCurrentPage(1);
@@ -297,6 +308,7 @@ const ProductsByCompany = () => {
                 maxPrice={maxPrice}
                 applyFilters={filterProducts}
                 resetFiltersFunc={filtersReset}
+                // registerResetFunc={(func) => (childResetFiltersFunc = func)} 
               />
 
               <div className="container-fluid products-page">

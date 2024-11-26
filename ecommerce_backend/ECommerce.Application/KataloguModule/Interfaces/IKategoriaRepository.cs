@@ -5,7 +5,6 @@ using System.Text;
 using System.Threading.Tasks;
 using ECommerce.Application.KataloguModule.DTOs;
 using ECommerce.Application.KataloguModule.ViewModels;
-using ECommerce.Application.ProduktetModule.DTOs;
 using ECommerce.Domain.KataloguModule.Entities;
 
 namespace ECommerce.Application.KataloguModule.Interfaces
@@ -17,7 +16,7 @@ namespace ECommerce.Application.KataloguModule.Interfaces
 
         Task<List<KategoriaDTO>> GetAllAsync();
 
-        Task<List<CategoryDTO>> GetKategoriteNenkategoriteAsync();
+        Task<List<KategoriaNenkategoriteDTO>> GetKategoriteNenkategoriteAsync();
 
         Task<Kategoria?> GetCategoryByIdAsync(int id);
 
