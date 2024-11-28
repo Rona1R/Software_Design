@@ -66,7 +66,7 @@ const CollapsedNav = ({ categories, companies, handleClose }) => {
                     onClick={() => handleCompanyClick(company)}
                     className="category-btn"
                   >
-                    {company.name}
+                    {company.emri}
                     <FontAwesomeIcon icon={faChevronRight} />
                   </button>
                 </div>
@@ -118,7 +118,7 @@ const CollapsedNav = ({ categories, companies, handleClose }) => {
                   Back to Companies
                 </button>
                 <div className="subcategories">
-                  <h3>{selectedCompany.name}</h3>
+                  <h3>{selectedCompany.emri}</h3>
                   <div className="subcategory-item">
                     <Link
                       to={`/Products/Company/${selectedCompany.id}`}

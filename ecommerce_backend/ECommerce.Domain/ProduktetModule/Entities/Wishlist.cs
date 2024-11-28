@@ -15,12 +15,12 @@ namespace ECommerce.Domain.ProduktetModule.Entities
         [Key]
         public int WishlistId { get; set; }
 
-        public int? IdKlienti { get; set; }
+        public int IdKlienti { get; set; }
 
         [ForeignKey("IdKlienti")]
 
-        public virtual User? Klienti { get; set; }
+        public virtual User Klienti { get; set; }
 
-        public virtual List<WishlistItem>? WishlistItem { get; set; }
+        public virtual List<WishlistItem> WishlistItem { get; set; } = new List<WishlistItem>();    
     }
 }

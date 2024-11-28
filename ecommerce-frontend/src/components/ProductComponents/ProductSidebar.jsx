@@ -38,10 +38,12 @@ const ProductSidebar = ({
   resetFiltersFunc,
 }) => {
   const [selectedCategories, setSelectedCategories] = useState([]);
-  const  [selectedCompanies,setSelectedCompanies] = useState([]);
+  const [selectedCompanies,setSelectedCompanies] = useState([]);
   const [selectedSubCategories , setSelectedSubCategories]  = useState([]);
   const [priceRange, setPriceRange] = useState([0, maxPrice]);
   const sidebarRef = useRef(null);
+
+  // console.log(selectedCategories);
 
   const getSubCategoriesByCategory = (categoryId) => {
     const category = categories.find(
@@ -112,6 +114,7 @@ const ProductSidebar = ({
     setPriceRange([0, maxPrice]);
     resetFiltersFunc();
   };
+
 
   const handleApplyFilters = () => {
     if(categories){

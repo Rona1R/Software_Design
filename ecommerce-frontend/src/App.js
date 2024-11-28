@@ -79,7 +79,11 @@ function App() {
         />
         <Route path="/Cart" element={<CartTest/>}/>
         {/* <Route path="/Cart" element={<Cart />} /> */}
-        <Route path="/Wishlist" element={<Wishlist />} />
+        <Route path="/Wishlist" element={
+          <ProtectedRoute>
+            <Wishlist />
+          </ProtectedRoute>
+        } />
         <Route
           path="/ProfilePage"
           element={

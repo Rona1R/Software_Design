@@ -26,5 +26,7 @@ namespace ECommerce.Application.UsersModule.Interfaces
 
         Task UpdateAchievementBadgeAsync(User user, int badgeId);
 
+        Task<int> GetUserCountAsync();
+
     }
 }

@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
-import { Row, Col } from "react-bootstrap";
+import { Row } from "react-bootstrap";
 import Modal from "react-bootstrap/Modal";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -330,15 +330,17 @@ export default function ShtoProduktin(props) {
                 <span style={{ color: "red" }}>*</span>
               </Form.Label>
               <Form.Control
+                as="textarea" 
+                rows={3}
                 onChange={(e) => handlePershkrimi(e.target.value)}
                 value={pershkrimi}
-                type="text"
+                maxLength={350}
                 placeholder="Pershkrimi i produktit"
                 autoFocus
               />
               {pershkrimiWarning && (
                 <p
-                  /*style={{color:"red"}}*/ className={`crudFormWarning ${
+                  className={`crudFormWarning ${
                     pershkrimiWarning ? "fade-in" : ""
                   }`}
                 >
@@ -370,7 +372,7 @@ export default function ShtoProduktin(props) {
               />
               {cmimiWarning && (
                 <p
-                  /*style={{color:"red"}}*/ className={`crudFormWarning ${
+                  className={`crudFormWarning ${
                     cmimiWarning ? "fade-in" : ""
                   }`}
                 >
@@ -393,7 +395,7 @@ export default function ShtoProduktin(props) {
               />
               {stokuWarning && (
                 <p
-                  /*style={{color:"red"}}*/ className={`crudFormWarning ${
+                  className={`crudFormWarning ${
                     stokuWarning ? "fade-in" : ""
                   }`}
                 >
@@ -420,29 +422,6 @@ export default function ShtoProduktin(props) {
                   }}
                 />
               </div>
-  
-              {/* <Col sm={9}>
-                <Form.Check
-                  inline
-                  reverse
-                  type="radio"
-                  label="Po"
-                  name="neShitje"
-                  value={true}
-                  checked={neShitje === true}
-                  onChange={handleNeShitje}
-                />
-                <Form.Check
-                  inline
-                  reverse
-                  type="radio"
-                  label="Jo"
-                  name="neShitje"
-                  value={false}
-                  checked={neShitje === false}
-                  onChange={handleNeShitje}
-                />
-              </Col> */}
             </Form.Group>
             <Form.Group className="mb-3" controlId="crudForm.ProduktiKompania">
               <Button
@@ -478,7 +457,7 @@ export default function ShtoProduktin(props) {
                     className="crudDropdownListItem"
                     key={
                       k.id
-                    } /*onClick={() => handleMenuItemClick(k.id,k.emri)}*/
+                    } 
                     onClick={() => handleCompanyMenuItemClick(k)}
                   >
                     {k.emri}
@@ -527,7 +506,7 @@ export default function ShtoProduktin(props) {
                     className="crudDropdownListItem"
                     key={
                       k.id
-                    } /*onClick={() => handleMenuItemClick(k.id,k.emri)}*/
+                    } 
                     onClick={() => handleCategoryMenuItemClick(k)}
                   >
                     {k.emri}
@@ -577,7 +556,7 @@ export default function ShtoProduktin(props) {
                       className="crudDropdownListItem"
                       key={
                         k.id
-                      } /*onClick={() => handleMenuItemClick(k.id,k.emri)}*/
+                      }
                       onClick={() => handleSubCategoryMenuItemClick(k)}
                     >
                       {k.emri}

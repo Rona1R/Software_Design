@@ -82,6 +82,7 @@ const ProductsByCompany = () => {
           const { teDhenat, totalCount } = response.data;
           setCurrentCompany(teDhenat);
           setTotalProducts(totalCount);
+          
         } catch (error) {
           if (error.response && error.response.status === 404) {
             console.log(error.response.status);
@@ -263,33 +264,39 @@ const ProductsByCompany = () => {
                   ]}
                 />
               </div>
-              <div className="productsHeader">
-                <div className="Filter-and-Sorts">
-                  <button
-                    onClick={handleFiltersClick}
-                    id="show-filters-sidebar"
-                  >
-                    Filters{" "}
-                    {filtersAppliedCount === 0
-                      ? ""
-                      : `(${filtersAppliedCount})`}
-                    <TuneIcon />
-                  </button>
-                  <ProductsSort
-                    handleSortFunc={updateSortOrder}
-                    sortBy={sortBy}
-                  />
+              {
+                (totalProducts !== 0
+                || filtersAppliedCount !==0 )
+                &&
+                <div className="productsHeader">
+                  <div className="Filter-and-Sorts">
+                    <button
+                      onClick={handleFiltersClick}
+                      id="show-filters-sidebar"
+                    >
+                      Filters{" "}
+                      {filtersAppliedCount === 0
+                        ? ""
+                        : `(${filtersAppliedCount})`}
+                      <TuneIcon />
+                    </button>
+                    <ProductsSort
+                      handleSortFunc={updateSortOrder}
+                      sortBy={sortBy}
+                    />
+                  </div>
+                  <div className="searchComponent">
+                    <ProductSearch
+                      className="products-page"
+                      searchTerm={searchTerm}
+                      setSearchTerm={setSearchTerm}
+                      handleSearchResults={getSearchResults}
+                    />
+                  </div>
                 </div>
-                <div className="searchComponent">
-                  <ProductSearch
-                    className="products-page"
-                    searchTerm={searchTerm}
-                    setSearchTerm={setSearchTerm}
-                    handleSearchResults={getSearchResults}
-                  />
-                </div>
-              </div>
+              }
               <ProductSidebar
+                key={companyId}
                 title="Categories"
                 categories={allCategories}
                 isOpen={sidebarOpen}

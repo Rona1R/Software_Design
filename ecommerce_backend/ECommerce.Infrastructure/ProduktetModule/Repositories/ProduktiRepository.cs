@@ -1,4 +1,5 @@
-﻿using ECommerce.Application.ProduktetModule.DTOs;
+﻿using ECommerce.Application.KataloguModule.DTOs;
+using ECommerce.Application.ProduktetModule.DTOs;
 using ECommerce.Application.ProduktetModule.Interfaces;
 using ECommerce.Application.ProduktetModule.ViewModels;
 using ECommerce.Domain.ProduktetModule.Entities;
@@ -57,7 +58,7 @@ namespace ECommerce.Infrastructure.ProduktetModule.Repositories
                        Foto = p.FotoProduktit,
                        Cmimi = p.CmimiPerCope,
                        Stoku = p.SasiaNeStok,
-                      NeShitje = p.NeShitje
+                       NeShitje = p.NeShitje
                    }
                ).ToListAsync();
             return produktet;
@@ -81,12 +82,12 @@ namespace ECommerce.Infrastructure.ProduktetModule.Repositories
             var products = await _context.Produkti
                 .Include(p => p.Kategoria)
                 .Include(p => p.NenKategoria)
-                .Where(p => p.Zbritja_ID != null && p.Zbritja.DataSkadimit >= DateTime.Now)
+                .Where(p => p.Zbritja_ID != null && p.Zbritja!=null && p.Zbritja.DataSkadimit >= DateTime.Now)
                 .ToListAsync();
 
             var transformedCategories = products
                 .GroupBy(p => new { p.Kategoria.Kategoria_ID, p.Kategoria.EmriKategorise })
-                .Select(g => new CategoryDTO
+                .Select(g => new KategoriaNenkategoriteDTO
                 {
                     CategoryId = g.Key.Kategoria_ID,
                     CategoryName = g.Key.EmriKategorise,
@@ -125,27 +126,9 @@ namespace ECommerce.Infrastructure.ProduktetModule.Repositories
                 maxPrice = filters.PriceRange[1];
             }
 
-            var totalProductsCount = await _context.Produkti
-                .Where(p => p.NeShitje == true && p.Zbritja_ID != null && p.Zbritja.DataSkadimit >= DateTime.Now
-                 && (string.IsNullOrEmpty(filters.SearchTerm) || p.EmriProdukti.Contains(filters.SearchTerm))
-                            && (selectedSubCategories.Length == 0 || selectedSubCategories.Contains(p.NenKategoria.EmriNenkategorise))
-                            && (
-                                !minPrice.HasValue || p.CmimiPerCope >= minPrice
-                                || p.Zbritja != null && p.Zbritja.DataSkadimit >= DateTime.Now
-                                    && p.CmimiPerCope - (decimal)p.Zbritja.PerqindjaZbritjes / 100 * p.CmimiPerCope >= minPrice // Discounted price meets minimum price
-                               )
-                            && (
-                                !maxPrice.HasValue || p.CmimiPerCope <= maxPrice // Regular price meets maximum price
-                                || p.Zbritja != null && p.Zbritja.DataSkadimit >= DateTime.Now
-                                    && p.CmimiPerCope - (decimal)p.Zbritja.PerqindjaZbritjes / 100 * p.CmimiPerCope <= maxPrice // Discounted price meets maximum price
-                  )
-                )
-                .CountAsync();
-
-
             var productsQuery = _context.Produkti
                     .Where(p => p.NeShitje == true
-                     && p.Zbritja_ID != null && p.Zbritja.DataSkadimit >= DateTime.Now
+                     && p.Zbritja_ID != null && p.Zbritja != null && p.Zbritja.DataSkadimit >= DateTime.Now
                                     && (string.IsNullOrEmpty(filters.SearchTerm) || p.EmriProdukti.Contains(filters.SearchTerm))
                                 && (selectedSubCategories.Length == 0 || selectedSubCategories.Contains(p.NenKategoria.EmriNenkategorise))
                                 && (
@@ -171,7 +154,7 @@ namespace ECommerce.Infrastructure.ProduktetModule.Repositories
                         CategoryId = p.Kategoria_ID,
                         Subcategory = p.NenKategoria.EmriNenkategorise,
                         SubcategoryId = p.NenKategoria_ID,
-                        CmimiMeZbritje = p.CmimiPerCope - (decimal)p.Zbritja.PerqindjaZbritjes / 100 * p.CmimiPerCope,
+                        CmimiMeZbritje = p.Zbritja !=null ? p.CmimiPerCope - (decimal)p.Zbritja.PerqindjaZbritjes / 100 * p.CmimiPerCope:p.CmimiPerCope ,
                         Rating = p.Review.Any() ? (int)Math.Round(p.Review.Average(r => (double)r.Rating)) : null,
                     });
 
@@ -191,7 +174,7 @@ namespace ECommerce.Infrastructure.ProduktetModule.Repositories
             return new ProductsResponseDTO
             {
                 PagedProducts = pagedProducts,
-                TotalCount = totalProductsCount
+                TotalCount = productsQuery.Count(),
             };
         }
 
@@ -275,6 +258,8 @@ namespace ECommerce.Infrastructure.ProduktetModule.Repositories
             _context.Produkti.Remove(produkti);
             await _context.SaveChangesAsync();
         }
+
+        public async Task<int> GetProductCountAsync() => await _context.Produkti.CountAsync();
 
     }
 }

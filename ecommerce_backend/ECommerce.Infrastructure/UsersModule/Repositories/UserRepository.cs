@@ -48,8 +48,8 @@ namespace ECommerce.Infrastructure.UsersModule.Repositories
                .Where(u => u.User_Id == id)
                .Select(u => new CheckoutDetails
                {
-                   UserName = u.AspNetUser.UserName,
-                   Email = u.AspNetUser.Email,
+                   UserName = u.AspNetUser.UserName ?? "Unprovided",
+                   Email = u.AspNetUser.Email ?? "Unprovided",
                    PhoneNumber = u.AspNetUser.PhoneNumber,
                    Adresat = u.Adresa.Select(u => new AdresaUserVM
                    {
@@ -121,6 +121,8 @@ namespace ECommerce.Infrastructure.UsersModule.Repositories
             _dbContext.User.Update(user);
             await _dbContext.SaveChangesAsync();
         }
+
+        public async Task<int> GetUserCountAsync() => await _dbContext.User.CountAsync();
 
     }
 }

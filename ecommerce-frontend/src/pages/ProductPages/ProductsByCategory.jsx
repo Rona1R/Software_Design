@@ -84,6 +84,8 @@ const ProductsByCategory = () => {
           setCurrentCategory(teDhenat);
           setTotalProducts(totalCount);
           setLoading(false);
+
+          console.log("Kjo faqe ka ne total: "+totalCount+" produkte");
         } catch (error) {
           if (error.response && error.response.status === 404) {
             console.log(error.response.status);
@@ -263,34 +265,39 @@ const ProductsByCategory = () => {
                   ]}
                 />
               </div>
-              <div className="productsHeader">
-                <div className="Filter-and-Sorts">
-                  <button
-                    onClick={handleFiltersClick}
-                    id="show-filters-sidebar"
-                  >
-                    Filters{" "}
-                    {filtersAppliedCount === 0
-                      ? ""
-                      : `(${filtersAppliedCount})`}
-                    <TuneIcon />
-                  </button>
-                  <ProductsSort
-                    handleSortFunc={updateSortOrder}
-                    sortBy={sortBy}
-                  />
+              {
+              ( totalProducts !== 0
+                || filtersAppliedCount !==0 ) && 
+                <div className="productsHeader">
+                  <div className="Filter-and-Sorts">
+                    <button
+                      onClick={handleFiltersClick}
+                      id="show-filters-sidebar"
+                    >
+                      Filters{" "}
+                      {filtersAppliedCount === 0
+                        ? ""
+                        : `(${filtersAppliedCount})`}
+                      <TuneIcon />
+                    </button>
+                    <ProductsSort
+                      handleSortFunc={updateSortOrder}
+                      sortBy={sortBy}
+                    />
+                  </div>
+                  <div className="searchComponent">
+                    <ProductSearch
+                      className="products-page"
+                      searchTerm={searchTerm}
+                      setSearchTerm={setSearchTerm}
+                      handleSearchResults={getCategorySearchResults}
+                      // handleAlert={hideAlert}
+                    />
+                  </div>
                 </div>
-                <div className="searchComponent">
-                  <ProductSearch
-                    className="products-page"
-                    searchTerm={searchTerm}
-                    setSearchTerm={setSearchTerm}
-                    handleSearchResults={getCategorySearchResults}
-                    // handleAlert={hideAlert}
-                  />
-                </div>
-              </div>
+              }
               <ProductSidebar
+              key={categoryId}
                 title="Companies"
                 companies={allCompanies}
                 isOpen={sidebarOpen}

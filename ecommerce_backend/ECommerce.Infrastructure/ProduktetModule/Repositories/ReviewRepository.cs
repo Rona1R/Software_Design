@@ -56,10 +56,7 @@ namespace ECommerce.Infrastructure.ProduktetModule.Repositories
 
         public async Task<PaginatedReviewsDTO> GetReviewsByProductId(int produktiId, string sortOrder, int pageSize, int pageNumber)
         {
-            var totalReviewsCount = await _context.Review
-         .Where(r => r.Produkti_ID == produktiId)
-         .CountAsync();
-
+       
             var reviewsQuery = _context.Review.Where(r => r.Produkti_ID == produktiId);
 
 
@@ -94,7 +91,7 @@ namespace ECommerce.Infrastructure.ProduktetModule.Repositories
                     Text = r.ReviewContent,
                     Rating = r.Rating,
                     DateAdded = r.CreatedAt,
-                    AchievementBadge = r.User.AchievementBadge.Badge_Name,
+                    AchievementBadge = r.User.AchievementBadge!=null? r.User.AchievementBadge.Badge_Name??"Unprovided":"Unknown",
                     IsEdited = r.IsEdited,
                 })
                 .ToListAsync();
@@ -102,7 +99,7 @@ namespace ECommerce.Infrastructure.ProduktetModule.Repositories
             return new PaginatedReviewsDTO()
             {
                 Reviews = reviews,
-                TotalReviewsCount = totalReviewsCount,
+                TotalReviewsCount = reviewsQuery.Count(),
             };
         }
 

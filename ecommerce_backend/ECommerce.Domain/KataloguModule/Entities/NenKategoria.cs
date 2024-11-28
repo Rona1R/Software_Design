@@ -14,7 +14,7 @@ namespace ECommerce.Domain.KataloguModule.Entities
         [Key]
         public int NenKategoria_ID { get; set; }
 
-        public string? EmriNenkategorise { get; set; }
+        public string EmriNenkategorise { get; set; }
 
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
@@ -23,8 +23,8 @@ namespace ECommerce.Domain.KataloguModule.Entities
         public int Kategoria_ID { get; set; }
 
         [ForeignKey(nameof(Kategoria_ID))]
-        public virtual Kategoria? Kategoria { get; set; }
+        public virtual Kategoria Kategoria { get; set; } 
 
-        public virtual List<Produkti>? Produkti { get; set; }
+        public virtual List<Produkti> Produkti { get; set; } = new List<Produkti>();
     }
 }

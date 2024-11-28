@@ -118,29 +118,11 @@ namespace ECommerce.Infrastructure.KataloguModule.Repositories
                 maxPrice = filters.PriceRange[1];
             }
 
-            var totalProductsCount = await _context.NenKategoria
-           .Where(k => k.NenKategoria_ID == id)
-           .SelectMany(k => k.Produkti.Where(p => p.NeShitje == true
-                      && (string.IsNullOrEmpty(filters.SearchTerm) || p.EmriProdukti.Contains(filters.SearchTerm))
-                   && (selectedCompanies.Length == 0 || selectedCompanies.Contains(p.Kompania.Kompania_Emri)) // Filter by company
-                   && (
-                       !minPrice.HasValue || p.CmimiPerCope >= minPrice // Regular price meets minimum price
-                       || p.Zbritja != null && p.Zbritja.DataSkadimit >= DateTime.Now
-                           && p.CmimiPerCope - (decimal)p.Zbritja.PerqindjaZbritjes / 100 * p.CmimiPerCope >= minPrice // Discounted price meets minimum price
-                      )
-                   && (
-                       !maxPrice.HasValue || p.CmimiPerCope <= maxPrice // Regular price meets maximum price
-                       || p.Zbritja != null && p.Zbritja.DataSkadimit >= DateTime.Now
-                           && p.CmimiPerCope - (decimal)p.Zbritja.PerqindjaZbritjes / 100 * p.CmimiPerCope <= maxPrice // Discounted price meets maximum price
-                  )
-           )
-           )
-           .CountAsync();
-
-            var productsQuery = _context.NenKategoria
-                .Where(k => k.NenKategoria_ID == id)
-                .SelectMany(k => k.Produkti
-                    .Where(p => p.NeShitje == true
+            //var productsQuery = _context.NenKategoria
+            //    .Where(k => k.NenKategoria_ID == id)
+            //    .SelectMany(k => k.Produkti
+            var productsQuery = _context.Produkti
+                    .Where(p => p.NeShitje == true && p.NenKategoria_ID == id
                            && (string.IsNullOrEmpty(filters.SearchTerm) || p.EmriProdukti.Contains(filters.SearchTerm))
                             && (selectedCompanies.Length == 0 || selectedCompanies.Contains(p.Kompania.Kompania_Emri)) // Filter by company
                             && (
@@ -168,7 +150,7 @@ namespace ECommerce.Infrastructure.KataloguModule.Repositories
                            ? p.CmimiPerCope - (decimal)p.Zbritja.PerqindjaZbritjes / 100 * p.CmimiPerCope
                            : null,
                         Rating = p.Review.Any() ? (int)Math.Round(p.Review.Average(r => (double)r.Rating)) : null,
-                    }));
+                    });
 
             productsQuery = sortBy.ToLower() switch
             {
@@ -194,7 +176,7 @@ namespace ECommerce.Infrastructure.KataloguModule.Repositories
 
             return new ProduktetSipasNenkategorise
             {
-                TotalCount = totalProductsCount,
+                TotalCount = productsQuery.Count(),
                 TeDhenat = teDhenat,
             };
         }

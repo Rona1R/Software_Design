@@ -20,9 +20,9 @@ namespace ECommerce.Infrastructure.UsersModule.Repositories
 
         }
 
-        public async Task<AchievementBadge> GetBadgeByName(string name)
+        public async Task<AchievementBadge?> GetBadgeByName(string name)
         {
-            return await _context.AchievementBadge.FirstOrDefaultAsync(b => b.Badge_Name.ToLower() == name.ToLower());
+            return await _context.AchievementBadge.FirstOrDefaultAsync(b => b.Badge_Name.ToLower().Equals(name.ToLower()));
         }
 
         public async Task AddNewBadge(string name)

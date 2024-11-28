@@ -55,7 +55,7 @@ namespace ECommerce.Infrastructure.ProduktetModule.Repositories
                     ZbritjaID = pz.Zbritja_ID,
                     ProduktiEmri = pz.EmriProdukti,
                     CmimiParaZbritjes = pz.CmimiPerCope,
-                    CmimiMeZbritje = pz.CmimiPerCope - (decimal)pz.Zbritja.PerqindjaZbritjes / 100 * pz.CmimiPerCope,
+                    CmimiMeZbritje = pz.CmimiPerCope - (decimal)pz.Zbritja!.PerqindjaZbritjes / 100 * pz.CmimiPerCope,
                 }).ToListAsync();
 
             return zbritjet;

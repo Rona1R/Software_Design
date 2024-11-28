@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import axios from "axios";
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
@@ -8,37 +8,19 @@ import { faPlus, faXmark } from '@fortawesome/free-solid-svg-icons';
 import { toast } from "react-toastify";
 
 export default function ShtoKompanine(props) {
-    const [kompanite,setKompanite] = useState([]);
     const [emriKompanise,setEmriKompanise] = useState("");
-    //const [refreshKey,setRefreshKey] = useState("");
     const [warning,setWarning] = useState("");
-
-    useEffect(()=>{
-        try {
-            axios
-            .get('https://localhost:7061/api/Kompania/shfaqKompanine')
-            .then((response) => {
-              setKompanite(response.data);
-            });
-          } catch (err) {
-            console.log(err);
-          }
-    },[/*props.refreshKey*/])
 
     const anulo=()=>{
       setEmriKompanise("");
       setWarning("");
       props.mbyllShtoKompanine();
     }
-/*
-    const handleEmri =(value)=>{
+
+    const handleEmri = (value) => {
         setWarning("");
         setEmriKompanise(value);
-    }*/
-        const handleEmri = (value) => {
-            setWarning("");
-            setEmriKompanise(value);
-        }
+    }
 
     function validoFormen(){
         let validated=true;
@@ -47,14 +29,6 @@ export default function ShtoKompanine(props) {
             validated = false;
         }
 
-       /* if(kompanite.filter((k)=> k.emri.toLowerCase() === emriKompanise.toLowerCase()).length>0){
-            setWarning("Ekziszon nje kompani me emrin e njejte.Zgjedh nje emer tjeter!")
-            validated = false;
-        }*/
-            if (kompanite.some((k) => k.emri && k.emri.toLowerCase() === emriKompanise.toLowerCase())) {
-                setWarning("Ekziszon nje kompani me emrin e njejte.Zgjedh nje emer tjeter!");
-                validated = false;
-            }
         return validated
     }
     async function shtoKompanine(){
@@ -66,18 +40,20 @@ export default function ShtoKompanine(props) {
                 .post('https://localhost:7061/api/Kompania/shtoKompanine',{
                     emri:emriKompanise,
                 })
-                // .then((response) => {
-                  //setKompanine(response.data);
+                
                   console.log(response);
                   props.refreshTeDhenat();
                   toast.success("Kompania eshte shtuar me sukses!");
                   props.mbyllShtoKompanine();
-                  // setRefreshKey(Date.now);
                   setEmriKompanise("");
-                // });
               } catch (err) {
-                toast.error("Ndodhi nje problem ne server");
-                console.log(err);
+                if (err.response && err.response.status === 400) {
+                  setWarning(err.response.data);
+                }
+                else{
+                  toast.error("Ndodhi nje problem ne server");
+                  console.log(err);
+                }
               }
         }
 
@@ -86,7 +62,7 @@ export default function ShtoKompanine(props) {
     return (
     <>
       <Modal 
-     /* show={props.shfaqFormen}*/ show = {true} onHide={props.mbyllShtoKompanine}
+      show = {true} onHide={props.mbyllShtoKompanine}
       centered
       >
         <Modal.Header>
@@ -109,7 +85,7 @@ export default function ShtoKompanine(props) {
               />
               {
               warning && (
-                 <p /*style={{color:"red"}}*/  className={`crudFormWarning ${warning ? 'fade-in' : ''}`}>
+                 <p className={`crudFormWarning ${warning ? 'fade-in' : ''}`}>
                  {warning}
                  </p>
                  )

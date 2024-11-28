@@ -376,6 +376,9 @@ export default function EditoProduktin(props) {
                 <span style={{ color: "red" }}>*</span>
               </Form.Label>
               <Form.Control
+                as="textarea" 
+                rows={3}
+                maxLength={350}
                 onChange={(e) => handlePershkrimi(e.target.value)}
                 value={pershkrimiUpdated}
                 type="text"

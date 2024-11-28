@@ -273,33 +273,39 @@ const CompanyCategory = () => {
                   ]}
                 />
               </div>
-              <div className="productsHeader">
-                <div className="Filter-and-Sorts">
-                  <button
-                    onClick={handleFiltersClick}
-                    id="show-filters-sidebar"
-                  >
-                    Filters{" "}
-                    {filtersAppliedCount === 0
-                      ? ""
-                      : `(${filtersAppliedCount})`}
-                    <TuneIcon />
-                  </button>
-                  <ProductsSort
-                    handleSortFunc={updateSortOrder}
-                    sortBy={sortBy}
-                  />
+              {
+                ( totalProducts !== 0
+                || filtersAppliedCount !==0 )
+                &&
+                <div className="productsHeader">
+                  <div className="Filter-and-Sorts">
+                    <button
+                      onClick={handleFiltersClick}
+                      id="show-filters-sidebar"
+                    >
+                      Filters{" "}
+                      {filtersAppliedCount === 0
+                        ? ""
+                        : `(${filtersAppliedCount})`}
+                      <TuneIcon />
+                    </button>
+                    <ProductsSort
+                      handleSortFunc={updateSortOrder}
+                      sortBy={sortBy}
+                    />
+                  </div>
+                  <div className="searchComponent">
+                    <ProductSearch
+                      className="products-page"
+                      searchTerm={searchTerm}
+                      setSearchTerm={setSearchTerm}
+                      handleSearchResults={getCategorySearchResults}
+                    />
+                  </div>
                 </div>
-                <div className="searchComponent">
-                  <ProductSearch
-                    className="products-page"
-                    searchTerm={searchTerm}
-                    setSearchTerm={setSearchTerm}
-                    handleSearchResults={getCategorySearchResults}
-                  />
-                </div>
-              </div>
+              }
               <ProductSidebar
+                key={categoryId}
                 title="Subcategories"
                 subcategories={subCategories}
                 isOpen={sidebarOpen}

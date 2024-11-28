@@ -9,6 +9,8 @@ import SideNav from "./SideNav/SideNav";
 import axios from "axios";
 import { useEffect } from "react";
 import { TailSpin } from "react-loader-spinner";
+import { Grid, Typography, Box, Button } from "@mui/material";
+import { Link } from "react-router-dom";
 
 const Home = () => {
   const [meTeShiturat, setMeTeShiturat] = useState([]);
@@ -38,19 +40,109 @@ const Home = () => {
         <div className="home">
           <HomeCarousel />
           <Icons />
-          <section className="intro-section">
-            <div className="intro-container">
-              <div className="u-shape-bg">
-                <h2 className="home-h2">Welcome to Our Shop</h2>
-                <p className="home-p">
-                  Discover the best products at unbeatable prices. This is your
-                  one-stop destination for the latest and greatest in tech,
-                  fashion, and more. Start shopping today and find something you
-                  love!
-                </p>
+          <hr/>
+          <Box   
+          >     
+            <Box sx={{padding:"15% 0"}}>
+              <Typography 
+              sx={{
+                fontSize: {
+                  xs: "1rem", 
+                  sm: "1.5rem",
+                  md: "2rem", 
+                  lg: "4rem",
+                },
+                fontWeight: "bold", 
+                background: "linear-gradient(90deg, #6a11cb 0%,  #655cdb 100%)", 
+                WebkitBackgroundClip: "text", 
+                WebkitTextFillColor: "transparent", 
+
+              }}
+              >
+                Everything you can think of , all in one place
+              </Typography>
+              <div style={{margin:"0 auto",width:"50%"}}>
+                <Typography
+                 sx={{
+                  fontSize: {
+                    xs: "1rem", 
+                    sm: "1rem",
+                    md: "1.5rem", 
+                    lg: "3rem"},
+                    marginTop:"30px",
+                    fontWeight:"bold",
+                    color:" #221f1f"
+
+                  }}
+                >
+                  From beauty and fashion , to the latest tech products on the market, we offer it all 
+                </Typography>
               </div>
-            </div>
-          </section>
+            </Box>
+          </Box>
+          <Grid container alignItems="center" sx={{backgroundColor:"#f9f9f9"}}>
+            <Grid item xs={12} md={6}>
+              <Box>
+                <Box p={6}>
+                  <Typography
+                    variant="h6"
+                    gutterBottom
+                    sx={{ textAlign: "center", fontWeight: "bold" }}
+                    className="homepage-title"
+                  >
+                    Why Choose Us?
+                  </Typography>
+                  <Typography variant="body1" className="homepage-paragraph">
+                    We’re committed to redefining your shopping experience. With
+                    our unbeatable prices, top-notch customer service, and a
+                    seamless shopping journey tailored to your needs, we stand
+                    out as the ultimate destination for all your needs.
+                  </Typography>
+                  <Grid container justifyContent="center">
+                    <Button
+                      sx={{
+                        width: "200px",
+                        fontSize: {
+                          xs: "0.5rem", // Small screens
+                          sm: "0.5rem", // Medium screens
+                          md: "1rem", // Large screens
+                          lg: "1.5rem", // Extra-large screens
+                        },
+                        color: "white",
+                        backgroundColor: "#7069d2",
+                        padding: "10px",
+                        marginTop: "3%",
+                        "&:hover": {
+                          backgroundColor: "#5a51b3",
+                        },
+                      }}
+                    >
+                      <Link
+                        to="/SignUp"
+                        style={{ textDecoration: "none", color: "white" }}
+                      >
+                        Sign Up
+                      </Link>
+                    </Button>
+                  </Grid>
+                </Box>
+              </Box>
+            </Grid>
+
+            <Grid item xs={12} md={6}>
+              <Box>
+                <img
+                  src="/images/ecommerce_homepage_img.jpg"
+                  alt="Ecommerce Homepage"
+                  style={{
+                    width: "100%",
+                    height: "auto",
+                    display: "block",
+                  }}
+                />
+              </Box>
+            </Grid>
+          </Grid>
           <section className="features-section">
             <div className="feature-container">
               <div className="feature">
@@ -87,7 +179,9 @@ const Home = () => {
               </div>
             </div>
           </section>
-          <h1 className="loved">Popular on Our Store </h1>
+          <h1 className="loved" style={{ paddingTop: "40px" }}>
+            Popular on Our Store{" "}
+          </h1>
           <div className="row" style={{ padding: "5%" }}>
             {loading ? (
               <div className="loading">

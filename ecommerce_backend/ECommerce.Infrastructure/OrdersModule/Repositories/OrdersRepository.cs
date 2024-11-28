@@ -98,7 +98,7 @@ namespace ECommerce.Infrastructure.OrdersModule.Repositories
                 await transaction.CommitAsync();
                 return order.Porosia_ID;
                 }
-                catch (OrdersException ex)
+                catch (OrdersException)
                 {
                     await transaction.RollbackAsync();
                     throw; // Propagate the exception to be handled by the controller
@@ -215,6 +215,51 @@ namespace ECommerce.Infrastructure.OrdersModule.Repositories
             porosia.Statusi_Porosise = statusi;
             _context.Update(porosia);
             await _context.SaveChangesAsync();
+        }
+
+        public async Task<int> GetOrderCountAsync() => await _context.Porosia.CountAsync();
+
+        public async Task<int> GetOrdersThisWeekCountAsync(DateTime startOfWeek, DateTime endOfWeek) =>
+            await _context.Porosia
+                .Where(p => p.DataPorosise >= startOfWeek && p.DataPorosise < endOfWeek)
+                .CountAsync();
+
+        public async Task<decimal> GetTotalRevenueAsync() => await _context.Porosia.SumAsync(p => p.CmimiTotal);
+
+        public async Task<List<int>> GetAvailableYearsAsync()
+        {
+            return await _context.Porosia
+                .Select(o => o.DataPorosise.Year)
+                .Distinct()
+                .OrderByDescending(year => year)
+                .ToListAsync();
+        }
+
+        public async Task<List<OrderMonthStatisticsDTO>> GetSaleStatisticsByYearAsync(int year)
+        {
+            return await _context.Porosia
+                .Where(p => p.DataPorosise.Year == year)
+                .SelectMany(p => p.PorosiaItem)
+                .GroupBy(pi => pi.Porosia.DataPorosise.Month)
+                .Select(p => new OrderMonthStatisticsDTO
+                {
+                    NumriProdukteve = p.Sum(pi => pi.SasiaPorositur),
+                    Month = new DateTime(year, p.Key, 1).ToString("MMM"),
+                    MonthNumber = p.Key
+                }).ToListAsync();
+        }
+
+        public async Task<List<MonthlyRevenueDTO>> GetMonthlyRevenueByYearAsync(int year)
+        {
+            return await _context.Porosia
+                .Where(p => p.DataPorosise.Year == year)
+                .GroupBy(p => p.DataPorosise.Month)
+                .Select(g => new MonthlyRevenueDTO
+                {
+                    Totali = g.Sum(p => p.CmimiTotal),
+                    Month = new DateTime(year, g.Key, 1).ToString("MMM"),
+                    MonthNumber = g.Key
+                }).ToListAsync();
         }
 
     }

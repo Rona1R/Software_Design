@@ -36,7 +36,7 @@ namespace ECommerce.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("HomeVideos", (string)null);
+                    b.ToTable("HomeVideos");
                 });
 
             modelBuilder.Entity("ECommerce.Domain.BusinessModule.Entities.TeDhenatBiznesit", b =>
@@ -77,7 +77,7 @@ namespace ECommerce.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("TeDhenatBiznesit", (string)null);
+                    b.ToTable("TeDhenatBiznesit");
                 });
 
             modelBuilder.Entity("ECommerce.Domain.KataloguModule.Entities.Kategoria", b =>
@@ -92,6 +92,7 @@ namespace ECommerce.Infrastructure.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("EmriKategorise")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Pershkrimi")
@@ -99,7 +100,7 @@ namespace ECommerce.Infrastructure.Migrations
 
                     b.HasKey("Kategoria_ID");
 
-                    b.ToTable("Kategoria", (string)null);
+                    b.ToTable("Kategoria");
                 });
 
             modelBuilder.Entity("ECommerce.Domain.KataloguModule.Entities.Kompania", b =>
@@ -114,11 +115,12 @@ namespace ECommerce.Infrastructure.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Kompania_Emri")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Kompania_ID");
 
-                    b.ToTable("Kompania", (string)null);
+                    b.ToTable("Kompania");
                 });
 
             modelBuilder.Entity("ECommerce.Domain.KataloguModule.Entities.NenKategoria", b =>
@@ -133,6 +135,7 @@ namespace ECommerce.Infrastructure.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("EmriNenkategorise")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("Kategoria_ID")
@@ -142,7 +145,7 @@ namespace ECommerce.Infrastructure.Migrations
 
                     b.HasIndex("Kategoria_ID");
 
-                    b.ToTable("NenKategoria", (string)null);
+                    b.ToTable("NenKategoria");
                 });
 
             modelBuilder.Entity("ECommerce.Domain.OrdersModule.Entities.Porosia", b =>
@@ -197,7 +200,7 @@ namespace ECommerce.Infrastructure.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Porosia", (string)null);
+                    b.ToTable("Porosia");
                 });
 
             modelBuilder.Entity("ECommerce.Domain.OrdersModule.Entities.PorosiaItem", b =>
@@ -226,7 +229,7 @@ namespace ECommerce.Infrastructure.Migrations
 
                     b.HasIndex("Produkti_ID");
 
-                    b.ToTable("PorosiaItem", (string)null);
+                    b.ToTable("PorosiaItem");
                 });
 
             modelBuilder.Entity("ECommerce.Domain.ProduktetModule.Entities.AchievementBadge", b =>
@@ -238,6 +241,7 @@ namespace ECommerce.Infrastructure.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Badge_Id"));
 
                     b.Property<string>("Badge_Name")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("CreatedAt")
@@ -245,7 +249,7 @@ namespace ECommerce.Infrastructure.Migrations
 
                     b.HasKey("Badge_Id");
 
-                    b.ToTable("AchievementBadge", (string)null);
+                    b.ToTable("AchievementBadge");
                 });
 
             modelBuilder.Entity("ECommerce.Domain.ProduktetModule.Entities.Atributi", b =>
@@ -266,7 +270,7 @@ namespace ECommerce.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Atributi", (string)null);
+                    b.ToTable("Atributi");
                 });
 
             modelBuilder.Entity("ECommerce.Domain.ProduktetModule.Entities.AtributiOption", b =>
@@ -288,7 +292,7 @@ namespace ECommerce.Infrastructure.Migrations
 
                     b.HasIndex("AtributiId");
 
-                    b.ToTable("AtributiOption", (string)null);
+                    b.ToTable("AtributiOption");
                 });
 
             modelBuilder.Entity("ECommerce.Domain.ProduktetModule.Entities.Produkti", b =>
@@ -299,7 +303,7 @@ namespace ECommerce.Infrastructure.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Produkti_ID"));
 
-                    b.Property<decimal?>("CmimiPerCope")
+                    b.Property<decimal>("CmimiPerCope")
                         .HasColumnType("decimal(18,2)");
 
                     b.Property<DateTime>("CreatedAt")
@@ -309,27 +313,30 @@ namespace ECommerce.Infrastructure.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("EmriProdukti")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("FotoProduktit")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("Kategoria_ID")
+                    b.Property<int>("Kategoria_ID")
                         .HasColumnType("int");
 
-                    b.Property<int?>("Kompania_ID")
+                    b.Property<int>("Kompania_ID")
                         .HasColumnType("int");
 
-                    b.Property<bool?>("NeShitje")
+                    b.Property<bool>("NeShitje")
                         .HasColumnType("bit");
 
-                    b.Property<int?>("NenKategoria_ID")
+                    b.Property<int>("NenKategoria_ID")
                         .HasColumnType("int");
 
                     b.Property<string>("PershkrimiProduktit")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("SasiaNeStok")
+                    b.Property<int>("SasiaNeStok")
                         .HasColumnType("int");
 
                     b.Property<int?>("Zbritja_ID")
@@ -345,7 +352,7 @@ namespace ECommerce.Infrastructure.Migrations
 
                     b.HasIndex("Zbritja_ID");
 
-                    b.ToTable("Produkti", (string)null);
+                    b.ToTable("Produkti");
                 });
 
             modelBuilder.Entity("ECommerce.Domain.ProduktetModule.Entities.ProduktiAtributi", b =>
@@ -372,7 +379,7 @@ namespace ECommerce.Infrastructure.Migrations
 
                     b.HasIndex("ProduktiId");
 
-                    b.ToTable("ProduktiAtributi", (string)null);
+                    b.ToTable("ProduktiAtributi");
                 });
 
             modelBuilder.Entity("ECommerce.Domain.ProduktetModule.Entities.Review", b =>
@@ -383,22 +390,23 @@ namespace ECommerce.Infrastructure.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Review_ID"));
 
-                    b.Property<DateTime?>("CreatedAt")
+                    b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
                     b.Property<bool>("IsEdited")
                         .HasColumnType("bit");
 
-                    b.Property<int?>("Produkti_ID")
+                    b.Property<int>("Produkti_ID")
                         .HasColumnType("int");
 
-                    b.Property<int?>("Rating")
+                    b.Property<int>("Rating")
                         .HasColumnType("int");
 
                     b.Property<string>("ReviewContent")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("User_Id")
+                    b.Property<int>("User_Id")
                         .HasColumnType("int");
 
                     b.HasKey("Review_ID");
@@ -407,7 +415,7 @@ namespace ECommerce.Infrastructure.Migrations
 
                     b.HasIndex("User_Id");
 
-                    b.ToTable("Review", (string)null);
+                    b.ToTable("Review");
                 });
 
             modelBuilder.Entity("ECommerce.Domain.ProduktetModule.Entities.Wishlist", b =>
@@ -418,14 +426,14 @@ namespace ECommerce.Infrastructure.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("WishlistId"));
 
-                    b.Property<int?>("IdKlienti")
+                    b.Property<int>("IdKlienti")
                         .HasColumnType("int");
 
                     b.HasKey("WishlistId");
 
                     b.HasIndex("IdKlienti");
 
-                    b.ToTable("Wishlist", (string)null);
+                    b.ToTable("Wishlist");
                 });
 
             modelBuilder.Entity("ECommerce.Domain.ProduktetModule.Entities.WishlistItem", b =>
@@ -439,7 +447,7 @@ namespace ECommerce.Infrastructure.Migrations
                     b.Property<int>("Produkti_ID")
                         .HasColumnType("int");
 
-                    b.Property<int?>("WishlistId")
+                    b.Property<int>("WishlistId")
                         .HasColumnType("int");
 
                     b.HasKey("WishlistItemId");
@@ -448,7 +456,7 @@ namespace ECommerce.Infrastructure.Migrations
 
                     b.HasIndex("WishlistId");
 
-                    b.ToTable("WishlistItem", (string)null);
+                    b.ToTable("WishlistItem");
                 });
 
             modelBuilder.Entity("ECommerce.Domain.ProduktetModule.Entities.Zbritja", b =>
@@ -459,21 +467,22 @@ namespace ECommerce.Infrastructure.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Zbritja_ID"));
 
-                    b.Property<DateTime?>("DataKrijimit")
+                    b.Property<DateTime>("DataKrijimit")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime?>("DataSkadimit")
+                    b.Property<DateTime>("DataSkadimit")
                         .HasColumnType("datetime2");
 
                     b.Property<int>("PerqindjaZbritjes")
                         .HasColumnType("int");
 
                     b.Property<string>("ZbritjaEmri")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Zbritja_ID");
 
-                    b.ToTable("Zbritja", (string)null);
+                    b.ToTable("Zbritja");
                 });
 
             modelBuilder.Entity("ECommerce.Domain.UsersModule.Entities.Adresa", b =>
@@ -513,7 +522,7 @@ namespace ECommerce.Infrastructure.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Adresa", (string)null);
+                    b.ToTable("Adresa");
                 });
 
             modelBuilder.Entity("ECommerce.Domain.UsersModule.Entities.User", b =>
@@ -547,7 +556,7 @@ namespace ECommerce.Infrastructure.Migrations
 
                     b.HasIndex("Badge_Id");
 
-                    b.ToTable("User", (string)null);
+                    b.ToTable("User");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -804,15 +813,21 @@ namespace ECommerce.Infrastructure.Migrations
                 {
                     b.HasOne("ECommerce.Domain.KataloguModule.Entities.Kategoria", "Kategoria")
                         .WithMany("Produkti")
-                        .HasForeignKey("Kategoria_ID");
+                        .HasForeignKey("Kategoria_ID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("ECommerce.Domain.KataloguModule.Entities.Kompania", "Kompania")
                         .WithMany("Produkti")
-                        .HasForeignKey("Kompania_ID");
+                        .HasForeignKey("Kompania_ID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("ECommerce.Domain.KataloguModule.Entities.NenKategoria", "NenKategoria")
                         .WithMany("Produkti")
-                        .HasForeignKey("NenKategoria_ID");
+                        .HasForeignKey("NenKategoria_ID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("ECommerce.Domain.ProduktetModule.Entities.Zbritja", "Zbritja")
                         .WithMany("Produkti")
@@ -850,11 +865,15 @@ namespace ECommerce.Infrastructure.Migrations
                 {
                     b.HasOne("ECommerce.Domain.ProduktetModule.Entities.Produkti", "Produkti")
                         .WithMany("Review")
-                        .HasForeignKey("Produkti_ID");
+                        .HasForeignKey("Produkti_ID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("ECommerce.Domain.UsersModule.Entities.User", "User")
                         .WithMany("Review")
-                        .HasForeignKey("User_Id");
+                        .HasForeignKey("User_Id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Produkti");
 
@@ -865,7 +884,9 @@ namespace ECommerce.Infrastructure.Migrations
                 {
                     b.HasOne("ECommerce.Domain.UsersModule.Entities.User", "Klienti")
                         .WithMany("Wishlist")
-                        .HasForeignKey("IdKlienti");
+                        .HasForeignKey("IdKlienti")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Klienti");
                 });
@@ -880,7 +901,9 @@ namespace ECommerce.Infrastructure.Migrations
 
                     b.HasOne("ECommerce.Domain.ProduktetModule.Entities.Wishlist", "Wishlist")
                         .WithMany("WishlistItem")
-                        .HasForeignKey("WishlistId");
+                        .HasForeignKey("WishlistId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Produkti");
 

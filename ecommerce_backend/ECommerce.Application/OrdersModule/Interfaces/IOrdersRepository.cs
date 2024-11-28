@@ -23,5 +23,17 @@ namespace ECommerce.Application.OrdersModule.Interfaces
         Task<List<UserOrderDTO>> GetOrdersByUserIdAsync(int userId);
 
         Task UpdateOrderStatusAsync(Porosia porosia, string statusi);
+
+        Task<int> GetOrderCountAsync();
+
+        Task<int> GetOrdersThisWeekCountAsync(DateTime startOfWeek, DateTime endOfWeek);
+
+        Task<decimal> GetTotalRevenueAsync();
+
+        Task<List<int>> GetAvailableYearsAsync();
+
+        Task<List<OrderMonthStatisticsDTO>> GetSaleStatisticsByYearAsync(int year);
+
+        Task<List<MonthlyRevenueDTO>> GetMonthlyRevenueByYearAsync(int year);
     }
 }
