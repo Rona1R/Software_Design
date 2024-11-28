@@ -122,5 +122,7 @@ namespace ECommerce.Infrastructure.UsersModule.Repositories
             await _dbContext.SaveChangesAsync();
         }
 
+        public async Task<int> GetUserCountAsync() => await _dbContext.User.CountAsync();
+
     }
 }

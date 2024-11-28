@@ -270,7 +270,8 @@ const ProductsBySubCategory = () => {
                 />
               </div>
               {
-                totalProducts !== 0
+                ( totalProducts !== 0
+                || filtersAppliedCount !==0 )
                 &&
                 <div className="productsHeader">
                   <div className="Filter-and-Sorts">

@@ -112,10 +112,11 @@ namespace ECommerce.Infrastructure.KataloguModule.Repositories
                 maxPrice = filters.PriceRange[1];
             }
 
-            var productsQuery = _context.Kategoria
-            .Where(k => k.Kategoria_ID == id)
-            .SelectMany(k => k.Produkti
-                .Where(p => p.NeShitje == true
+            //var productsQuery = _context.Kategoria
+            //.Where(k => k.Kategoria_ID == id)
+            //.SelectMany(k => k.Produkti
+            var productsQuery = _context.Produkti
+                .Where(p => p.NeShitje == true && p.Kategoria_ID == id
                                         && (string.IsNullOrEmpty(filters.SearchTerm) || p.EmriProdukti.Contains(filters.SearchTerm))
                     && (selectedCompanies.Length == 0 || selectedCompanies.Contains(p.Kompania.Kompania_Emri)) // Filter by company
                     && (
@@ -145,7 +146,7 @@ namespace ECommerce.Infrastructure.KataloguModule.Repositories
                     ? p.CmimiPerCope - (decimal)p.Zbritja.PerqindjaZbritjes / 100 * p.CmimiPerCope
                     : null,
                 Rating = p.Review.Any() ? (int)Math.Round(p.Review.Average(r => (double)r.Rating)) : null
-            }));
+            });//);
 
             productsQuery = sortBy.ToLower() switch
             {
@@ -195,6 +196,19 @@ namespace ECommerce.Infrastructure.KataloguModule.Repositories
         {
             _context.Kategoria.Remove(kategoria);
             await _context.SaveChangesAsync();
+        }
+
+        public async Task<int> GetCategoryCountAsync() => await _context.Kategoria.CountAsync();
+
+        public async Task<List<CategoryStatisticsDto>> GetCategoryStatisticsAsync()
+        {
+            return await _context.Kategoria
+                .Select(k => new CategoryStatisticsDto
+                {
+                    Id = k.Kategoria_ID,
+                    Value = k.Produkti.Count(),
+                    Label = k.EmriKategorise
+                }).ToListAsync();
         }
     }
 }

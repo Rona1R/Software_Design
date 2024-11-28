@@ -31,5 +31,9 @@ namespace ECommerce.Application.KataloguModule.Interfaces
         Task UpdateCategoryAsync(Kategoria kategoria, KategoriaVM kategoriaVM);
 
         Task DeleteCategoryAsync(Kategoria kategoria);
+
+        Task<int> GetCategoryCountAsync();
+
+        Task<List<CategoryStatisticsDto>> GetCategoryStatisticsAsync();
     }
 }

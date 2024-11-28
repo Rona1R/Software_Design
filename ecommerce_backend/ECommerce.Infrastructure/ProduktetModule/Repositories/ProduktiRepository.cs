@@ -259,5 +259,7 @@ namespace ECommerce.Infrastructure.ProduktetModule.Repositories
             await _context.SaveChangesAsync();
         }
 
+        public async Task<int> GetProductCountAsync() => await _context.Produkti.CountAsync();
+
     }
 }

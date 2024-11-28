@@ -2,7 +2,6 @@
 using ECommerce.Application.KataloguModule.Interfaces;
 using ECommerce.Application.KataloguModule.ViewModels;
 using ECommerce.Application.ProduktetModule.ViewModels;
-using ECommerce.Infrastructure.Data;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 

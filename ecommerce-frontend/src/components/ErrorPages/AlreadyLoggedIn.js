@@ -2,6 +2,7 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useEffect } from 'react';
 import axios from 'axios';
+import { Link } from 'react-router-dom';
 
 const AlreadyLoggedIn = () => {
     const navigate = useNavigate();
@@ -12,7 +13,7 @@ const AlreadyLoggedIn = () => {
         if(!loggedInUser){
             navigate('/');
         }
-    },[])
+    },[loggedInUser,navigate])
 
     const handleLogOut = async () => {
        // const refreshToken = localStorage.getItem('refreshToken');
@@ -40,9 +41,14 @@ const AlreadyLoggedIn = () => {
             <p style={styles.paragraph}>
                 To sign in as a different user, please log out first.
             </p>
-            <button onClick={handleLogOut} style={styles.button}>
-                Log Out
-            </button>
+                <div>
+                    <Link to="/" style={{color:"black"}}>
+                        Back to Home
+                    </Link>
+                </div>
+                <button onClick={handleLogOut} style={styles.button}>
+                    Log Out
+                </button>
         </div>
     );
 };

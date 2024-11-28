@@ -1,9 +1,7 @@
-﻿using ECommerce.Domain.BusinessModule.Entities;
-using ECommerce.Infrastructure.Data;
+﻿using ECommerce.Application.BusinessModule.Interfaces;
+using ECommerce.Application.Exceptions;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace ECommerceAPI.BusinessModule.Controllers
 {
@@ -11,11 +9,11 @@ namespace ECommerceAPI.BusinessModule.Controllers
     [ApiController]
     public class HomeVideoController : ControllerBase
     {
-        private readonly ECommerceDBContext _context;
+        private readonly IHomeVideoService _homeVideoService;
 
-        public HomeVideoController(ECommerceDBContext context)
+        public HomeVideoController(IHomeVideoService homeVideoService)
         {
-            _context = context;
+            _homeVideoService = homeVideoService;
         }
 
         [HttpPost]
@@ -35,12 +33,7 @@ namespace ECommerceAPI.BusinessModule.Controllers
                 await video.CopyToAsync(stream);
             }
 
-            var homeVideo = new HomeVideos()
-            {
-                VideoUrl = video.FileName,
-            };
-            await _context.HomeVideos.AddAsync(homeVideo);
-            await _context.SaveChangesAsync();
+            await _homeVideoService.CreateAsync(video.FileName);
 
             return Ok(video.FileName);
         }
@@ -49,8 +42,8 @@ namespace ECommerceAPI.BusinessModule.Controllers
         [Route("getVideot")]
         public async Task<IActionResult> GetVideot()
         {
-            var videot = await _context.HomeVideos.ToListAsync();
-            return Ok(videot);
+
+            return Ok(await _homeVideoService.GetAllAsync());
         }
 
         [HttpDelete]
@@ -58,32 +51,35 @@ namespace ECommerceAPI.BusinessModule.Controllers
         [Authorize(Roles = "Admin,Menaxher")]
         public async Task<IActionResult> FshiVideon(int id)
         {
-            var video = await _context.HomeVideos.FindAsync(id);
-            if (video == null)
-            {
-                return BadRequest("Kjo video nuk u gjet ne sistem!");
-            }
-
-            var folder = Path.Combine("..","..","ecommerce-frontend", "public", "videos", video.VideoUrl);
-
-            if (!System.IO.File.Exists(folder))
-            {
-                return NotFound("Video nuk u gjet!");
-            }
-
+     
             try
             {
-                System.IO.File.Delete(folder);
-            }
-            catch (Exception ex)
+                 var video = await _homeVideoService.GetByIdAsync(id);
+                 await _homeVideoService.DeleteAsync(video); 
+
+                 var folder = Path.Combine("..","..","ecommerce-frontend", "public", "videos", video.VideoUrl);
+
+                 if (!System.IO.File.Exists(folder))
+                 {
+                    return NotFound("Video nuk u gjet!");
+                 }
+
+                try
+                {
+                    System.IO.File.Delete(folder);
+                }
+                catch (Exception ex)
+                {
+                    return StatusCode(500, $"Ndodhi një gabim gjatë fshirjes së videos: {ex.Message}");
+                }
+
+                return Ok($"Video '{video.VideoUrl}' u fshi me sukses.");
+            }catch(NotFoundException)
             {
-                return StatusCode(500, $"Ndodhi një gabim gjatë fshirjes së videos: {ex.Message}");
+
+                return NotFound();
             }
-
-            _context.HomeVideos.Remove(video);
-            await _context.SaveChangesAsync();
-
-            return Ok($"Video '{video.VideoUrl}' u fshi me sukses.");
+  
         }
 
     }

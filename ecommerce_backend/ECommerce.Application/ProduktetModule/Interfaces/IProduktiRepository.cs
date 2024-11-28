@@ -26,5 +26,7 @@ namespace ECommerce.Application.ProduktetModule.Interfaces
         Task<List<MeTeShituratDTO>> ShfaqMeTeShiturat();
 
         Task DeleteProductAsync(Produkti produkti);
+
+        Task<int> GetProductCountAsync();
     }
 }

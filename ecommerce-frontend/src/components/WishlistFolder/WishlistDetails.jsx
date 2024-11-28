@@ -62,8 +62,8 @@ const WishlistDetails = ({ userId, onRemove }) => {
             loading?  
              <div className="loading productsPageLoader">
                 <TailSpin
-                height="260"
-                width="120"
+                height="300"
+                width="250"
                 color="#322b9c"
                 ariaLabel="tail-spin-loading"
                 radius="1"
