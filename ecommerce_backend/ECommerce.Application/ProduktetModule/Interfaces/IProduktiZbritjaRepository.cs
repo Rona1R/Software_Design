@@ -18,5 +18,11 @@ namespace ECommerce.Application.ProduktetModule.Interfaces
         Task<List<ProduktZbritjaDTO>> ShfaqZbritjetProdukteveAsync();
 
         Task<List<object>> ShfaqProduktetPaZbritjeAsync();
+
+      //  Task UpdateProductAttributeAsync(ProduktiAtributi produktiAtributi);
+
+       // Task<ProduktiAtributi> GetProductAttributeByIdAsync(int id);
+
+     //   Task RemoveProductAttributeAsync(ProduktiAtributi produktiAtributi);
     }
 }

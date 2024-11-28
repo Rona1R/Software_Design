@@ -96,27 +96,43 @@ namespace ECommerceAPI.ProduktetModule.Controllers
                 return BadRequest(new { Message = e.Message });
             }
         }
-    
-    
+
+        /*
+
+            [HttpGet]
+            [Route("get-available-attributes/{produktiId}")]
+            [Authorize(Roles = "Admin,Menaxher")]
+            public async Task<IActionResult> Get(int produktiId)
+            {
+
+                var atributetProduktit = await _context.ProduktiAtributi
+                    .Where(p => p.ProduktiId == produktiId)
+                    .Select(p => p.AtributiId)
+                    .ToListAsync();
+
+                var allAttributes = await _context.Atributi.ToListAsync();
+
+                var availableAttributes = allAttributes
+                    .Where(a => !atributetProduktit.Contains(a.Id))
+                    .ToList();
+
+                return Ok(availableAttributes);
+            }*/
 
         [HttpGet]
         [Route("get-available-attributes/{produktiId}")]
         [Authorize(Roles = "Admin,Menaxher")]
         public async Task<IActionResult> Get(int produktiId)
         {
-
-            var atributetProduktit = await _context.ProduktiAtributi
-                .Where(p => p.ProduktiId == produktiId)
-                .Select(p => p.AtributiId)
-                .ToListAsync();
-
-            var allAttributes = await _context.Atributi.ToListAsync();
-
-            var availableAttributes = allAttributes
-                .Where(a => !atributetProduktit.Contains(a.Id))
-                .ToList();
-
-            return Ok(availableAttributes);
+            try
+            {
+                var availableAttributes = await _produktiAtributiService.GetAvailableAttributesAsync(produktiId);
+                return Ok(availableAttributes);
+            }
+            catch (Exception e)
+            {
+                return BadRequest(new { Message = e.Message });
+            }
         }
 
         [HttpGet]

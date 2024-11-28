@@ -49,28 +49,41 @@ namespace ECommerce.Infrastructure.ProduktetModule.Repositories
 
             return produktiMeAtribute;
         }
-        /*[HttpPost]
-        [Route("add-product-attributes")]
-        [Authorize(Roles = "Admin,Menaxher")]
-        public async Task<IActionResult> Post([FromBody] List<ProduktiAtributiVM> atributet)
+
+        public async Task<List<Atributi>> GetAvailableAttributesAsync(int produktiId)
         {
+            var atributetProduktit = await _context.ProduktiAtributi
+                .Where(p => p.ProduktiId == produktiId)
+                .Select(p => p.AtributiId)
+                .ToListAsync();
 
-            foreach (var item in atributet)
-            {
-                var produktiAtributi = new ProduktiAtributi()
-                {
-                    ProduktiId = item.ProduktiId,
-                    AtributiId = item.AtributiId,
-                    AtributiValue = item.AtributiValue,
-                };
+            var allAttributes = await _context.Atributi.ToListAsync();
 
-                await _context.ProduktiAtributi.AddAsync(produktiAtributi);
-                await _context.SaveChangesAsync();
-            }
+            return allAttributes
+                .Where(a => !atributetProduktit.Contains(a.Id))
+                .ToList();
+        }
 
-            return Ok("Atributet jane shtuar me sukses!");
-        }*/
+        public async Task<ProduktiAtributi> GetProductAttributeByIdAsync(int id)
+        {
+            return await _context.ProduktiAtributi.FindAsync(id);
+        }
 
+
+        public async Task UpdateProductAttributeAsync(ProduktiAtributi produktiAtributi)
+        {
+            _context.ProduktiAtributi.Update(produktiAtributi);
+            await _context.SaveChangesAsync();
+        }
+
+   /*
+
+        public async Task RemoveProductAttributeAsync(ProduktiAtributi produktiAtributi)
+        {
+            _context.ProduktiAtributi.Remove(produktiAtributi);
+            await _context.SaveChangesAsync();
+        }
+   */
 
 
 

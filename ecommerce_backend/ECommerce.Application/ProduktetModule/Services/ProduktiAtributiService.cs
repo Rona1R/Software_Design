@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 using ECommerce.Application.ProduktetModule.Interfaces;
 using ECommerce.Domain.ProduktetModule.Entities;
 using ECommerce.Application.ProduktetModule.ViewModels;
+using ECommerce.Application.ProduktetModule.Interfaces;
+
 
 namespace ECommerce.Application.ProduktetModule.Services
 {
@@ -33,5 +35,36 @@ namespace ECommerce.Application.ProduktetModule.Services
         {
             return await _produktiAtributiRepository.GetProductAttributesAsync(produktiId);
         }
+
+        public async Task<List<Atributi>> GetAvailableAttributesAsync(int produktiId)
+        {
+            return await _produktiAtributiRepository.GetAvailableAttributesAsync(produktiId);
+        }
+
+        public async Task UpdateProductAttributeAsync(int id, ProduktiAttributeVM produktiAtributiVM)
+        {
+            var produktiAtributi = await _produktiAtributiRepository.GetProductAttributeByIdAsync(id);
+
+            if (produktiAtributi == null)
+            {
+                throw new KeyNotFoundException("Product attribute not found.");
+            }
+
+            produktiAtributi.AtributiValue = produktiAtributiVM.AtributiValue;
+            await _produktiAtributiRepository.UpdateProductAttributeAsync(produktiAtributi);
+        }
+
+        /*
+        public async Task RemoveProductAttributeAsync(int id)
+        {
+            var produktiAtributi = await _produktiAtributiRepository.GetProductAttributeByIdAsync(id);
+
+            if (produktiAtributi == null)
+            {
+                throw new KeyNotFoundException("Atributi i produktit nuk u gjet!");
+            }
+
+            await _produktiAtributiRepository.RemoveProductAttributeAsync(produktiAtributi);
+        }*/
     }
 }

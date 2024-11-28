@@ -13,5 +13,7 @@ namespace ECommerce.Application.ProduktetModule.Interfaces
         Task AddProductAttributesAsync(List<ProduktiAttributeVM> produktiAtributetVM);
 
         Task<object> GetProductAttributesAsync(int produktiId);
+
+        Task<List<Atributi>> GetAvailableAttributesAsync(int produktiId);
     }
 }
