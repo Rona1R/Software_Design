@@ -1,10 +1,12 @@
-﻿using ECommerce.Domain.ProduktetModule.Entities;
+﻿using ECommerce.Application.ProduktetModule.Interfaces;
+using ECommerce.Domain.ProduktetModule.Entities;
 using ECommerce.Infrastructure.Data;
 using ECommerceAPI.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using ECommerce.Application.ProduktetModule.ViewModels;
 
 namespace ECommerceAPI.ProduktetModule.Controllers
 {
@@ -13,12 +15,14 @@ namespace ECommerceAPI.ProduktetModule.Controllers
     public class ProduktiAtributiController : ControllerBase
     {
         private readonly ECommerceDBContext _context;
-
-        public ProduktiAtributiController(ECommerceDBContext context)
+        private readonly IProduktiAtributiService _produktiAtributiService;
+        public ProduktiAtributiController(ECommerceDBContext context, IProduktiAtributiService produktiAtributiService)
         {
             _context = context;
+            _produktiAtributiService = produktiAtributiService;
+           
         }
-
+        /*
         [HttpPost]
         [Route("add-product-attributes")]
         [Authorize(Roles = "Admin,Menaxher")]
@@ -39,8 +43,23 @@ namespace ECommerceAPI.ProduktetModule.Controllers
             }
 
             return Ok("Atributet jane shtuar me sukses!");
+        }*/
+           [HttpPost]
+        [Route("add-product-attributes")]
+        [Authorize(Roles = "Admin,Menaxher")]
+        public async Task<IActionResult> Post([FromBody] List<ProduktiAttributeVM> atributet)
+        {
+            try
+            {
+                await _produktiAtributiService.AddProductAttributesAsync(atributet);
+                return Ok("Atributet jane shtuar me sukses!");
+            }
+            catch (Exception e)
+            {
+                return BadRequest(new { Message = e.Message });
+            }
         }
-
+        /*
         [HttpGet]
         [Route("get-product-attributes/{produktiId}")]
         public async Task<IActionResult> GetAttr(int produktiId)
@@ -61,7 +80,24 @@ namespace ECommerceAPI.ProduktetModule.Controllers
                 .FirstOrDefaultAsync();
             return Ok(produktiMeAtribute);
         }
-
+        */
+        
+        [HttpGet]
+        [Route("get-product-attributes/{produktiId}")]
+        public async Task<IActionResult> GetAttr(int produktiId)
+        {
+            try
+            {
+                var produktiMeAtribute = await _produktiAtributiService.GetProductAttributesAsync(produktiId);
+                return Ok(produktiMeAtribute);
+            }
+            catch (Exception e)
+            {
+                return BadRequest(new { Message = e.Message });
+            }
+        }
+    
+    
 
         [HttpGet]
         [Route("get-available-attributes/{produktiId}")]
