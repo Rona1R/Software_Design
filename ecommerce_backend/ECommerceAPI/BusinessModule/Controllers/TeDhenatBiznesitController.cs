@@ -1,5 +1,6 @@
-﻿using ECommerce.Application.BusinessModule.ViewModels;
-using ECommerce.Infrastructure.Data;
+﻿using ECommerce.Application.BusinessModule.Interfaces;
+using ECommerce.Application.BusinessModule.ViewModels;
+using ECommerce.Application.Exceptions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -10,20 +11,18 @@ namespace ECommerceAPI.BusinessModule.Controllers
     [ApiController]
     public class TeDhenatBiznesitController : ControllerBase
     {
-        private readonly ECommerceDBContext _context;
+        private readonly ITeDhenatBiznesitService _service;
 
-        public TeDhenatBiznesitController(ECommerceDBContext context)
+        public TeDhenatBiznesitController(ITeDhenatBiznesitService service)
         {
-            _context = context;
+            _service = service;
         }
 
         [HttpGet]
         [Route("getTeDhenat")]
         public IActionResult Get()
         {
-            var teDhenat = _context.TeDhenatBiznesit.First();
-
-            return Ok(teDhenat);
+            return Ok(_service.Get());
         }
 
         [HttpPut]
@@ -31,18 +30,15 @@ namespace ECommerceAPI.BusinessModule.Controllers
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Put([FromBody] TeDhenatBiznesitVM teDhenat)
         {
-            var biznesiData = _context.TeDhenatBiznesit.First();
-
-            biznesiData.EmriBiznesit = teDhenat.EmriBiznesit;
-            biznesiData.EmailBiznesit = teDhenat.EmailBiznesit;
-            biznesiData.NrKontaktues = teDhenat.NrKontaktit;
-            biznesiData.FacebookLink = teDhenat.Facebook;
-            biznesiData.TwitterLink = teDhenat.Twitter;
-            biznesiData.InstagramLink = teDhenat.Instagram;
-            biznesiData.LinkedInLink = teDhenat.LinkedIn;
-
-            await _context.SaveChangesAsync();
-            return Ok("Te dhenat e biznesit u perditesuan me sukses!");
+            try
+            {
+                await _service.UpdateAsync(teDhenat);
+                return Ok("Te dhenat e biznesit u perditesuan me sukses!");
+            }
+            catch (NotFoundException)
+            {
+                return NotFound();
+            }
         }
 
     }

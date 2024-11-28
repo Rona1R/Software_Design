@@ -19,6 +19,9 @@ namespace ECommerce.Infrastructure.BusinessModule.DependencyInjection
             services.AddScoped<IStatisticsRepository, StatisticsRepository>();
             services.AddScoped<IStatisticsService, StatisticsService>();    
 
+            services.AddScoped<ITeDhenatBiznesitRepository,TeDhenatBiznesitRepository>();
+            services.AddScoped<ITeDhenatBiznesitService, TeDhenatBiznesitService>();
+
             return services;
         }
     }
