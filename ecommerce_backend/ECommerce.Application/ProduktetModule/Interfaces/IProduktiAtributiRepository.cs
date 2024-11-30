@@ -19,5 +19,7 @@ namespace ECommerce.Application.ProduktetModule.Interfaces
 
         Task<ProduktiAtributi> GetProductAttributeByIdAsync(int id);
 
+        Task DeleteAsync(ProduktiAtributi produktiAtributi);
+
     }
 }

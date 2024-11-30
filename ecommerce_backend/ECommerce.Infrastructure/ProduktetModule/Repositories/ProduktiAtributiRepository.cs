@@ -76,14 +76,12 @@ namespace ECommerce.Infrastructure.ProduktetModule.Repositories
             await _context.SaveChangesAsync();
         }
 
-   /*
 
-        public async Task RemoveProductAttributeAsync(ProduktiAtributi produktiAtributi)
+        public async Task DeleteAsync(ProduktiAtributi produktiAtributi)
         {
             _context.ProduktiAtributi.Remove(produktiAtributi);
             await _context.SaveChangesAsync();
         }
-   */
 
 
 

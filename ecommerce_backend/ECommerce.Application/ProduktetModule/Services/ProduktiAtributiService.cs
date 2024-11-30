@@ -54,17 +54,15 @@ namespace ECommerce.Application.ProduktetModule.Services
             await _produktiAtributiRepository.UpdateProductAttributeAsync(produktiAtributi);
         }
 
-        /*
-        public async Task RemoveProductAttributeAsync(int id)
+        public async Task DeleteProduktiAtributiAsync(int id)
         {
             var produktiAtributi = await _produktiAtributiRepository.GetProductAttributeByIdAsync(id);
-
             if (produktiAtributi == null)
             {
-                throw new KeyNotFoundException("Atributi i produktit nuk u gjet!");
+                throw new KeyNotFoundException($"Atributi with ID {id} was not found.");
             }
 
-            await _produktiAtributiRepository.RemoveProductAttributeAsync(produktiAtributi);
-        }*/
+            await _produktiAtributiRepository.DeleteAsync(produktiAtributi);
+        }
     }
 }
