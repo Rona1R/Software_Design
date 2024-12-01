@@ -10,11 +10,14 @@ namespace ECommerce.Application.ProduktetModule.Interfaces
 {
     public interface IProduktiAtributiService
     {
+        Task<ProduktiAtributi?> GetByIdAsync(int id);
         Task AddProductAttributesAsync(List<ProduktiAttributeVM> produktiAtributetVM);
 
-        Task<object> GetProductAttributesAsync(int produktiId);
+        Task<object?> GetProductAttributesAsync(int produktiId);
 
         Task<List<Atributi>> GetAvailableAttributesAsync(int produktiId);
+
+        Task UpdateProductAttributeAsync(int id, ProduktiAttributeVM produktiAtributiVM);
 
         Task DeleteProduktiAtributiAsync(int id);
     }

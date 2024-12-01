@@ -11,13 +11,13 @@ namespace ECommerce.Application.ProduktetModule.Interfaces
     {
         Task AddProductAttributesAsync(List<ProduktiAtributi> produktiAtributet);
 
-        Task<object> GetProductAttributesAsync(int produktiId);
+        Task<object?> GetProductAttributesAsync(int produktiId);
 
         Task<List<Atributi>> GetAvailableAttributesAsync(int produktiId);
 
         Task UpdateProductAttributeAsync(ProduktiAtributi produktiAtributi);
 
-        Task<ProduktiAtributi> GetProductAttributeByIdAsync(int id);
+        Task<ProduktiAtributi?> GetProductAttributeByIdAsync(int id);
 
         Task DeleteAsync(ProduktiAtributi produktiAtributi);
 

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using ECommerce.Application.ProduktetModule.Interfaces;
 using ECommerce.Domain.ProduktetModule.Entities;
 using ECommerce.Application.ProduktetModule.ViewModels;
-using ECommerce.Application.ProduktetModule.Interfaces;
+using ECommerce.Application.Exceptions;
 
 
 namespace ECommerce.Application.ProduktetModule.Services
@@ -31,7 +31,11 @@ namespace ECommerce.Application.ProduktetModule.Services
             await _produktiAtributiRepository.AddProductAttributesAsync(produktiAtributet);
         }
 
-        public async Task<object> GetProductAttributesAsync(int produktiId)
+        public async Task<ProduktiAtributi?> GetByIdAsync(int id)
+        {
+            return await _produktiAtributiRepository.GetProductAttributeByIdAsync(id);  
+        }
+        public async Task<object?> GetProductAttributesAsync(int produktiId)
         {
             return await _produktiAtributiRepository.GetProductAttributesAsync(produktiId);
         }
@@ -47,7 +51,7 @@ namespace ECommerce.Application.ProduktetModule.Services
 
             if (produktiAtributi == null)
             {
-                throw new KeyNotFoundException("Product attribute not found.");
+                throw new NotFoundException("Product attribute not found.");
             }
 
             produktiAtributi.AtributiValue = produktiAtributiVM.AtributiValue;
@@ -59,7 +63,7 @@ namespace ECommerce.Application.ProduktetModule.Services
             var produktiAtributi = await _produktiAtributiRepository.GetProductAttributeByIdAsync(id);
             if (produktiAtributi == null)
             {
-                throw new KeyNotFoundException($"Atributi with ID {id} was not found.");
+                throw new NotFoundException($"Atributi with ID {id} was not found.");
             }
 
             await _produktiAtributiRepository.DeleteAsync(produktiAtributi);

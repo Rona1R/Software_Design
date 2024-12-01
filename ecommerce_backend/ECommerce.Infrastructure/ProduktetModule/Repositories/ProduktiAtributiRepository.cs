@@ -4,13 +4,10 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
-using ECommerce.Application.ProduktetModule.DTOs;
 using ECommerce.Application.ProduktetModule.Interfaces;
 using ECommerce.Domain.ProduktetModule.Entities;
 using ECommerce.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
-
 
 namespace ECommerce.Infrastructure.ProduktetModule.Repositories 
 {
@@ -30,7 +27,7 @@ namespace ECommerce.Infrastructure.ProduktetModule.Repositories
             await _context.SaveChangesAsync();
         }
 
-        public async Task<object> GetProductAttributesAsync(int produktiId)
+        public async Task<object?> GetProductAttributesAsync(int produktiId)
         {
             var produktiMeAtribute = await _context.Produkti
                 .Where(p => p.Produkti_ID == produktiId)
@@ -64,7 +61,7 @@ namespace ECommerce.Infrastructure.ProduktetModule.Repositories
                 .ToList();
         }
 
-        public async Task<ProduktiAtributi> GetProductAttributeByIdAsync(int id)
+        public async Task<ProduktiAtributi?> GetProductAttributeByIdAsync(int id)
         {
             return await _context.ProduktiAtributi.FindAsync(id);
         }
