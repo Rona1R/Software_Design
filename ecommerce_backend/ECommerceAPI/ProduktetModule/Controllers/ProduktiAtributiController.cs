@@ -1,10 +1,9 @@
-﻿using ECommerce.Domain.ProduktetModule.Entities;
-using ECommerce.Infrastructure.Data;
-using ECommerceAPI.ViewModels;
+﻿using ECommerce.Application.ProduktetModule.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+using ECommerce.Application.ProduktetModule.ViewModels;
+using ECommerce.Application.Exceptions;
 
 namespace ECommerceAPI.ProduktetModule.Controllers
 {
@@ -12,74 +11,45 @@ namespace ECommerceAPI.ProduktetModule.Controllers
     [ApiController]
     public class ProduktiAtributiController : ControllerBase
     {
-        private readonly ECommerceDBContext _context;
-
-        public ProduktiAtributiController(ECommerceDBContext context)
+        private readonly IProduktiAtributiService _produktiAtributiService;
+        public ProduktiAtributiController(IProduktiAtributiService produktiAtributiService)
         {
-            _context = context;
+            _produktiAtributiService = produktiAtributiService;
+
         }
 
         [HttpPost]
         [Route("add-product-attributes")]
         [Authorize(Roles = "Admin,Menaxher")]
-        public async Task<IActionResult> Post([FromBody] List<ProduktiAtributiVM> atributet)
+        public async Task<IActionResult> Post([FromBody] List<ProduktiAttributeVM> atributet)
         {
-
-            foreach (var item in atributet)
-            {
-                var produktiAtributi = new ProduktiAtributi()
-                {
-                    ProduktiId = item.ProduktiId,
-                    AtributiId = item.AtributiId,
-                    AtributiValue = item.AtributiValue,
-                };
-
-                await _context.ProduktiAtributi.AddAsync(produktiAtributi);
-                await _context.SaveChangesAsync();
-            }
-
+            
+            await _produktiAtributiService.AddProductAttributesAsync(atributet);
             return Ok("Atributet jane shtuar me sukses!");
+          
         }
 
         [HttpGet]
         [Route("get-product-attributes/{produktiId}")]
         public async Task<IActionResult> GetAttr(int produktiId)
         {
+            
+            var produktiMeAtribute = await _produktiAtributiService.GetProductAttributesAsync(produktiId);
 
-            var produktiMeAtribute = await _context.Produkti.Where(p => p.Produkti_ID == produktiId)
-                .Select(p => new
-                {
-                    p.Produkti_ID,
-                    p.EmriProdukti,
-                    Atributet = p.ProduktiAtributi.Select(pa => new
-                    {
-                        pa.Id,
-                        pa.Atributi.Name,
-                        pa.AtributiValue
-                    })
-                })
-                .FirstOrDefaultAsync();
+            if (produktiMeAtribute == null)
+            {
+                return NotFound();
+            }
             return Ok(produktiMeAtribute);
+        
         }
-
 
         [HttpGet]
         [Route("get-available-attributes/{produktiId}")]
         [Authorize(Roles = "Admin,Menaxher")]
         public async Task<IActionResult> Get(int produktiId)
         {
-
-            var atributetProduktit = await _context.ProduktiAtributi
-                .Where(p => p.ProduktiId == produktiId)
-                .Select(p => p.AtributiId)
-                .ToListAsync();
-
-            var allAttributes = await _context.Atributi.ToListAsync();
-
-            var availableAttributes = allAttributes
-                .Where(a => !atributetProduktit.Contains(a.Id))
-                .ToList();
-
+            var availableAttributes = await _produktiAtributiService.GetAvailableAttributesAsync(produktiId);
             return Ok(availableAttributes);
         }
 
@@ -88,10 +58,10 @@ namespace ECommerceAPI.ProduktetModule.Controllers
         [Authorize(Roles = "Admin,Menaxher")]
         public async Task<IActionResult> GetPA(int id)
         {
-            var pa = await _context.ProduktiAtributi.FindAsync(id);
-            if (pa == null)
+            var pa = await _produktiAtributiService.GetByIdAsync(id);
+            if(pa == null)
             {
-                return BadRequest();
+                return NotFound();
             }
 
             return Ok(pa);
@@ -100,29 +70,37 @@ namespace ECommerceAPI.ProduktetModule.Controllers
         [HttpPut]
         [Route("edit-product-attribute/{id}")]
         [Authorize(Roles = "Admin,Menaxher")]
-        public async Task<IActionResult> Put(int id, [FromBody] ProduktiAtributiVM produktiAtributiVM)
+        public async Task<IActionResult> Put(int id, [FromBody] ProduktiAttributeVM produktiAtributiVM)
         {
-            var pa = await _context.ProduktiAtributi.FindAsync(id);
-            if (pa == null)
+            try
             {
-                return BadRequest();
+                await _produktiAtributiService.UpdateProductAttributeAsync(id,produktiAtributiVM);
+                return Ok("Atributi i ketij produkti u perditesua me sukses!");
+            }catch(NotFoundException e)
+            {
+                return NotFound(e.Message);
             }
-
-            pa.AtributiValue = produktiAtributiVM.AtributiValue;
-            await _context.SaveChangesAsync();
-
-            return Ok("Atributi i produktit u perditesua me sukses!");
         }
+    
 
         [HttpDelete]
         [Route("remove-product-attribute/{id}")]
         [Authorize(Roles = "Admin,Menaxher")]
         public async Task<IActionResult> Delete(int id)
         {
-            var pa = await _context.ProduktiAtributi.FindAsync(id);
-            _context.ProduktiAtributi.Remove(pa);
-            await _context.SaveChangesAsync();
-            return Ok("Atributi iu largua Produktit me sukses!");
+            try
+            {
+                await _produktiAtributiService.DeleteProduktiAtributiAsync(id);
+                return Ok("Atributi iu largua Produktit me sukses!");
+            }
+            catch (NotFoundException ex)
+            {
+                return NotFound(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, "Internal server error: " + ex.Message);
+            }
         }
     }
 }
