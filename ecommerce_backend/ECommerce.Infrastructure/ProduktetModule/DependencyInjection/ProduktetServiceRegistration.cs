@@ -42,6 +42,8 @@ namespace ECommerce.Infrastructure.ProduktetModule.DependencyInjection
             services.AddScoped<IProduktiAtributiRepository, ProduktiAtributiRepository>();
             services.AddScoped<IProduktiAtributiService, ProduktiAtributiService>();
 
+            services.AddScoped<IAtributiOptionRepository, AtributiOptionRepository>();  
+            services.AddScoped<IAtributiOptionService, AtributiOptionService>();    
 
             return services;
         }
