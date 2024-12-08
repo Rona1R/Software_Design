@@ -283,6 +283,13 @@
   border-radius: 10px; /* Optional: add rounded corners */
 }
 
+
+.createReport{
+  background-color: #1919247e !important;
+  color: white !important;
+  padding: 10px !important;
+  margin-bottom: 10px !important;
+}
 @media screen and (max-width: 1285px) {
   .statisticBlock {
     width: 100%;

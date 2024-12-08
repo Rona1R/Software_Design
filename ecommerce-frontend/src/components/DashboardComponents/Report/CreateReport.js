@@ -78,8 +78,7 @@ export default function CreateReport(props) {
           <Form>
             <Form.Group
               className="mb-3"
-              controlId="crudForm.NenkategoriaPershkrimi"
-            >
+            > 
               <Button
                 aria-controls="simple-menu"
                 aria-haspopup="true"

@@ -18,7 +18,7 @@ namespace ECommerceAPI.UsersModule.Controllers
 
         [HttpGet]
         [Route("GetAllUsers")]
-   //     [Authorize(Roles = "Admin,Menaxher")]
+        [Authorize(Roles = "Admin,Menaxher")]
         public async Task<IActionResult> Get()
         {
 

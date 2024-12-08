@@ -244,6 +244,7 @@ export default function TabelaPerdoruesve() {
         </div>
       ) : (
         <Box sx={{ width: "100%", overflowX: "auto" }}>
+          <Button className="createReport" onClick={()=>setShowCreateReport(true)}> Generate Report </Button>
           <Box sx={{ width: totalWidth + 50, margin: "0 auto" }}>
             <DataGrid
               rows={perdoruesit}
@@ -262,7 +263,8 @@ export default function TabelaPerdoruesve() {
               getRowClassName={(params) => `super-app-theme--row`}
             />
           </Box>
-          <Button onClick={()=>setShowCreateReport(true)}> Generate Report </Button>
+     
+     
         </Box>
       )}
     </>

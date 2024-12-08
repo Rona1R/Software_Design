@@ -1,4 +1,5 @@
 ﻿using ECommerceAPI.BusinessModule.ReportsFactory;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ECommerceAPI.BusinessModule.Controllers
@@ -10,6 +11,7 @@ namespace ECommerceAPI.BusinessModule.Controllers
         private readonly ReportGeneratorFactory _factory = new ReportGeneratorFactory();
 
         [HttpPost("{type}")]
+        [Authorize(Roles ="Admin,Menaxher")]
         public IActionResult CreateReport(string type, [FromBody] TableData tableData)
         {
             try

@@ -13,6 +13,7 @@ import { TextField } from "@mui/material";
 import { DatePicker } from "@mui/x-date-pickers";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import CreateReport from "../Report/CreateReport";
 
 export default function TabelaPorosive() {
   const [startDate, setStartDate] = useState(null);
@@ -27,6 +28,7 @@ export default function TabelaPorosive() {
   const [shfaqEdit, setShfaqEdit] = useState(false);
   const [porosiaToEditId, setPorosiaToEditId] = useState(null);
   const [refreshKey, setRefreshKey] = useState("");
+  const [showCreateReport, setShowCreateReport] = useState(false);
 
   useEffect(() => {
     if (startDate || endDate) {
@@ -73,6 +75,19 @@ export default function TabelaPorosive() {
     setShowModal(false);
   };
 
+  const formatDate = (data) => {
+    const date = new Date(data + "Z");
+    const formattedDate = date.toLocaleString("en-US", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+      hour: "numeric",
+      minute: "numeric",
+      hour12: true,
+    });
+    return formattedDate;
+  };
+
   const columns = [
     {
       field: "porosiaID",
@@ -105,16 +120,7 @@ export default function TabelaPorosive() {
       headerClassName: "super-app-theme--header",
       cellClassName: "super-app-theme--cell",
       renderCell: (params) => {
-        const date = new Date(params.value + "Z");
-        const formattedDate = date.toLocaleString("en-US", {
-          year: "numeric",
-          month: "long",
-          day: "numeric",
-          hour: "numeric",
-          minute: "numeric",
-          hour12: true,
-        }); //.format(date);
-        return <>{formattedDate}</>;
+        return <>{formatDate(params.value)}</>;
       },
     },
     {
@@ -176,7 +182,7 @@ export default function TabelaPorosive() {
           }}
         >
           Shiko Detajet
-          <i className="fa-regular fa-eye" style={{paddingLeft:"4px"}}></i>
+          <i className="fa-regular fa-eye" style={{ paddingLeft: "4px" }}></i>
         </Button>
       ),
       headerClassName: "super-app-theme--header",
@@ -201,16 +207,50 @@ export default function TabelaPorosive() {
           onClick={() => handleEditClick(params.id)}
         >
           Perditeso Statusin
-          <i className="fa-solid fa-pen-to-square" style={{paddingLeft:"4px"}}></i>
+          <i
+            className="fa-solid fa-pen-to-square"
+            style={{ paddingLeft: "4px" }}
+          ></i>
         </Button>
       ),
       headerClassName: "super-app-theme--header",
       cellClassName: "super-app-theme--cell",
     },
   ];
-  const totalWidth = columns.reduce((acc, column) => acc + (column.width || 0), 0);
+  const totalWidth = columns.reduce(
+    (acc, column) => acc + (column.width || 0),
+    0
+  );
   return (
     <>
+      {showCreateReport && (
+        <CreateReport
+          headers={[
+            "Id",
+            "Klienti",
+            "DataPorosise",
+            "Totali",
+            "Statusi",
+            "Adresa",
+            "Shteti",
+            "Qyteti",
+            "ZipKodi",
+          ]}
+          rows={porosite.map((p) => [
+            String(p.porosiaID),
+            p.klienti,
+            formatDate(p.dataPorosise),
+            String(p.totali),
+            p.statusi,
+            p.adresaDerguese.adresa,
+            p.adresaDerguese.shteti,
+            p.adresaDerguese.qyteti,
+            p.adresaDerguese.zipKodi,
+          ])}
+          mbyllShto={() => setShowCreateReport(false)}
+        />
+      )}
+
       <Modal
         show={showModal}
         onHide={handleCloseModal}
@@ -220,61 +260,67 @@ export default function TabelaPorosive() {
           {/* <Modal.Title className="crudFormLabel">Detajet E Porosise</Modal.Title> */}
         </Modal.Header>
         <Modal.Body className="text-center">
-          <h3 style={{fontWeight:"bold",color:"#00004",fontSize:"2em"}}>Detajet e porosise:</h3>
+          <h3 style={{ fontWeight: "bold", color: "#00004", fontSize: "2em" }}>
+            Detajet e porosise:
+          </h3>
           {selectedOrder ? (
             <div>
-              {selectedOrder.detajetPorosise.map((detajet,index) => (
-                  <Card
-                    variant="outlined"
-                    sx={{
-                      p: 1,
-                      width: "80%",
-                      margin: "auto",
-                      textAlign: "center",
-                    }}
-                    className="cart-item-wrapper"
-                    key={index}
-                  >
-                    <Box sx={{ mb: 2 }}>
-                      <img
+              {selectedOrder.detajetPorosise.map((detajet, index) => (
+                <Card
+                  variant="outlined"
+                  sx={{
+                    p: 1,
+                    width: "80%",
+                    margin: "auto",
+                    textAlign: "center",
+                  }}
+                  className="cart-item-wrapper"
+                  key={index}
+                >
+                  <Box sx={{ mb: 2 }}>
+                    <img
                       src={`/images/${detajet.foto}`}
                       alt={detajet.produktiEmri}
-                      style={{ height: "50px", width: "60px" ,marginBottom:"2px"}}
-                      />
-                      <Typography
-                        variant="body2"
-                        color="text.secondary"
-                        fontWeight="regular"
-                        className="item-title"
-                      >
-                        Produkti ID: {detajet.produktiID}
-                      </Typography>
-                      <Typography
-                        variant="body2"
-                        color="text.secondary"
-                        fontWeight="bold"
-                        className="item-title"
-                      >
-                        Produkti Emri: {detajet.produktiEmri}
-                      </Typography>
-                      <Typography
-                        fontWeight="regular"
-                        noWrap
-                        gutterBottom
-                        className="item-price"
-                        style={{ textAlign: "center" }}
-                      >
-                        Cmimi per cope: {detajet.cmimi} €
-                      </Typography>
-                      <Typography
-                        variant="body2"
-                        color="text.secondary"
-                        className="item-description"
-                      >
-                        Sasia: {detajet.sasia}
-                      </Typography>
-                    </Box>
-                  </Card>
+                      style={{
+                        height: "50px",
+                        width: "60px",
+                        marginBottom: "2px",
+                      }}
+                    />
+                    <Typography
+                      variant="body2"
+                      color="text.secondary"
+                      fontWeight="regular"
+                      className="item-title"
+                    >
+                      Produkti ID: {detajet.produktiID}
+                    </Typography>
+                    <Typography
+                      variant="body2"
+                      color="text.secondary"
+                      fontWeight="bold"
+                      className="item-title"
+                    >
+                      Produkti Emri: {detajet.produktiEmri}
+                    </Typography>
+                    <Typography
+                      fontWeight="regular"
+                      noWrap
+                      gutterBottom
+                      className="item-price"
+                      style={{ textAlign: "center" }}
+                    >
+                      Cmimi per cope: {detajet.cmimi} €
+                    </Typography>
+                    <Typography
+                      variant="body2"
+                      color="text.secondary"
+                      className="item-description"
+                    >
+                      Sasia: {detajet.sasia}
+                    </Typography>
+                  </Box>
+                </Card>
               ))}
             </div>
           ) : null}
@@ -301,51 +347,56 @@ export default function TabelaPorosive() {
         </div>
       ) : (
         <>
-         {
-          porosite.length !== 0 && (
-          <> 
-          <h3 className="filter-title">Filtro Sipas Dates</h3>
-          <div
-            className="filter-options"
-            style={{
-              display: "flex",
-              justifyContent: "center",
-              gap: "1rem",
-              marginBottom: "1rem",
-            }}
-          >
-            <div></div>
-            <LocalizationProvider dateAdapter={AdapterDayjs}>
-              <DatePicker
-                label="Start Date"
-                value={startDate}
-                onChange={(newValue) => setStartDate(newValue)}
-                slots={{ textField: TextField }}
-              />
-              <DatePicker
-                label="End Date"
-                value={endDate}
-                onChange={(newValue) => setEndDate(newValue)}
-                slots={{ textField: TextField }}
-              />
-            </LocalizationProvider>
-            {showReset && (
-              <Button
-                className="reseto-date-filters"
-                onClick={() => {
-                  setStartDate(null);
-                  setEndDate(null);
+          {porosite.length !== 0 && (
+            <>
+              <h3 className="filter-title">Filtro Sipas Dates</h3>
+              <div
+                className="filter-options"
+                style={{
+                  display: "flex",
+                  justifyContent: "center",
+                  gap: "1rem",
+                  marginBottom: "1rem",
                 }}
               >
-                Reseto filtrat
-              </Button>
-            )}
-          </div>  
-          </>
-          )
-         }
-         <Box  sx={{ width: "100%", overflowX: "auto" }}>
-            <Box sx={{ width: totalWidth + 50,margin:"0 auto" }}>
+                <div></div>
+                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                  <DatePicker
+                    label="Start Date"
+                    value={startDate}
+                    onChange={(newValue) => setStartDate(newValue)}
+                    slots={{ textField: TextField }}
+                  />
+                  <DatePicker
+                    label="End Date"
+                    value={endDate}
+                    onChange={(newValue) => setEndDate(newValue)}
+                    slots={{ textField: TextField }}
+                  />
+                </LocalizationProvider>
+                {showReset && (
+                  <Button
+                    className="reseto-date-filters"
+                    onClick={() => {
+                      setStartDate(null);
+                      setEndDate(null);
+                    }}
+                  >
+                    Reseto filtrat
+                  </Button>
+                )}
+              </div>
+            </>
+          )}
+          <Box sx={{ width: "100%", overflowX: "auto" }}>
+            <Button
+              className="createReport"
+              onClick={() => setShowCreateReport(true)}
+            >
+              {" "}
+              Generate Report{" "}
+            </Button>
+            <Box sx={{ width: totalWidth + 50, margin: "0 auto" }}>
               <DataGrid
                 rows={filteredData}
                 columns={columns}
@@ -357,14 +408,14 @@ export default function TabelaPorosive() {
                     },
                   },
                 }}
-                pageSizeOptions={[5,10,20]}
+                pageSizeOptions={[5, 10, 20]}
                 autoHeight
                 // checkboxSelection
                 disableRowSelectionOnClick
                 getRowClassName={(params) => `super-app-theme--row`}
               />
             </Box>
-         </Box>
+          </Box>
         </>
       )}
 
