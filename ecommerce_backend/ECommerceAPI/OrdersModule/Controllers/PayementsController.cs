@@ -1,7 +1,7 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using ECommerce.Application.OrdersModule.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Stripe;
 
 namespace ECommerceAPI.OrdersModule.Controllers
 {
@@ -9,27 +9,19 @@ namespace ECommerceAPI.OrdersModule.Controllers
     [ApiController]
     public class PayementsController : ControllerBase
     {
-        public PayementsController()
+        private readonly IPaymentServiceAdapter _paymentService;
+
+        public PayementsController(IPaymentServiceAdapter paymentService)
         {
-            StripeConfiguration.ApiKey = "sk_test_51PjondEwCeRFjy4WD1JeGKWS4faWbFFpRhYSroLWAvSWimaSNHRx4tEZg4SouoTWnZajmFPIeaQMI9qXYH03dlNg00wxJmmLTb";
+            _paymentService = paymentService;
         }
 
         [HttpPost("payment_intents")]
-        [Authorize] //?? provo
+        [Authorize]
         public async Task<IActionResult> CreatePaymentIntent([FromBody] PaymentIntentCreateRequest request)
         {
-
-            var options = new PaymentIntentCreateOptions
-            {
-                Amount = request.Amount,
-                Currency = "eur",
-                PaymentMethodTypes = ["card"]
-            };
-
-            var service = new PaymentIntentService();
-            var paymentIntent = await service.CreateAsync(options);
-
-            return Ok(paymentIntent.ClientSecret);
+            var clientSecret = await _paymentService.CreatePaymentIntentAsync(request.Amount, "eur");
+            return Ok(clientSecret);
         }
     }
 
