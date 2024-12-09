@@ -13,6 +13,7 @@ using ECommerce.Infrastructure.UsersModule.DependencyInjection;
 using ECommerceAPI.UsersModule.Security;
 using ECommerce.Infrastructure.Data;
 using ECommerce.Infrastructure.Configurations;
+using ECommerceAPI.BusinessModule.ReportsFactory;
 
 internal class Program
 {
@@ -34,6 +35,8 @@ internal class Program
         builder.Services.RegisterOrdersServices();
         builder.Services.RegisterKataloguServices();
         builder.Services.RegisterBusinessServices();
+
+        builder.Services.AddSingleton<ReportGeneratorFactory>();
 
 
         builder.Services.AddControllers();

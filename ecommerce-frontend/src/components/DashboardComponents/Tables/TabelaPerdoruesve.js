@@ -9,6 +9,7 @@ import { TailSpin } from "react-loader-spinner";
 import ShtoRolinUserit from "../CRUD/UseriRoletCRUD/ShtoRolinUserit";
 import FshijRolinUserit from "../CRUD/UseriRoletCRUD/FshijRolinUserit";
 import EditUserBadge from "../CRUD/AchievmentBadgeCRUD/EditUserBadge";
+import CreateReport from "../Report/CreateReport";
 
 export default function TabelaPerdoruesve() {
   const [perdoruesit, setPerdoruesit] = useState([]);
@@ -20,6 +21,8 @@ export default function TabelaPerdoruesve() {
   const [shfaqEditBadge, setShfaqEditBadge] = useState(false);
   const [refreshKey, setRefreshKey] = useState("");
   const useri = JSON.parse(localStorage.getItem("userDetails"));
+
+  const [showCreateReport,setShowCreateReport] = useState(false);
 
   useEffect(() => {
     try {
@@ -216,6 +219,16 @@ export default function TabelaPerdoruesve() {
           refreshTeDhenat={() => setRefreshKey(Date.now())}
         />
       )}
+
+      {
+        showCreateReport && (
+          <CreateReport
+            headers = {['Id','Username','Email','Phone Number','Badge','Roles']}
+            rows = {perdoruesit.map(user => [String(user.id), user.username,user.email,user.phoneNumber,user.achievementBadge,user.roli.join(', ')])}
+            mbyllShto={()=>setShowCreateReport(false)}
+          />
+        )
+      }
       {loading ? (
         <div className="loading">
           <TailSpin
@@ -231,6 +244,7 @@ export default function TabelaPerdoruesve() {
         </div>
       ) : (
         <Box sx={{ width: "100%", overflowX: "auto" }}>
+          <Button className="createReport" onClick={()=>setShowCreateReport(true)}> Generate Report </Button>
           <Box sx={{ width: totalWidth + 50, margin: "0 auto" }}>
             <DataGrid
               rows={perdoruesit}
@@ -249,6 +263,8 @@ export default function TabelaPerdoruesve() {
               getRowClassName={(params) => `super-app-theme--row`}
             />
           </Box>
+     
+     
         </Box>
       )}
     </>

@@ -1,9 +1,8 @@
-﻿using ECommerce.Domain.ProduktetModule.Entities;
-using ECommerce.Infrastructure.Data;
+﻿using ECommerce.Application.Exceptions;
+using ECommerce.Application.ProduktetModule.Interfaces;
+using ECommerce.Application.ProduktetModule.ViewModels;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace ECommerceAPI.ProduktetModule.Controllers
 {
@@ -12,11 +11,11 @@ namespace ECommerceAPI.ProduktetModule.Controllers
     public class AtributiOptionController : ControllerBase
     {
 
-        private readonly ECommerceDBContext _context;
+        private readonly IAtributiOptionService _atributiOptionService;
 
-        public AtributiOptionController(ECommerceDBContext context)
+        public AtributiOptionController(IAtributiOptionService atributiOptionService)
         {
-            _context = context;
+            _atributiOptionService = atributiOptionService;
         }
 
         [HttpPost]
@@ -24,24 +23,15 @@ namespace ECommerceAPI.ProduktetModule.Controllers
         [Authorize(Roles = "Admin,Menaxher")]
         public async Task<IActionResult> Post([FromBody] OptionVM option)
         {
-            var ekziston = await _context.AtributiOption
-             .FirstOrDefaultAsync(op => op.AtributiId == option.AtributiId &&
-                               op.OptionValue.ToLower() == option.OptionValue.ToLower());
-
-            if (ekziston != null)
+            try
             {
-                return BadRequest("Ky opsion ekziston per kete atribut!");
+                await _atributiOptionService.CreateAsync(option);
+                return Ok("Opsioni u shtua me sukses!");
             }
-
-
-            var op = new AtributiOption()
+            catch(ExistsException ex)
             {
-                OptionValue = option.OptionValue,
-                AtributiId = option.AtributiId
-            };
-            await _context.AtributiOption.AddAsync(op);
-            await _context.SaveChangesAsync();
-            return Ok("Opsioni u shtua me sukses!");
+                return BadRequest(ex.Message);  
+            }
         }
 
         [HttpGet]
@@ -49,9 +39,7 @@ namespace ECommerceAPI.ProduktetModule.Controllers
         [Authorize(Roles = "Admin,Menaxher")]
         public async Task<IActionResult> GetOpsionetAll(int atributiId)
         {
-            var at = await _context.AtributiOption.OrderByDescending(a => a.Id)
-             .Where(a => a.AtributiId == atributiId).ToListAsync();
-            return Ok(at);
+            return Ok(await _atributiOptionService.GetOptionsByAtributeAsync(atributiId));
         }
 
         [HttpGet]
@@ -59,8 +47,12 @@ namespace ECommerceAPI.ProduktetModule.Controllers
         [Authorize(Roles = "Admin,Menaxher")]
         public async Task<IActionResult> Get(int id)
         {
-            var at = await _context.AtributiOption.FindAsync(id);
-            return Ok(at);
+            try
+            {
+                return Ok(await _atributiOptionService.GetByIdAsync(id));
+            }catch(NotFoundException) {
+                return NotFound();
+            }
         }
 
 
@@ -69,26 +61,15 @@ namespace ECommerceAPI.ProduktetModule.Controllers
         [Authorize(Roles = "Admin,Menaxher")]
         public async Task<IActionResult> Put(int id, [FromBody] OptionVM option)
         {
-            var ekziston = await _context.AtributiOption
-             .FirstOrDefaultAsync(op => op.AtributiId == option.AtributiId &&
-                               op.OptionValue.ToLower() == option.OptionValue.ToLower()
-                               && op.Id != id
-                               );
-
-            if (ekziston != null)
+            try
             {
-                return BadRequest("Ky opsion ekziston per kete atribut!");
-            }
-
-            var at = await _context.AtributiOption.FindAsync(id);
-            if (at == null)
-            {
+                await _atributiOptionService.UpdateAsync(id, option);
+                return Ok("Opsioni u perditesua me sukses!");
+            }catch(NotFoundException) {
                 return NotFound();
+            }catch(ExistsException ex) { 
+                return BadRequest(ex.Message);
             }
-
-            at.OptionValue = option.OptionValue;
-            await _context.SaveChangesAsync();
-            return Ok("Opsioni u perditesua me sukses!");
         }
 
         [HttpDelete]
@@ -96,23 +77,14 @@ namespace ECommerceAPI.ProduktetModule.Controllers
         [Authorize(Roles = "Admin,Menaxher")]
         public async Task<IActionResult> Delete(int id)
         {
-            var at = await _context.AtributiOption.FindAsync(id);
-            if (at == null)
+            try
             {
+                await _atributiOptionService.DeleleteOptionAsync(id);
+                return Ok("Opsioni u fshi me sukses");
+            }catch(NotFoundException) {
                 return NotFound();
             }
-
-            _context.AtributiOption.Remove(at);
-            await _context.SaveChangesAsync();
-            return Ok("Opsioni u fshi me sukses!");
         }
 
-    }
-
-    public class OptionVM
-    {
-        public string OptionValue { get; set; }
-
-        public int AtributiId { get; set; }
     }
 }

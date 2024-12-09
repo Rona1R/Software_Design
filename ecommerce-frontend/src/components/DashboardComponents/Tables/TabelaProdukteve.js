@@ -11,6 +11,7 @@ import EditoProduktin from "../CRUD/ProduktiCRUD/EditProduktin";
 import FshijProduktin from "../CRUD/ProduktiCRUD/FshijProduktin";
 import ShtoAtributinProduktit from "../CRUD/ProduktiAtributetCRUD/ShtoAtributinProduktit";
 import ShfaqAtributet from "../CRUD/ProduktiAtributetCRUD/ShfaqAtributet";
+import CreateReport from "../Report/CreateReport";
 
 export default function TabelaProdukteve() {
   const [produktet, setProduktet] = useState([]);
@@ -23,6 +24,7 @@ export default function TabelaProdukteve() {
   const [produktiPerTuFshireID, setProduktiPerTuFshireID] = useState(null);
   const [shfaqShtoInformacionet, setShfaqShtoInformacionet] = useState(false);
   const [shfaqInformacionet,setShfaqInformacionet] = useState(false);
+  const [showCreateReport,setShowCreateReport] = useState(false);
 
   useEffect(() => {
     try {
@@ -259,8 +261,18 @@ export default function TabelaProdukteve() {
     (acc, column) => acc + (column.width || 0),
     0
   );
+
   return (
     <>
+      {
+        showCreateReport && (
+          <CreateReport
+            headers = {['Id','Name','Description','Stock','Price','Company','Category','SubCategory']}
+            rows = {produktet.map(p => [String(p.id), p.emri,p.pershkrimi,String(p.stoku),String(p.cmimi),p.kompania,p.kategoria,p.nenkategoria])}
+            mbyllShto={()=>setShowCreateReport(false)}
+          />
+        )
+      }
       <div className="shtoButoni">
         <Button onClick={() => setShfaqShto(true)}>Shto Produktin</Button>
       </div>
@@ -279,6 +291,7 @@ export default function TabelaProdukteve() {
         </div>
       ) : (
         <Box sx={{ width: "100%", overflowX: "auto" }}>
+          <Button className="createReport" onClick={()=>setShowCreateReport(true)}> Generate Report </Button>
           <Box sx={{ width: totalWidth + 50, margin: "0 auto" }}>
             <DataGrid
               rows={produktet}

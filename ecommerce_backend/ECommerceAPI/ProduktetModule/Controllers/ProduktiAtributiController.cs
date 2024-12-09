@@ -12,10 +12,10 @@ namespace ECommerceAPI.ProduktetModule.Controllers
     public class ProduktiAtributiController : ControllerBase
     {
         private readonly IProduktiAtributiService _produktiAtributiService;
+
         public ProduktiAtributiController(IProduktiAtributiService produktiAtributiService)
         {
             _produktiAtributiService = produktiAtributiService;
-
         }
 
         [HttpPost]
