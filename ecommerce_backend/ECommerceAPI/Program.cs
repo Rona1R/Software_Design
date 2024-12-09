@@ -14,6 +14,8 @@ using ECommerceAPI.UsersModule.Security;
 using ECommerce.Infrastructure.Data;
 using ECommerce.Infrastructure.Configurations;
 using ECommerceAPI.BusinessModule.ReportsFactory;
+using ECommerce.Application.OrdersModule.Interfaces;
+using ECommerce.Application.OrdersModule.Services.PaymentServiceAdapters;
 
 internal class Program
 {
@@ -37,6 +39,7 @@ internal class Program
         builder.Services.RegisterBusinessServices();
 
         builder.Services.AddSingleton<ReportGeneratorFactory>();
+        builder.Services.AddScoped<IPaymentServiceAdapter, StripePaymentServiceAdapter>();
 
 
         builder.Services.AddControllers();
