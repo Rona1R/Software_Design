@@ -87,7 +87,7 @@ namespace ECommerce.Infrastructure.KataloguModule.Repositories
                 .Select(name => new CompanyName { Name = name })
                 .ToList();
 
-            var maxPrice = products.Max(p => p.CmimiPerCope);
+            decimal? maxPrice = products.Any() ? products.Max(p => p.CmimiPerCope) : null;
 
             var result = new KategoriaSidebarData
             {

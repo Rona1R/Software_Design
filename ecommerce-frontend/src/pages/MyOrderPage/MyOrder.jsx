@@ -19,6 +19,7 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 
 
 export default function MyOrder() {
+  const loggedUser = JSON.parse(localStorage.getItem("userDetails"));
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
   const [filteredData, setFilteredData] = useState([]);
@@ -27,7 +28,6 @@ export default function MyOrder() {
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
-  const loggedUser = JSON.parse(localStorage.getItem("userDetails"));
 
 
   useEffect(() => {
@@ -47,7 +47,7 @@ export default function MyOrder() {
     fetchData();
 
     // }
-  }, [loggedUser]);
+  }, []);
 
   useEffect(() => {
     if (startDate || endDate) {

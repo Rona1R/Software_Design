@@ -101,7 +101,7 @@ namespace ECommerce.Infrastructure.ProduktetModule.Repositories
                 })
                 .ToList();
 
-            var maxPrice = products.Max(p => p.CmimiPerCope);
+            decimal? maxPrice = products.Any() ? products.Max(p => p.CmimiPerCope) : null;
 
 
             var result = new SidebarDataNeZbritje

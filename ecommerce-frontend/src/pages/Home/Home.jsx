@@ -80,7 +80,7 @@ const Home = () => {
               </div>
             </Box>
           </Box>
-          <Grid container alignItems="center" sx={{backgroundColor:"#f9f9f9"}}>
+          {/* <Grid container alignItems="center" sx={{backgroundColor:"#f9f9f9"}}>
             <Grid item xs={12} md={6}>
               <Box>
                 <Box p={6}>
@@ -142,7 +142,7 @@ const Home = () => {
                 />
               </Box>
             </Grid>
-          </Grid>
+          </Grid> */}
           <section className="features-section">
             <div className="feature-container">
               <div className="feature">

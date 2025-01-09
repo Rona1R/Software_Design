@@ -30,9 +30,10 @@ import SavedAdresses from "components/Profili/Adresat/SavedAddresses";
 import PhoneInput from "react-phone-input-2";
 
 const ProfilePage = () => {
+  const loggedUser = JSON.parse(localStorage.getItem('userDetails'));
  // console.log("Profile page rendered!!")
  // const userId = 1016;
-  const [userId, setUserId] = useState(null);
+  // const [userId, setUserId] = useState(null);
   const [editable, setEditable] = useState(false);
   const [loading,setLoading] = useState(true);
   const [username, setUsername] = useState("");
@@ -58,13 +59,12 @@ const ProfilePage = () => {
   const [refreshKey, setRefreshKey] = useState("");
   const [selectedTab,setSelectedTab] = useState("general");
 
-  const loggedUser = JSON.parse(localStorage.getItem('userDetails'));
-  useEffect(()=>{
-    if(loggedUser)
-    {
-      setUserId(parseInt(loggedUser.userId));
-    }
-  },[loggedUser])
+  // useEffect(()=>{
+  //   if(loggedUser)
+  //   {
+  //     setUserId(parseInt(loggedUser.userId));
+  //   }
+  // },[loggedUser])
 
   const handleTabClick = (tab) => {
     setSelectedTab(tab);
@@ -84,8 +84,8 @@ const ProfilePage = () => {
         //   {
         //     return
         //   };
-            if(userId){
-              const details = await fetchUserDetails(userId);
+            if(loggedUser.userId){
+              const details = await fetchUserDetails(loggedUser.userId);
            
               setUsername(details.userName || "");
               setEmail(details.email || "");
@@ -103,7 +103,7 @@ const ProfilePage = () => {
     };
 
     loadUserDetails();
-  }, [userId, refreshKey]);
+  }, [refreshKey]);
 
   const handleEdit = (field) => {
     switch (field) {
@@ -130,7 +130,7 @@ const ProfilePage = () => {
       let hasError = false;
 
       if (usernameEditable) {
-        const response = await updateUsername(userId, username);
+        const response = await updateUsername(loggedUser.userId, username);
         if (response.status === 400) {
           setUsernameError(response.error);
           // setUsername(previousUsername);
@@ -143,7 +143,7 @@ const ProfilePage = () => {
       }
 
       if (emailEditable) {
-        const response = await updateEmail(userId, email);
+        const response = await updateEmail(loggedUser.userId, email);
         if (response.status === 400) {
           setEmailError(response.error);
           // setEmail(previousEmail);
@@ -156,7 +156,7 @@ const ProfilePage = () => {
       }
 
       if (phoneEditable) {
-        const response = await updatePhoneNumber(userId, phone);
+        const response = await updatePhoneNumber(loggedUser.userId, phone);
         if (response.status === 400) {
           setPhoneNumberError(response.error);
           hasError = true;
@@ -173,7 +173,7 @@ const ProfilePage = () => {
           return;
         }
         if (isOldPasswordValid) {
-          const response = await updatePassword(userId, newPassword);
+          const response = await updatePassword(loggedUser.userId, newPassword);
           if (response.status === 400) {
             setPasswordChangeError(response.error);
             hasError = true;
@@ -233,7 +233,7 @@ const ProfilePage = () => {
         console.log("Updating profile picture with photo data: ", fotoData);
         await axios
           .put(
-            `https://localhost:7061/api/User/Update-ProfilePicture/${userId}`,
+            `https://localhost:7061/api/User/Update-ProfilePicture/${loggedUser.userId}`,
             fotoData
           )
           .then(async (response) => {
@@ -259,7 +259,7 @@ const ProfilePage = () => {
 
   const handleOldPasswordChange = async () => {
     try {
-      const isValid = await verifyOldPassword(userId, oldPassword);
+      const isValid = await verifyOldPassword(loggedUser.userId, oldPassword);
       setIsOldPasswordValid(isValid);
       if (!isValid) {
         setPasswordChangeError("Old password is incorrect.");
@@ -276,7 +276,7 @@ const ProfilePage = () => {
   const handleProfilePicReset = async () => {
     try {
       await axios
-        .put(`https://localhost:7061/api/User/Reset-Profile-Pic/${userId}`)
+        .put(`https://localhost:7061/api/User/Reset-Profile-Pic/${loggedUser.userId}`)
         .then(() => {
           setRefreshKey(Date.now());
         });

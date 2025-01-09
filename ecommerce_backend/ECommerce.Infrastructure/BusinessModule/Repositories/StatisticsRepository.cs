@@ -62,6 +62,8 @@ namespace ECommerce.Infrastructure.BusinessModule.Repositories
             {
                 availableYears.Add(currentYear);
             }
+            availableYears.Sort((x, y) => y.CompareTo(x));
+
             var allMonths = Enumerable.Range(1, 12)
                 .Select(m => new OrderMonthStatisticsDTO
                 {
@@ -95,6 +97,7 @@ namespace ECommerce.Infrastructure.BusinessModule.Repositories
             {
                 availableYears.Add(currentYear);
             }
+            availableYears.Sort((x, y) => y.CompareTo(x));
 
             var allMonths = Enumerable.Range(1, 12)
                 .Select(m => new MonthlyRevenueDTO

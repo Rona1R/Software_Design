@@ -106,7 +106,7 @@ namespace ECommerce.Infrastructure.KataloguModule.Repositories
              })
              .ToList();
 
-            var maxPrice = products.Max(p => p.CmimiPerCope);
+            decimal? maxPrice = products.Any() ? products.Max(p => p.CmimiPerCope) : null;
 
             return new KompaniaSidebarData
             {
@@ -192,7 +192,7 @@ namespace ECommerce.Infrastructure.KataloguModule.Repositories
                 .Where(p => p.Kompania_ID == companyId && p.Kategoria_ID == categoryId)
                 .ToListAsync();
 
-            var maxPrice = products.Max(p => p.CmimiPerCope);
+            decimal? maxPrice = products.Any() ? products.Max(p => p.CmimiPerCope) : null;
 
             var uniqueSubcategories = products
                 .Select(p => new SubCategoryDTO

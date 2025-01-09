@@ -8,7 +8,9 @@ import { Button } from "@mui/material";
 import EditAddress from "./EditAddress";
 import FshijAddress from "./FshijAddress";
 
+
 export default function SavedAdresses() {
+  const loggedUser = JSON.parse(localStorage.getItem('userDetails'));
   const [adresat, setAdresat] = useState([]);
   const [loading, setLoading] = useState(true);
   const [shfaqEdit,setShfaqEdit] = useState(false);
@@ -17,7 +19,6 @@ export default function SavedAdresses() {
   const [addressToDeleteId,setAdressToDeleteId] = useState(null);
   const [refreshKey,setRefreshKey] = useState("");
 
-  const loggedUser = JSON.parse(localStorage.getItem('userDetails'));
 
 
   useEffect(() => {
@@ -35,7 +36,7 @@ export default function SavedAdresses() {
         console.log(error);
       }
     // }
-  }, [loggedUser,refreshKey]);
+  }, [refreshKey]);
 
   const handleEdit=(adresa)=>{
     setAdressToEditId(adresa);
