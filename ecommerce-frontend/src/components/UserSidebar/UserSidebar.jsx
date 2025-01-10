@@ -66,7 +66,7 @@ function UserSidebar({ show, handleClose, ...props }) {
  
       const loadUserDetails = async () => {
         try {
-          if(useri){
+          if(useri.userId){
             const details = await fetchUserDetails(parseInt(useri.userId));
             setProfilePic(details.profilePicture);
           }
@@ -77,7 +77,7 @@ function UserSidebar({ show, handleClose, ...props }) {
 
       loadUserDetails();
 
-  }, [useri]);
+  }, [useri.userId]);
 
 
 

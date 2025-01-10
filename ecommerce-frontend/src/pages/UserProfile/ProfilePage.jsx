@@ -103,7 +103,7 @@ const ProfilePage = () => {
     };
 
     loadUserDetails();
-  }, [refreshKey]);
+  }, [refreshKey,loggedUser.userId]);
 
   const handleEdit = (field) => {
     switch (field) {

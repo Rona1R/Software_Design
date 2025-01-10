@@ -62,7 +62,7 @@ export default function TeDhenatKlientit(props) {
 
   const navigate = useNavigate();
   const { state, dispatch } = useCart();
-  const [klientiID, setKlientiID] = useState(null);
+  // const [klientiID, setKlientiID] = useState(null);
   const [emri, setEmri] = useState("");
   const [email, setEmail] = useState("");
   const [nrTel, setNrTel] = useState("");
@@ -86,18 +86,18 @@ export default function TeDhenatKlientit(props) {
   const [anchorEl, setAnchorEl] = useState(null);
 
   const loggedUser = JSON.parse(localStorage.getItem("userDetails"));
-  useEffect(() => {
-    if (loggedUser) {
-      setKlientiID(parseInt(loggedUser.userId));
-    }
-  }, [loggedUser]);
+  // useEffect(() => {
+  //   if (loggedUser) {
+  //     setKlientiID(parseInt(loggedUser.userId));
+  //   }
+  // }, [loggedUser]);
 
   useEffect(() => {
-    if (klientiID) {
+    if (loggedUser.userId) {
       try {
         axios
           .get(
-            `https://localhost:7061/api/User/User-Checkout-Details/${klientiID}`
+            `https://localhost:7061/api/User/User-Checkout-Details/${loggedUser.userId}`
           )
           .then((response) => {
             setEmri(response.data.userName);
@@ -119,7 +119,7 @@ export default function TeDhenatKlientit(props) {
         console.log(error);
       }
     }
-  }, [klientiID]);
+  }, [loggedUser.userId]);
 
   const additionalCountry = [
     {
@@ -282,7 +282,7 @@ export default function TeDhenatKlientit(props) {
           qyteti: selectedCity,
           nrKontaktues: nrTel,
           zipKodi: String(zipCode),
-          userId: klientiID,
+          userId: loggedUser.userId,
           items: state.cartItems.map((item) => ({
             sasia: item.sasia,
             produktiId: item.id,

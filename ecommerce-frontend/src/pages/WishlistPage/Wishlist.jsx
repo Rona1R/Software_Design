@@ -15,15 +15,15 @@ import SideNav from 'pages/Home/SideNav/SideNav';
 const Wishlist = () => {
     const [removedFromWishlist,setRemovedFromWishlist] = useState(false);
     const [removedPopUp,setRemovedPopUp] = useState(false);
-    const [userId,setUserId] = useState(null);
+    // const [userId,setUserId] = useState(null);
     
     const loggedUser = JSON.parse(localStorage.getItem('userDetails'));
-    useEffect(()=>{
-      if(loggedUser)
-      {
-        setUserId(parseInt(loggedUser.userId));
-      }
-    },[loggedUser])
+    // useEffect(()=>{
+    //   if(loggedUser)
+    //   {
+    //     setUserId(parseInt(loggedUser.userId));
+    //   }
+    // },[loggedUser])
     // const userId =  null;
 
     useEffect(() => {
@@ -106,7 +106,7 @@ const Wishlist = () => {
           >
             <div className="wishlist-item">
               <WishlistDetails
-                 userId={userId}
+                 userId={loggedUser.userId}
                 onRemove={handleRemoveFromWishlist}
               />
             </div>

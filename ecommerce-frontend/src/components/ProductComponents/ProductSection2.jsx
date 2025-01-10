@@ -36,7 +36,7 @@ export default function ProductSection2({
   subcategory,
   subcategoryId,
 }) {
-  const [userId, setUserId] = useState(null);
+  // const [userId, setUserId] = useState(null);
   // const userId = null;
 
   const [showInfo, setShowInfo] = useState(false);
@@ -47,18 +47,18 @@ export default function ProductSection2({
   const [showRemovedPopUp, setShowRemovedPopUp] = useState(false);
 
   const loggedUser = JSON.parse(localStorage.getItem("userDetails"));
-  useEffect(() => {
-    if (loggedUser) {
-      setUserId(parseInt(loggedUser.userId));
-    }
-  }, [loggedUser]);
+  // useEffect(() => {
+  //   if (loggedUser) {
+  //     setUserId(parseInt(loggedUser.userId));
+  //   }
+  // }, [loggedUser]);
 
   useEffect(() => {
     try {
-      if (userId) {
+      if (loggedUser.userId) {
         axios
           .get(
-            `https://localhost:7061/api/WishlistItems/NdodhetNeWishlist/${id}/${userId}`
+            `https://localhost:7061/api/WishlistItems/NdodhetNeWishlist/${id}/${loggedUser.userId}`
           )
           .then((response) => {
             if (response.data.exists) {
@@ -66,14 +66,14 @@ export default function ProductSection2({
               setWishlistItemId(response.data.ndodhetNeWishliste.itemId);
             } else {
               setAddedToWishlist(false);
-              setWishlistItemId(null);
+              // setWishlistItemId(null);
             }
           });
       }
     } catch (error) {
       console.log(error);
     }
-  }, [id, userId, addedToWishlist]);
+  }, [id, loggedUser.userId, addedToWishlist]);
 
   const handleMouseEnter = () => {
     setShowInfo(true);
@@ -90,7 +90,7 @@ export default function ProductSection2({
   const toggleWishlist = async () => {
     try {
       const wishlistItem = {
-        IdKlienti: userId,
+        IdKlienti:loggedUser.userId,
         Produkti_ID: id,
       };
       if (!addedToWishlist) {

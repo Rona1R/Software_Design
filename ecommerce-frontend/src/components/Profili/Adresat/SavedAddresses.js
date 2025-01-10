@@ -24,7 +24,7 @@ export default function SavedAdresses() {
   useEffect(() => {
     // if(userId){
       try {
-        if (!loggedUser) return;
+        if (!loggedUser.userId) return;
 
         axios
           .get(`https://localhost:7061/api/Adresa/listoAdresat/${parseInt(loggedUser.userId)}`)
@@ -36,7 +36,7 @@ export default function SavedAdresses() {
         console.log(error);
       }
     // }
-  }, [refreshKey]);
+  }, [refreshKey,loggedUser.userId]);
 
   const handleEdit=(adresa)=>{
     setAdressToEditId(adresa);

@@ -7,6 +7,7 @@ import axios from 'axios';
  
 
  export const fetchUserDetails = async (userId) => {
+    console.log("USER DETAILS FETCHED !!")
     try {
         const response = await axios.get(`${API_URL}/User-Details/${userId}`);
         return response.data;

@@ -38,7 +38,7 @@ const ProductDetails = () => {
   const [refreshKey, setRefreshKey] = useState("");
   const [stockWarning, setStockWarning] = useState(false);
   const [productRating, setProductRating] = useState(0);
-  const [userId, setUserId] = useState(null);
+  // const [userId, setUserId] = useState(null);
   const [wishlistItemId, setWishlistItemId] = useState(null);
   const loggedUser = JSON.parse(localStorage.getItem("userDetails"));
   const [index, setIndex] = useState(0);
@@ -47,11 +47,11 @@ const ProductDetails = () => {
   const handleSelect = (selectedIndex, e) => {
     setIndex(selectedIndex);
   };
-  useEffect(() => {
-    if (loggedUser) {
-      setUserId(parseInt(loggedUser.userId));
-    }
-  }, [loggedUser]);
+  // useEffect(() => {
+  //   if (loggedUser) {
+  //     setUserId(parseInt(loggedUser.userId));
+  //   }
+  // }, [loggedUser]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -81,10 +81,10 @@ const ProductDetails = () => {
 
   useEffect(() => {
     try {
-      if (userId) {
+      if (loggedUser.userId) {
         axios
           .get(
-            `https://localhost:7061/api/WishlistItems/NdodhetNeWishlist/${productID}/${userId}`
+            `https://localhost:7061/api/WishlistItems/NdodhetNeWishlist/${productID}/${loggedUser.userId}`
           )
           .then((response) => {
             if (response.data.exists) {
@@ -92,14 +92,14 @@ const ProductDetails = () => {
               setWishlistItemId(response.data.ndodhetNeWishliste.itemId);
             } else {
               setAddedToWishlist(false);
-              setWishlistItemId(null);
+              // setWishlistItemId(null);
             }
           });
       }
     } catch (error) {
       console.log(error);
     }
-  }, [productID, userId, addedToWishlist]);
+  }, [productID, loggedUser.userId, addedToWishlist]);
 
   useEffect(() => {
     if (showPopUp) {
@@ -174,7 +174,7 @@ const ProductDetails = () => {
   const wishlistToggle = async () => {
     try {
       const wishlistItem = {
-        IdKlienti: userId,
+        IdKlienti: loggedUser.userId,
         Produkti_ID: foundProduct.id, // Use foundProduct.id instead of id
       };
       if (!addedToWishlist) {
