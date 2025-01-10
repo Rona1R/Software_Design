@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import "./Styles/ProductSection2.css";
 import ImageListItem from "@mui/material/ImageListItem";
 import ImageListItemBar from "@mui/material/ImageListItemBar";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import IconButton from "@mui/material/IconButton";
 import InfoIcon from "@mui/icons-material/Info";
 import "bootstrap/dist/css/bootstrap.min.css";
@@ -36,6 +36,7 @@ export default function ProductSection2({
   subcategory,
   subcategoryId,
 }) {
+  const navigate = useNavigate();
   // const [userId, setUserId] = useState(null);
   // const userId = null;
 
@@ -55,7 +56,7 @@ export default function ProductSection2({
 
   useEffect(() => {
     try {
-      if (loggedUser.userId) {
+      if (loggedUser) {
         axios
           .get(
             `https://localhost:7061/api/WishlistItems/NdodhetNeWishlist/${id}/${loggedUser.userId}`
@@ -73,7 +74,7 @@ export default function ProductSection2({
     } catch (error) {
       console.log(error);
     }
-  }, [id, loggedUser.userId, addedToWishlist]);
+  }, [id, addedToWishlist]);
 
   const handleMouseEnter = () => {
     setShowInfo(true);
@@ -88,6 +89,12 @@ export default function ProductSection2({
   };
 
   const toggleWishlist = async () => {
+    if(!loggedUser){
+      // if not authenticated redirect !
+      navigate("/LogIn");
+      return;
+    }
+
     try {
       const wishlistItem = {
         IdKlienti:loggedUser.userId,

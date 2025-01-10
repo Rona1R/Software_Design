@@ -7,8 +7,10 @@ import Alert from 'react-bootstrap/Alert';
 import "../AddReview.css";
 import axios from "axios";
 import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
 const AddReview = (props) => {
+  const navigate = useNavigate();
   const [loggedUserId,setLoggedUserId] = useState(null); 
   const [rating, setRating] = useState(0);
   const [text,setText] = useState("");
@@ -51,6 +53,12 @@ const AddReview = (props) => {
   }
 
   const handleSubmit = async (event) => {
+    if(!loggedUser){
+      // if not authenticated redirect !
+      navigate("/LogIn");
+      return;
+    }
+
     event.preventDefault();
     setError(''); 
     const isValid = validoFormen();

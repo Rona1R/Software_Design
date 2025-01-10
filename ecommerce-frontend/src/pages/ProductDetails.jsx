@@ -81,7 +81,7 @@ const ProductDetails = () => {
 
   useEffect(() => {
     try {
-      if (loggedUser.userId) {
+      if (loggedUser) {
         axios
           .get(
             `https://localhost:7061/api/WishlistItems/NdodhetNeWishlist/${productID}/${loggedUser.userId}`
@@ -99,7 +99,7 @@ const ProductDetails = () => {
     } catch (error) {
       console.log(error);
     }
-  }, [productID, loggedUser.userId, addedToWishlist]);
+  }, [productID, addedToWishlist]);
 
   useEffect(() => {
     if (showPopUp) {
@@ -172,6 +172,12 @@ const ProductDetails = () => {
   };
 
   const wishlistToggle = async () => {
+    if(!loggedUser){
+      // if not authenticated redirect !
+      navigate("/LogIn");
+      return;
+    }
+
     try {
       const wishlistItem = {
         IdKlienti: loggedUser.userId,

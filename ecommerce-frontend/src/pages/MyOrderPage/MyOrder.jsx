@@ -31,7 +31,7 @@ export default function MyOrder() {
 
 
   useEffect(() => {
-    if(loggedUser.userId){
+    if(loggedUser){
     const fetchData = async () => {
       try {
         const response = await axios.get(
@@ -47,7 +47,7 @@ export default function MyOrder() {
     fetchData();
 
     }
-  }, [loggedUser.userId]);
+  }, []);
 
   useEffect(() => {
     if (startDate || endDate) {
